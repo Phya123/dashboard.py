@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Main Streamlit Dashboard
+  dashboard:
+    build: .
+    container_name: trading-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_PORT=8501
+      - APCA_API_KEY_ID=${APCA_API_KEY_ID:-}
+      - APCA_API_SECRET_KEY=${APCA_API_SECRET_KEY:-}
+      - APCA_API_BASE_URL=${APCA_API_BASE_URL:-https://paper-api.alpaca.markets}
+    volumes:
+      - ./dashboard.py:/app/dashboard.py
+      - ./data.py:/app/data.py
+      - ./bot.py:/app/bot.py
+      - ./strategy.py:/app/strategy.py
+      - ./performance.py:/app/performance.py
+      - ./risk.py:/app/risk.py
+      - ./trade_journal.csv:/app/trade_journal.csv
+      - ./symbol_stats.csv:/app/symbol_stats.csv
+    restart: unless-stopped
+    networks:
+      - dashboard-network
+
+  # Keep-Alive Service (prevents server sleep)
+  keep-alive:
+    build: .
+    container_name: trading-keepalive
+    environment:
+      - STREAMLIT_APP_URL=http://dashboard:8501
+      - KEEP_ALIVE_INTERVAL=180
+    depends_on:
+      - dashboard
+    command: python keep_alive.py
+    restart: unless-stopped
+    networks:
+      - dashboard-network
+
+networks:
+  dashboard-network:
+    driver: bridge
