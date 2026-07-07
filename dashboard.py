@@ -25,7 +25,6 @@ st.set_page_config(
 )
 
 SYMBOLS = [
-    SYMBOLS = [
     "LMT",
     "SPCX",
     "DEO",
@@ -38,6 +37,7 @@ SYMBOLS = [
     "XLE",
     "NVDA"
 ]
+    
 
 
 # ==========================
