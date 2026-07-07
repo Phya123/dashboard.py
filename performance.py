@@ -1,88 +1,228 @@
-import csv
-from pathlib import Path
-from typing import Dict, List
+import pandas as pd
+import os
 
 
-TRADE_FILE_PATH = Path(__file__).with_name("trade_journal.csv")
-STATS_FILE_PATH = Path(__file__).with_name("symbol_stats.csv")
+TRADE_FILE = "trade_journal.csv"
 
 
-def ensure_trade_journal() -> None:
-    if not TRADE_FILE_PATH.exists():
-        with TRADE_FILE_PATH.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.writer(handle)
-            writer.writerow(["symbol", "action", "price", "timestamp"])
+
+# ==========================
+# LOAD JOURNAL
+# ==========================
+
+def load_trades():
+
+    if not os.path.exists(
+        TRADE_FILE
+    ):
+
+        return pd.DataFrame()
 
 
-def ensure_symbol_stats() -> None:
-    if not STATS_FILE_PATH.exists():
-        with STATS_FILE_PATH.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.writer(handle)
-            writer.writerow(["symbol", "avg_return", "win_rate", "total_trades", "wins", "losses", "total_profit"])
+    try:
+
+        df = pd.read_csv(
+            TRADE_FILE
+        )
+
+        return df
 
 
-def read_trade_journal() -> List[Dict[str, str]]:
-    ensure_trade_journal()
-    with TRADE_FILE_PATH.open("r", newline="", encoding="utf-8") as handle:
-        return [
-            {"symbol": row[0], "action": row[1], "price": row[2], "timestamp": row[3]}
-            for row in csv.reader(handle)
-            if row and row[0] != "symbol"
+    except Exception:
+
+        return pd.DataFrame()
+
+
+
+# ==========================
+# PERFORMANCE CALCULATOR
+# ==========================
+
+def load_performance():
+
+    df = load_trades()
+
+
+    if df.empty:
+
+        return {
+
+            "trades":0,
+            "wins":0,
+            "losses":0,
+            "win_rate":0,
+            "total_pnl":0,
+            "avg_win":0,
+            "avg_loss":0
+
+        }
+
+
+
+    # Find P/L column safely
+
+    pnl_column = None
+
+
+    possible = [
+
+        "pnl",
+        "PnL",
+        "profit",
+        "Profit",
+        "realized_pl",
+        "Realized P/L"
+
+    ]
+
+
+    for col in possible:
+
+        if col in df.columns:
+
+            pnl_column = col
+            break
+
+
+
+    if pnl_column is None:
+
+        df["pnl"] = 0
+
+        pnl_column="pnl"
+
+
+
+    df[pnl_column] = pd.to_numeric(
+        df[pnl_column],
+        errors="coerce"
+    ).fillna(0)
+
+
+
+    trades = len(df)
+
+
+
+    wins = len(
+        df[
+            df[pnl_column] > 0
         ]
+    )
 
 
-def read_symbol_stats() -> List[Dict[str, str]]:
-    ensure_symbol_stats()
-    with STATS_FILE_PATH.open("r", newline="", encoding="utf-8") as handle:
-        rows: List[Dict[str, str]] = []
-        for row in csv.reader(handle):
-            if not row or row[0] == "symbol":
-                continue
-
-            padded_row = row + [""] * (7 - len(row))
-            rows.append(
-                {
-                    "symbol": padded_row[0],
-                    "avg_return": padded_row[1] or "0",
-                    "win_rate": padded_row[2] or "0",
-                    "total_trades": padded_row[3] or "0",
-                    "wins": padded_row[4] or "0",
-                    "losses": padded_row[5] or "0",
-                    "total_profit": padded_row[6] or "0",
-                }
-            )
-        return rows
+    losses = len(
+        df[
+            df[pnl_column] < 0
+        ]
+    )
 
 
-def append_trade(symbol: str, action: str, price: str) -> None:
-    ensure_trade_journal()
-    with TRADE_FILE_PATH.open("a", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
-        writer.writerow([symbol or "", action, price, "now"])
+
+    win_rate = (
+
+        (wins / trades) * 100
+
+        if trades > 0
+
+        else 0
+
+    )
 
 
-def get_performance_summary(trade_journal: List[Dict[str, str]]) -> Dict[str, object]:
-    stats = read_symbol_stats()
-    if stats:
-        total_trades = sum(int(row.get("total_trades", 0)) for row in stats)
-        wins = sum(int(row.get("wins", 0)) for row in stats)
-        losses = sum(int(row.get("losses", 0)) for row in stats)
-        total_profit = sum(float(row.get("total_profit", 0)) for row in stats)
-        win_rate = wins / total_trades if total_trades else 0.0
-        best_symbol = max(stats, key=lambda row: float(row.get("avg_return", 0))).get("symbol", "N/A")
-    else:
-        total_trades = len(trade_journal)
-        wins = 0
-        losses = 0
-        total_profit = 0.0
-        win_rate = 0.0
-        best_symbol = "N/A"
+
+    avg_win = (
+
+        df[df[pnl_column] > 0][pnl_column].mean()
+
+        if wins > 0
+
+        else 0
+
+    )
+
+
+
+    avg_loss = (
+
+        df[df[pnl_column] < 0][pnl_column].mean()
+
+        if losses > 0
+
+        else 0
+
+    )
+
+
+
+    total_pnl = df[pnl_column].sum()
+
+
 
     return {
-        "total_trades": total_trades,
-        "wins": wins,
-        "losses": losses,
-        "win_rate": win_rate,
-        "total_profit": total_profit,
-        "best_symbol": best_symbol,
+
+
+        "trades":trades,
+
+
+        "wins":wins,
+
+
+        "losses":losses,
+
+
+        "win_rate":round(
+            win_rate,
+            2
+        ),
+
+
+        "total_pnl":round(
+            float(total_pnl),
+            2
+        ),
+
+
+        "avg_win":round(
+            float(avg_win),
+            2
+        ),
+
+
+        "avg_loss":round(
+            float(avg_loss),
+            2
+        )
+
     }
+
+
+
+# ==========================
+# EQUITY CURVE DATA
+# ==========================
+
+def get_equity_curve():
+
+    df = load_trades()
+
+
+    if df.empty:
+
+        return pd.DataFrame()
+
+
+
+    if "pnl" not in df.columns:
+
+        return pd.DataFrame()
+
+
+
+    df["equity"] = (
+        df["pnl"]
+        .cumsum()
+    )
+
+
+    return df
