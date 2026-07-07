@@ -25,15 +25,18 @@ st.set_page_config(
 )
 
 SYMBOLS = [
-    "SPY",
-    "QQQ",
-    "AAPL",
+    SYMBOLS = [
     "LMT",
+    "SPCX",
     "DEO",
-    "ASML",
-    "NVD",
+    "NVS",
     "TSM",
-    "XLE"
+    "ASML",
+    "QQQ",
+    "SPY",
+    "AAPL",
+    "XLE",
+    "NVDA"
 ]
 
 
