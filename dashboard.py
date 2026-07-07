@@ -44,6 +44,12 @@ SYMBOLS = [
 API_KEY = os.getenv("ALPACA_API_KEY")
 SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 
+if not API_KEY or not SECRET_KEY:
+    st.error(
+        "Missing Alpaca API credentials. Add ALPACA_API_KEY and ALPACA_SECRET_KEY to your environment variables."
+    )
+    st.stop()
+
 
 @st.cache_resource
 def get_clients():
