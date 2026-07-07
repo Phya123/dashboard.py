@@ -6,17 +6,18 @@ from alpaca.trading.client import TradingClient
 # ======================================
 # PAGE CONFIG
 # ======================================
-st.set_page_config(page_title="EML Sentinel AI", layout="wide")
-st.title("🤖 EML SENTINEL AI COMMAND CENTER")
+st.set_page_config(page_title="EML Sentinel AI | LIVE", layout="wide")
+st.title("⚡ EML SENTINEL AI | LIVE MONITORING")
 
 # ======================================
-# CONNECT TO ALPACA
+# CONNECT TO LIVE ALPACA DATA
 # ======================================
 try:
+    # 'paper=False' pulls LIVE market data and account status
     api = TradingClient(
         os.environ["APCA_API_KEY_ID"],
         os.environ["APCA_API_SECRET_KEY"],
-        paper=True # Ensure paper is set correctly
+        paper=False 
     )
     account = api.get_account()
     positions = api.get_all_positions()
@@ -28,57 +29,46 @@ except Exception as e:
 # ======================================
 # ACCOUNT & RISK METRICS
 # ======================================
-st.subheader("Account")
+st.subheader("Live Account Overview")
 c1, c2, c3, c4, c5 = st.columns(5)
 c1.metric("Equity", f"${float(account.equity):,.2f}")
 c2.metric("Buying Power", f"${float(account.buying_power):,.2f}")
 c3.metric("Cash", f"${float(account.cash):,.2f}")
-c4.metric("Portfolio Value", f"${float(account.portfolio_value):,.2f}")
-c5.metric("Market", "OPEN" if clock.is_open else "CLOSED")
+c4.metric("Portfolio", f"${float(account.portfolio_value):,.2f}")
+c5.metric("Market Status", "OPEN" if clock.is_open else "CLOSED")
 
 st.divider()
 
 # ======================================
-# POSITIONS (FIXED LOGIC)
+# READ-ONLY POSITIONS
 # ======================================
-st.subheader("Live Positions")
+st.subheader("Current Open Positions")
 
-# Ensure positions exist before iterating
 if positions:
-    rows = []
-    for p in positions:
-        rows.append({
+    rows = [
+        {
             "Symbol": p.symbol,
             "Qty": float(p.qty),
             "Entry": round(float(p.avg_entry_price), 2),
-            "Current": round(float(p.current_price), 2),
-            "PnL %": round(float(p.unrealized_plpc) * 100, 2),
-            "Market Value": round(float(p.market_value), 2)
-        })
-    df_positions = pd.DataFrame(rows)
-    st.dataframe(df_positions, use_container_width=True)
+            "Market Price": round(float(p.current_price), 2),
+            "PnL %": f"{round(float(p.unrealized_plpc) * 100, 2)}%",
+            "Mkt Value": round(float(p.market_value), 2)
+        } for p in positions
+    ]
+    st.dataframe(pd.DataFrame(rows), use_container_width=True)
 else:
-    st.success("No open positions")
+    st.info("No open positions detected in the live account.")
 
 st.divider()
 
 # ======================================
-# WATCHLIST
+# SENTINEL STATUS
 # ======================================
-watchlist = ["SPY", "QQQ", "AAPL", "LMT", "XLE", "SPCX", "NVDA", "ASML", "TSM", "DEO", "NVS"]
-st.subheader("Sentinel Watchlist")
-st.dataframe(pd.DataFrame({"Symbols": watchlist}), use_container_width=True)
-
-st.divider()
-
-# ======================================
-# BOT STATUS
-# ======================================
-st.subheader("Sentinel Status")
-st.info("""
-✅ Trading Engine Running
-✅ Connected to Alpaca
-✅ Live Account
-✅ Market Data Active
-Scanning all watchlist symbols every 60 seconds.
-""") 
+st.subheader("System Status: MONITORING ONLY")
+st.warning("⚠️ MODE: READ-ONLY. No trading logic is active.")
+st.success("""
+✅ API: Live (paper=False)
+✅ Account: Authenticated
+✅ Data Stream: Active
+✅ Safety: Trading execution methods are disabled.
+""")
