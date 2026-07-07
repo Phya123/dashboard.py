@@ -81,4 +81,4 @@ st.info("""
 ✅ Live Account
 ✅ Market Data Active
 Scanning all watchlist symbols every 60 seconds.
-""")
+""") 
