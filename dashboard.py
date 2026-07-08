@@ -126,6 +126,22 @@ except Exception as e:
         f"Alpaca connection error: {e}"
     )
 
+# ==========================
+# TRADING JOURNAL
+# ==========================
+st.subheader("📜 Trading Journal")
+
+try:
+    # Read the JSON file
+    # If the file contains a list of records:
+    journal_df = pd.read_json("trading_journal.json")
+    
+    # Display it as an interactive table
+    st.dataframe(journal_df, use_container_width=True)
+    
+except Exception as e:
+    st.info("Could not load trading journal.")
+    # Optional: st.error(e) # Uncomment to debug errors
 
 # ==========================
 # POSITIONS
