@@ -246,10 +246,10 @@ try:
     )
 
 
-except:
+except Exception as e:
 
-    st.info(
-        "No performance data yet"
+    st.error(
+        f"Performance Error: {e}"
     )
 
 
