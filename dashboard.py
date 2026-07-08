@@ -264,7 +264,7 @@ try:
     journal_df = pd.read_json("trading_journal.json")
     
     # Display it as an interactive table
-    st.dataframe(journal_df, use_container_width=None)
+    st.dataframe(journal_df, use_container_width=True)
     
 except Exception as e:
     st.info("Could not load trading journal.")
