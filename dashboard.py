@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import os
 
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
@@ -282,12 +283,16 @@ try:
 
     if not bars.empty:
 
-        fig=create_price_chart(
-            bars,
-            selected
-        )
+    fig = create_price_chart(
+        bars,
+        selected
+    )
 
-        st.dataframe(df, width=None)
+    if fig is not None:
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
 
 
 except Exception as e:
