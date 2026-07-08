@@ -304,10 +304,7 @@ try:
             selected
         )
 
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
+        st.dataframe(df, width=None)
 
 
 except Exception as e:
