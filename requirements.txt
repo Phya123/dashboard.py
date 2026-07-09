@@ -1,6 +1,6 @@
 streamlit
-alpaca-py
 pandas
+numpy
 plotly
+alpaca-py
 python-dotenv
-pandas-ta
