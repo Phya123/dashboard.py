@@ -3,4 +3,4 @@ alpaca-py
 pandas
 plotly
 python-dotenv
-pandas-ta
+pandas-ta-classic
