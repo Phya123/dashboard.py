@@ -1,28 +1,129 @@
-import pandas as pd
 import json
 import os
-import logging
 from datetime import datetime
 
-logging.basicConfig(level=logging.INFO)
 
-def format_currency(value):
-    try: return f"${float(value):,.2f}"
-    except: return "$0.00"
+# ==========================
+# FILES
+# ==========================
 
-def format_pct(value):
-    try: return f"{float(value):.2%}"
-    except: return "0.00%"
+DASHBOARD_DATA = "dashboard_data.json"
 
-def load_csv(path, columns):
-    if not os.path.exists(path):
-        pd.DataFrame(columns=columns).to_csv(path, index=False)
-    return pd.read_csv(path)
 
-def save_json(data, path):
-    with open(path, 'w') as f:
-        json.dump(data, f, indent=4)
 
-def load_json(path):
-    if not os.path.exists(path): return {}
-    with open(path, 'r') as f: return json.load(f)
+# ==========================
+# SAVE DASHBOARD DATA
+# ==========================
+
+def save_dashboard_data(data):
+
+    try:
+
+        with open(
+            DASHBOARD_DATA,
+            "w"
+        ) as f:
+
+            json.dump(
+                data,
+                f,
+                indent=4,
+                default=str
+            )
+
+        return True
+
+
+    except Exception:
+
+        return False
+
+
+
+
+# ==========================
+# LOAD DASHBOARD DATA
+# ==========================
+
+def load_dashboard_data():
+
+    if not os.path.exists(
+        DASHBOARD_DATA
+    ):
+
+        return {}
+
+
+    try:
+
+        with open(
+            DASHBOARD_DATA,
+            "r"
+        ) as f:
+
+            return json.load(f)
+
+
+    except Exception:
+
+        return {}
+
+
+
+
+# ==========================
+# FORMATTING
+# ==========================
+
+def format_money(value):
+
+    try:
+
+        return f"${float(value):,.2f}"
+
+    except Exception:
+
+        return "$0.00"
+
+
+
+
+def format_percent(value):
+
+    try:
+
+        return f"{float(value):.2f}%"
+
+    except Exception:
+
+        return "0.00%"
+
+
+
+
+# ==========================
+# TIME
+# ==========================
+
+def get_timestamp():
+
+    return datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+
+
+
+# ==========================
+# SAFE NUMBER
+# ==========================
+
+def safe_float(value):
+
+    try:
+
+        return float(value)
+
+    except Exception:
+
+        return 0.0
