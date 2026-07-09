@@ -109,31 +109,33 @@ if trading_client is None or data_client is None:
 
 # ==========================
 
-def money(value) -> str:
-try:
-return f"${float(value):,.2f}"
-except Exception:
-return "$0.00"
+def money(value):
+    try:
+        return f"${float(value):,.2f}"
+    except Exception:
+        return "$0.00"
 
-def pct(value) -> str:
-try:
-return f"{float(value):.2f}%"
-except Exception:
-return "0.00%"
+def pct(value):
+    try:
+        return f"{float(value):.2f}%"
+    except Exception:
+        return "0.00%"
 
-def safe_float(value, default=0.0) -> float:
-try:
-if value is None:
-return default
-return float(value)
-except Exception:
-return default
 
-def market_status_text(clock) -> str:
-try:
-return "OPEN" if clock.is_open else "CLOSED"
-except Exception:
-return "UNKNOWN"
+def safe_float(value, default=0.0):
+    try:
+        if value is None:
+            return default
+        return float(value)
+    except Exception:
+        return default
+
+
+def market_status_text(clock):
+    try:
+        return "OPEN" if clock.is_open else "CLOSED"
+    except Exception:
+        return "UNKNOWN"
 
 # ==========================
 
