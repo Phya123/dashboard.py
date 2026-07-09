@@ -1,8 +1,7 @@
 import os
-from datetime import datetime
-
-import pandas as pd
 import streamlit as st
+import pandas as pd
+from datetime import datetime
 
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
@@ -41,39 +40,39 @@ SYMBOLS = [
 
 REFRESH_SECONDS = 30
 
+
+
 # ==========================
-
-# ENV / CONNECTION
-
+# ALPACA CONNECTION
 # ==========================
 
 API_KEY = os.getenv("APCA_API_KEY_ID") or os.getenv("ALPACA_API_KEY")
 SECRET_KEY = os.getenv("APCA_API_SECRET_KEY") or os.getenv("ALPACA_SECRET_KEY")
 
-def _missing_keys_message() -> str:
-    return (
-        "Missing API Credentials. Check .env or Railway Variables"
+
+if not API_KEY or not SECRET_KEY:
+    st.error(
+        "Missing Alpaca API credentials. Add APCA_API_KEY_ID and APCA_API_SECRET_KEY."
     )
+    st.stop()
+
 
 @st.cache_resource
 def get_clients():
-if not API_KEY or not SECRET_KEY:
-return None, None
 
-```
-trading = TradingClient(
-    API_KEY,
-    SECRET_KEY,
-    paper=False,
-)
+    trading = TradingClient(
+        API_KEY,
+        SECRET_KEY,
+        paper=False
+    )
 
-data = StockHistoricalDataClient(
-    API_KEY,
-    SECRET_KEY,
-)
+    data = StockHistoricalDataClient(
+        API_KEY,
+        SECRET_KEY
+    )
 
-return trading, data
-```
+    return trading, data
+
 
 trading_client, data_client = get_clients()
 
