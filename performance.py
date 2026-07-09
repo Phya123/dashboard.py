@@ -9,6 +9,21 @@ import pandas as pd
 
 TRADE_HISTORY = "alpaca_trade_history.json"
 
+# ==========================
+# COMPATIBILITY FUNCTIONS
+# ==========================
+
+def load_trade_journal():
+
+    df = calculate_closed_trades()
+
+    return df
+
+
+
+def load_symbol_stats():
+
+    return pd.DataFrame()
 
 # ==========================
 # LOAD ALPACA HISTORY
