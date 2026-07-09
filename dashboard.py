@@ -1,57 +1,65 @@
 import streamlit as st
-import pandas as pd
 import os
-import json
-from datetime import datetime
 from alpaca.trading.client import TradingClient
-from charts import create_price_chart
-from performance import load_performance
-from scanner import run_scanner
+from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
+from datetime import datetime, timedelta
+import utils, scanner, performance, charts
 
-st.set_page_config(page_title="EML SENTINEL", layout="wide")
+st.set_page_config(layout="wide", page_title="EML-SENTINEL")
 
-# Connection
-@st.cache_resource
-def get_client():
-    return TradingClient(os.getenv("APCA_API_KEY_ID"), os.getenv("APCA_API_SECRET_KEY"), paper=False)
+# Credentials
+API_KEY = os.getenv("APCA_API_KEY_ID")
+API_SECRET = os.getenv("APCA_API_SECRET_KEY")
 
-client = get_client()
+if not API_KEY or not API_SECRET:
+    st.error("Missing API Credentials. Check .env")
+    st.stop()
 
-st.title("🤖 EML SENTINEL | LIVE MONITOR")
-st.caption(f"Last Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+# Clients
+trading_client = TradingClient(API_KEY, API_SECRET, paper=False)
+data_client = StockHistoricalDataClient(API_KEY, API_SECRET)
 
-# Metrics
+def get_data(symbol):
+    req = StockBarsRequest(symbol_or_symbols=symbol, timeframe=TimeFrame.Day, start=datetime.now()-timedelta(days=365))
+    return data_client.get_stock_bars(req).df
+
+st.title("EML-SENTINEL | Live Command Center")
+
+col1, col2, col3 = st.columns(3)
+
 try:
-    acc = client.get_account()
-    pos = client.get_all_positions()
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Equity", f"${float(acc.equity):,.2f}")
-    col2.metric("Cash", f"${float(acc.cash):,.2f}")
-    col3.metric("Buying Power", f"${float(acc.buying_power):,.2f}")
-    col4.metric("Market", "OPEN" if client.get_clock().is_open else "CLOSED")
+    account = trading_client.get_account()
+    col1.metric("Equity", utils.format_currency(account.equity))
+    col2.metric("Buying Power", utils.format_currency(account.buying_power))
+    col3.metric("Status", "MARKET OPEN" if account.trading_blocked == False else "BLOCKED")
 except Exception as e:
-    st.error(f"Connection Error: {e}")
+    st.warning(f"Alpaca Connection Error: {e}")
 
-# Positions
-st.subheader("📊 Open Positions")
-if pos:
-    df_pos = pd.DataFrame([p.__dict__ for p in pos])
-    st.dataframe(df_pos[['symbol', 'qty', 'avg_entry_price', 'unrealized_plpc']], use_container_width=True)
-else:
-    st.info("No active positions.")
+# Scanner Section
+st.subheader("Market Scanner")
+symbols = ["LMT", "SPCX", "DEO", "NVS", "TSM", "ASML", "QQQ", "SPY", "AAPL", "XLE", "NVDA"]
+scanner_results = []
 
-# Journal & Performance
-col_a, col_b = st.columns(2)
-with col_a:
-    st.subheader("📜 Trade Journal")
-    if os.path.exists("trade_journal.csv"):
-        st.dataframe(pd.read_csv("trade_journal.csv"), use_container_width=True)
-with col_b:
-    st.subheader("📈 Performance")
-    stats = load_performance()
-    st.write(stats)
+for s in symbols:
+    try:
+        data = get_data(s)
+        res = scanner.run_scanner(data)
+        if res:
+            res['symbol'] = s
+            scanner_results.append(res)
+    except: continue
 
-# Auto-refresh
+st.table(pd.DataFrame(scanner_results))
+
+# Performance
+st.subheader("Trade Journal Performance")
+journal = utils.load_csv("trade_journal.csv", ["date", "symbol", "pnl"])
+metrics = performance.calculate_metrics(journal)
+st.json(metrics)
+
+# Refresh Logic
+st.sidebar.button("Refresh Data")
 st.empty()
-if st.button("Refresh Data"):
-    st.rerun()
+import time; time.sleep(0.1) # Simulate logic delay
