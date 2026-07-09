@@ -1,1 +1,1 @@
-stats = load_performance()
+date,symbol,side,qty,entry,exit,pnl
