@@ -76,9 +76,32 @@ def get_clients():
 
 trading_client, data_client = get_clients()
 
+@st.cache_resource
+def get_clients():
+
+    if not API_KEY or not SECRET_KEY:
+        return None, None
+
+    trading = TradingClient(
+        API_KEY,
+        SECRET_KEY,
+        paper=False
+    )
+
+    data = StockHistoricalDataClient(
+        API_KEY,
+        SECRET_KEY
+    )
+
+    return trading, data
+
+
+trading_client, data_client = get_clients()
+
+
 if trading_client is None or data_client is None:
-st.error(_missing_keys_message())
-st.stop()
+    st.error(_missing_keys_message())
+    st.stop()
 
 # ==========================
 
