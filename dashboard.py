@@ -51,10 +51,9 @@ API_KEY = os.getenv("APCA_API_KEY_ID") or os.getenv("ALPACA_API_KEY")
 SECRET_KEY = os.getenv("APCA_API_SECRET_KEY") or os.getenv("ALPACA_SECRET_KEY")
 
 def _missing_keys_message() -> str:
-return (
-"Missing Alpaca API credentials. Set APCA_API_KEY_ID and APCA_API_SECRET_KEY "
-"in your environment variables."
-)
+    return (
+        "Missing API Credentials. Check .env or Railway Variables"
+    )
 
 @st.cache_resource
 def get_clients():
