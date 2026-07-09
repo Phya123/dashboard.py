@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 
 
@@ -6,264 +7,265 @@ import pandas as pd
 # FILES
 # ==========================
 
-TRADE_JOURNAL = "trade_journal.csv"
-SYMBOL_STATS = "symbol_stats.csv"
-
+TRADE_HISTORY = "alpaca_trade_history.json"
 
 
 # ==========================
-# LOAD TRADE JOURNAL
+# LOAD ALPACA HISTORY
 # ==========================
 
-def load_trade_journal():
+def load_alpaca_trades():
 
-    if not os.path.exists(
-        TRADE_JOURNAL
-    ):
+    if not os.path.exists(TRADE_HISTORY):
         return pd.DataFrame()
 
-
     try:
+        with open(TRADE_HISTORY, "r") as f:
+            data = json.load(f)
 
-        return pd.read_csv(
-            TRADE_JOURNAL
+        trades = data.get(
+            "trade_activities",
+            []
+        )
+
+        df = pd.DataFrame(trades)
+
+        if df.empty:
+            return df
+
+
+        df["qty"] = pd.to_numeric(
+            df["qty"],
+            errors="coerce"
+        )
+
+        df["price"] = pd.to_numeric(
+            df["price"],
+            errors="coerce"
         )
 
 
-    except Exception:
+        return df
+
+
+    except Exception as e:
+
+        print(
+            "Trade history error:",
+            e
+        )
 
         return pd.DataFrame()
 
 
 
 # ==========================
-# LOAD SYMBOL STATS
+# CALCULATE CLOSED TRADE PNL
 # ==========================
 
-def load_symbol_stats():
+def calculate_closed_trades():
 
-    if not os.path.exists(
-        SYMBOL_STATS
-    ):
+    df = load_alpaca_trades()
+
+
+    if df.empty:
+
         return pd.DataFrame()
 
 
-    try:
+    results = []
 
-        return pd.read_csv(
-            SYMBOL_STATS
+
+    symbols = df["symbol"].unique()
+
+
+    for symbol in symbols:
+
+        stock = df[
+            df["symbol"] == symbol
+        ].sort_values(
+            "executed_at"
         )
 
 
-    except Exception:
+        shares = 0
+        cost = 0
 
-        return pd.DataFrame()
+
+        for _, trade in stock.iterrows():
+
+            qty = trade["qty"]
+            price = trade["price"]
+
+
+            # BUY
+
+            if trade["side"] == "buy":
+
+                shares += qty
+
+                cost += qty * price
+
+
+
+            # SELL
+
+            elif trade["side"] == "sell":
+
+                sell_qty = abs(qty)
+
+
+                if shares > 0:
+
+
+                    avg_entry = (
+                        cost / shares
+                    )
+
+
+                    pnl = (
+                        price - avg_entry
+                    ) * sell_qty
+
+
+                    results.append({
+
+                        "date":
+                            trade["trade_date"],
+
+                        "symbol":
+                            symbol,
+
+                        "side":
+                            "closed",
+
+                        "qty":
+                            sell_qty,
+
+                        "entry":
+                            round(
+                                avg_entry,
+                                4
+                            ),
+
+                        "exit":
+                            price,
+
+                        "pnl":
+                            round(
+                                pnl,
+                                2
+                            )
+
+                    })
+
+
+                    shares -= sell_qty
+
+                    cost -= (
+                        avg_entry *
+                        sell_qty
+                    )
+
+
+    return pd.DataFrame(results)
 
 
 
 # ==========================
-# PERFORMANCE CALCULATOR
+# PERFORMANCE
 # ==========================
 
 def load_performance():
 
-    df = load_trade_journal()
+    df = calculate_closed_trades()
 
 
     if df.empty:
 
         return {
 
-            "trades": 0,
-            "wins": 0,
-            "losses": 0,
-            "win_rate": 0,
-            "total_pnl": 0,
-            "avg_win": 0,
-            "avg_loss": 0
+            "trades":0,
+            "wins":0,
+            "losses":0,
+            "win_rate":0,
+            "total_pnl":0,
+            "avg_win":0,
+            "avg_loss":0
 
         }
 
 
 
-    # Find P/L column
-
-    pnl_column = None
-
-
-    possible_columns = [
-
-        "pnl",
-        "PnL",
-        "profit",
-        "Profit",
-        "realized_pnl",
-        "Realized_PnL",
-        "Total_PnL"
-
+    wins = df[
+        df.pnl > 0
     ]
 
-
-    for col in possible_columns:
-
-        if col in df.columns:
-
-            pnl_column = col
-            break
-
-
-
-    if pnl_column is None:
-
-        df["pnl"] = 0
-        pnl_column = "pnl"
-
-
-
-    df[pnl_column] = pd.to_numeric(
-        df[pnl_column],
-        errors="coerce"
-    ).fillna(0)
-
-
-
-    total_trades = len(df)
-
-
-    wins = len(
-        df[
-            df[pnl_column] > 0
-        ]
-    )
-
-
-    losses = len(
-        df[
-            df[pnl_column] < 0
-        ]
-    )
-
-
-
-    win_rate = (
-
-        (wins / total_trades) * 100
-
-        if total_trades > 0
-
-        else 0
-
-    )
-
-
-
-    avg_win = (
-
-        df[df[pnl_column] > 0][pnl_column].mean()
-
-        if wins > 0
-
-        else 0
-
-    )
-
-
-
-    avg_loss = (
-
-        df[df[pnl_column] < 0][pnl_column].mean()
-
-        if losses > 0
-
-        else 0
-
-    )
-
-
-
-    total_pnl = df[pnl_column].sum()
-
+    losses = df[
+        df.pnl < 0
+    ]
 
 
     return {
 
-        "trades": total_trades,
+        "trades":
+            len(df),
 
-        "wins": wins,
+        "wins":
+            len(wins),
 
-        "losses": losses,
+        "losses":
+            len(losses),
 
-        "win_rate": round(
-            win_rate,
-            2
-        ),
+        "win_rate":
+            round(
+                len(wins) /
+                len(df) *
+                100,
+                2
+            ),
 
-        "total_pnl": round(
-            float(total_pnl),
-            2
-        ),
+        "total_pnl":
+            round(
+                df.pnl.sum(),
+                2
+            ),
 
-        "avg_win": round(
-            float(avg_win),
-            2
-        ),
+        "avg_win":
+            round(
+                wins.pnl.mean()
+                if len(wins)
+                else 0,
+                2
+            ),
 
-        "avg_loss": round(
-            float(avg_loss),
-            2
-        )
+        "avg_loss":
+            round(
+                losses.pnl.mean()
+                if len(losses)
+                else 0,
+                2
+            )
 
     }
 
 
 
 # ==========================
-# EQUITY CURVE DATA
+# EQUITY CURVE
 # ==========================
 
 def get_equity_curve():
 
-    df = load_trade_journal()
+    df = calculate_closed_trades()
 
 
     if df.empty:
-
         return pd.DataFrame()
-
-
-
-    pnl_column = None
-
-
-    for col in [
-        "pnl",
-        "PnL",
-        "profit",
-        "Profit"
-    ]:
-
-        if col in df.columns:
-
-            pnl_column = col
-            break
-
-
-
-    if pnl_column is None:
-
-        return pd.DataFrame()
-
-
-
-    df[pnl_column] = pd.to_numeric(
-        df[pnl_column],
-        errors="coerce"
-    ).fillna(0)
-
 
 
     df["equity"] = (
-        df[pnl_column]
+        df["pnl"]
         .cumsum()
     )
 
