@@ -283,9 +283,9 @@ try:
 
     if not bars.empty:
 
-    fig = create_price_chart(
-        bars,
-        selected
+       fig = create_price_chart(
+           bars,
+           selected
     )
 
     if fig is not None:
