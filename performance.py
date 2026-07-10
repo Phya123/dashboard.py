@@ -15,7 +15,7 @@ def get_trading_client():
     return TradingClient(
         api_key=API_KEY,
         secret_key=SECRET_KEY,
-        paper=PAPER
+        paper=Live
     )
 
 
@@ -37,8 +37,8 @@ SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 
 PAPER = os.getenv(
     "ALPACA_PAPER",
-    "true"
-).lower() == "true"
+    "false"
+).lower() == "false"
 
 
 
