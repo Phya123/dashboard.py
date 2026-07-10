@@ -286,3 +286,21 @@ def get_equity_curve():
 
 
     return df
+
+# ==========================
+# ACCOUNT PERFORMANCE
+# ==========================
+
+def get_account_performance():
+
+    data = load_performance()
+
+    return {
+        "trades": data.get("trades", 0),
+        "wins": data.get("wins", 0),
+        "losses": data.get("losses", 0),
+        "win_rate": data.get("win_rate", 0),
+        "total_pnl": data.get("total_pnl", 0),
+        "avg_win": data.get("avg_win", 0),
+        "avg_loss": data.get("avg_loss", 0)
+    }
