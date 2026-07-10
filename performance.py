@@ -1,457 +1,352 @@
 import os
+import json
 import pandas as pd
-from datetime import datetime, timedelta
 
-from dotenv import load_dotenv
 
-from alpaca.trading.client import TradingClient
-from alpaca.data.historical import StockHistoricalDataClient
+# ==========================
+# FILES
+# ==========================
 
+TRADE_HISTORY = "alpaca_trade_history.json"
 
-# ============================================================
-# LOAD ENVIRONMENT
-# ============================================================
+# ==========================
+# COMPATIBILITY FUNCTIONS
+# ==========================
 
-load_dotenv()
+def load_trade_journal():
 
+    df = calculate_closed_trades()
 
-API_KEY = os.getenv("ALPACA_API_KEY")
-SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+    return df
 
-PAPER = os.getenv(
-    "ALPACA_PAPER",
-    "false"
-).lower() == "true"
 
 
-# ============================================================
-# CHECK CREDENTIALS
-# ============================================================
+def load_symbol_stats():
 
-if not API_KEY or not SECRET_KEY:
-    raise RuntimeError(
-        "Missing Alpaca credentials. "
-        "Set ALPACA_API_KEY and ALPACA_SECRET_KEY."
-    )
+    return pd.DataFrame()
 
+# ==========================
+# LOAD ALPACA HISTORY
+# ==========================
 
-# ============================================================
-# ALPACA READ-ONLY CLIENTS
-# ============================================================
+def load_alpaca_trades():
 
-trading_client = TradingClient(
-    api_key=API_KEY,
-    secret_key=SECRET_KEY,
-    paper=false
-)
-
-
-data_client = StockHistoricalDataClient(
-    api_key=API_KEY,
-    secret_key=SECRET_KEY
-)
-
-# ============================================================
-# ALPACA CLIENTS
-# ============================================================
-
-if not API_KEY or not SECRET_KEY:
-    raise RuntimeError(
-        "Missing Alpaca API credentials. "
-        "Check ALPACA_API_KEY and ALPACA_SECRET_KEY in your .env or Streamlit secrets."
-    )
-
-
-@st.cache_resource
-def get_trading_client():
-
-    return TradingClient(
-        api_key=API_KEY,
-        secret_key=SECRET_KEY,
-        paper=false
-    )
-
-
-data_client = StockHistoricalDataClient(
-    api_key=API_KEY,
-    secret_key=SECRET_KEY
-)
-
-
-# ============================================================
-# ENVIRONMENT
-# ============================================================
-
-load_dotenv()
-
-
-API_KEY = os.getenv("ALPACA_API_KEY")
-SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
-
-PAPER = os.getenv("ALPACA_PAPER", "false").lower() == "true"
-
-
-
-
-
-# ============================================================
-# ACCOUNT PERFORMANCE
-# ============================================================
-
-def get_account_performance():
-
-    try:
-
-        account = trading_client.get_account()
-
-
-        data = {
-            "Equity": float(account.equity),
-            "Cash": float(account.cash),
-            "Buying Power": float(account.buying_power),
-            "Portfolio Value": float(account.portfolio_value),
-            "Daily P/L": float(account.equity)
-            - float(account.last_equity),
-
-            "Status": account.status,
-        }
-
-
-        return pd.DataFrame(
-            [data]
-        )
-
-
-    except Exception as e:
-
-        return pd.DataFrame(
-            [{
-                "Error": str(e)
-            }]
-        )
-
-
-
-# ============================================================
-# OPEN POSITIONS
-# ============================================================
-
-def get_open_positions():
-
-    try:
-
-        positions = trading_client.get_all_positions()
-
-
-        rows = []
-
-
-        for p in positions:
-
-            rows.append({
-
-                "Symbol":
-                    p.symbol,
-
-                "Qty":
-                    float(p.qty),
-
-                "Avg Entry":
-                    float(p.avg_entry_price),
-
-                "Current Price":
-                    float(p.current_price),
-
-                "Market Value":
-                    float(p.market_value),
-
-                "Unrealized P/L":
-                    float(p.unrealized_pl),
-
-                "Unrealized %":
-                    float(p.unrealized_plpc) * 100
-
-            })
-
-
-        if not rows:
-
-            return pd.DataFrame(
-                columns=[
-                    "Symbol",
-                    "Qty",
-                    "Avg Entry",
-                    "Current Price",
-                    "Market Value",
-                    "Unrealized P/L",
-                    "Unrealized %"
-                ]
-            )
-
-
-        return pd.DataFrame(rows)
-
-
-    except Exception:
-
+    if not os.path.exists(TRADE_HISTORY):
         return pd.DataFrame()
 
-
-
-# ============================================================
-# CLOSED TRADES
-# Reconstructed from Alpaca filled orders
-# ============================================================
-
-def get_closed_trades():
-
     try:
+        with open(TRADE_HISTORY, "r") as f:
+            data = json.load(f)
 
-        request = GetOrdersRequest(
-            status=QueryOrderStatus.CLOSED,
-            limit=500
+        trades = data.get(
+            "trade_activities",
+            []
         )
 
+        df = pd.DataFrame(trades)
 
-        orders = trading_client.get_orders(
-            filter=request
+        if df.empty:
+            return df
+
+
+        df["qty"] = pd.to_numeric(
+            df["qty"],
+            errors="coerce"
         )
 
-
-        rows = []
-
-
-        for order in orders:
-
-
-            if order.filled_at is None:
-                continue
-
-
-            rows.append({
-
-                "Symbol":
-                    order.symbol,
-
-                "Side":
-                    str(order.side),
-
-                "Qty":
-                    float(
-                        order.filled_qty or 0
-                    ),
-
-                "Filled Price":
-                    float(
-                        order.filled_avg_price or 0
-                    ),
-
-                "Status":
-                    str(order.status),
-
-                "Filled Time":
-                    order.filled_at
-
-            })
-
-
-        if not rows:
-
-            return pd.DataFrame(
-                columns=[
-                    "Symbol",
-                    "Side",
-                    "Qty",
-                    "Filled Price",
-                    "Status",
-                    "Filled Time"
-                ]
-            )
-
-
-        df = pd.DataFrame(rows)
-
-
-        df["Filled Time"] = pd.to_datetime(
-            df["Filled Time"]
+        df["price"] = pd.to_numeric(
+            df["price"],
+            errors="coerce"
         )
-
-
-        return df.sort_values(
-            "Filled Time",
-            ascending=False
-        )
-
-
-    except Exception:
-
-        return pd.DataFrame()
-
-
-
-# ============================================================
-# SYMBOL STATISTICS
-# ============================================================
-
-def get_symbol_statistics():
-
-    try:
-
-        trades = get_closed_trades()
-
-
-        if trades.empty:
-
-            return pd.DataFrame(
-                columns=[
-                    "Symbol",
-                    "Trades"
-                ]
-            )
-
-
-        stats = (
-            trades
-            .groupby("Symbol")
-            .agg(
-                Trades=("Symbol","count"),
-                Volume=("Qty","sum"),
-                Avg_Price=("Filled Price","mean")
-            )
-            .reset_index()
-        )
-
-
-        return stats
-
-
-    except Exception:
-
-        return pd.DataFrame()
-
-
-
-# ============================================================
-# REAL ALPACA EQUITY CURVE
-# ============================================================
-
-def get_equity_curve(days=30):
-
-    try:
-
-        from alpaca.trading.requests import (
-            GetPortfolioHistoryRequest
-        )
-
-
-        end = datetime.utcnow()
-
-        start = end - timedelta(
-            days=days
-        )
-
-
-        request = GetPortfolioHistoryRequest(
-            period=f"{days}D",
-            timeframe="1D"
-        )
-
-
-        history = trading_client.get_portfolio_history(
-            request
-        )
-
-
-        if history is None:
-            return pd.DataFrame(
-                columns=[
-                    "Date",
-                    "Equity"
-                ]
-            )
-
-
-        equity = history.equity
-        timestamps = history.timestamp
-
-
-        rows = []
-
-
-        for ts, value in zip(
-            timestamps,
-            equity
-        ):
-
-            rows.append({
-
-                "Date":
-                    datetime.fromtimestamp(
-                        ts
-                    ),
-
-                "Equity":
-                    float(value)
-
-            })
-
-
-        df = pd.DataFrame(rows)
-
-
-        if not df.empty:
-
-            df = df.sort_values(
-                "Date"
-            )
 
 
         return df
 
 
-
     except Exception as e:
 
+        print(
+            "Trade history error:",
+            e
+        )
 
-        return pd.DataFrame(
-            [{
-                "Error": str(e)
-            }]
+        return pd.DataFrame()
+
+
+
+# ==========================
+# CALCULATE CLOSED TRADE PNL
+# ==========================
+
+def calculate_closed_trades():
+
+    df = load_alpaca_trades()
+
+
+    if df.empty:
+
+        return pd.DataFrame()
+
+
+    results = []
+
+
+    symbols = df["symbol"].unique()
+
+
+    for symbol in symbols:
+
+        stock = df[
+            df["symbol"] == symbol
+        ].sort_values(
+            "executed_at"
         )
 
 
-
-# ============================================================
-# PERFORMANCE SUMMARY
-# ============================================================
-
-def get_performance_summary():
-
-    try:
-
-        trades = get_closed_trades()
+        shares = 0
+        cost = 0
 
 
-        summary = {
+        for _, trade in stock.iterrows():
 
-            "Trades":
-                len(trades),
+            qty = trade["qty"]
+            price = trade["price"]
 
-            "Wins":
-                0,
 
-            "Losses":
-                0,
+            # BUY
 
-            "Win Rate":
-                0
+            if trade["side"] == "buy":
+
+                shares += qty
+
+                cost += qty * price
+
+
+
+            # SELL
+
+            elif trade["side"] == "sell":
+
+                sell_qty = abs(qty)
+
+
+                if shares > 0:
+
+
+                    avg_entry = (
+                        cost / shares
+                    )
+
+
+                    pnl = (
+                        price - avg_entry
+                    ) * sell_qty
+
+
+                    results.append({
+
+                        "date":
+                            trade["trade_date"],
+
+                        "symbol":
+                            symbol,
+
+                        "side":
+                            "closed",
+
+                        "qty":
+                            sell_qty,
+
+                        "entry":
+                            round(
+                                avg_entry,
+                                4
+                            ),
+
+                        "exit":
+                            price,
+
+                        "pnl":
+                            round(
+                                pnl,
+                                2
+                            )
+
+                    })
+
+
+                    shares -= sell_qty
+
+                    cost -= (
+                        avg_entry *
+                        sell_qty
+                    )
+
+
+    return pd.DataFrame(results)
+
+
+
+# ==========================
+# PERFORMANCE
+# ==========================
+
+def load_performance():
+
+    df = calculate_closed_trades()
+
+
+    if df.empty:
+
+        return {
+
+            "trades":0,
+            "wins":0,
+            "losses":0,
+            "win_rate":0,
+            "total_pnl":0,
+            "avg_win":0,
+            "avg_loss":0
 
         }
 
 
-        return summary
+
+    wins = df[
+        df.pnl > 0
+    ]
+
+    losses = df[
+        df.pnl < 0
+    ]
 
 
-    except Exception:
+    return {
 
-        return {}
+        "trades":
+            len(df),
+
+        "wins":
+            len(wins),
+
+        "losses":
+            len(losses),
+
+        "win_rate":
+            round(
+                len(wins) /
+                len(df) *
+                100,
+                2
+            ),
+
+        "total_pnl":
+            round(
+                df.pnl.sum(),
+                2
+            ),
+
+        "avg_win":
+            round(
+                wins.pnl.mean()
+                if len(wins)
+                else 0,
+                2
+            ),
+
+        "avg_loss":
+            round(
+                losses.pnl.mean()
+                if len(losses)
+                else 0,
+                2
+            )
+
+    }
+
+
+
+# ==========================
+# EQUITY CURVE
+# ==========================
+
+def get_equity_curve():
+
+    df = calculate_closed_trades()
+
+
+    if df.empty:
+        return pd.DataFrame()
+
+
+    df["equity"] = (
+        df["pnl"]
+        .cumsum()
+    )
+
+
+    return df
+def get_open_positions():
+
+    df = load_alpaca_trades()
+
+    if df.empty:
+        return pd.DataFrame()
+
+
+    positions = []
+
+
+    for symbol in df["symbol"].unique():
+
+        stock = df[df["symbol"] == symbol]
+
+
+        qty = 0
+        cost = 0
+
+
+        for _, trade in stock.iterrows():
+
+            amount = float(trade["qty"])
+            price = float(trade["price"])
+
+
+            if trade["side"] == "buy":
+
+                qty += amount
+                cost += amount * price
+
+
+            elif trade["side"] == "sell":
+
+                sell_qty = abs(amount)
+
+                if qty > 0:
+
+                    avg = cost / qty
+
+                    qty -= sell_qty
+                    cost -= avg * sell_qty
+
+
+        if qty > 0:
+
+            positions.append({
+
+                "symbol": symbol,
+
+                "qty": round(
+                    qty,
+                    6
+                ),
+
+                "avg_entry": round(
+                    cost / qty,
+                    2
+                )
+
+            })
+
+
+    return pd.DataFrame(positions)
