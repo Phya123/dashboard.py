@@ -10,11 +10,19 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from charts import create_price_chart
-from performance import (
-    load_performance,
-    load_trade_journal,
-    load_symbol_stats
-)
+from performance import get_open_positions
+st.subheader("📊 Open Positions")
+
+positions = get_open_positions()
+
+if not positions.empty:
+    st.dataframe(
+        positions,
+        use_container_width=True
+    )
+else:
+    st.info("No open positions")
+
 from scanner import run_scanner
 
 
