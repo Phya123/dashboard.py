@@ -9,16 +9,15 @@ from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
-
+from charts import create_price_chart
 from performance import (
-    get_account_performance,
-    get_symbol_statistics,
-    get_equity_curve,
-    get_open_positions,
-    get_closed_trades,
+    load_performance,
     load_trade_journal,
-    load_symbol_stats,
+    load_symbol_stats
 )
+from scanner import run_scanner
+
+
 # ==========================
 # PAGE CONFIG
 # ==========================
@@ -194,22 +193,58 @@ except Exception as e:
 
 st.divider()
 
-st.subheader("📈 Performance")
+st.subheader(
+    "📊 Open Positions"
+)
+
 
 try:
 
-    stats = load_performance()
+    positions = trading_client.get_all_positions()
 
-    a, b, c, d, e = st.columns(5)
 
-    a.metric("Trades", stats.get("trades", 0))
-    b.metric("Wins", stats.get("wins", 0))
-    c.metric("Losses", stats.get("losses", 0))
-    d.metric("Win Rate", f'{stats.get("win_rate", 0)}%')
-    e.metric("Total P/L", money(stats.get("total_pnl", 0)))
+    if positions:
+
+
+        data = []
+
+
+        for p in positions:
+
+            data.append(
+                {
+                    "Symbol": p.symbol,
+                    "Qty": p.qty,
+                    "Entry": p.avg_entry_price,
+                    "Current": p.current_price,
+                    "Market Value": p.market_value,
+                    "P/L": p.unrealized_pl,
+                    "P/L %": float(p.unrealized_plpc) * 100
+                }
+            )
+
+
+        df = pd.DataFrame(data)
+
+
+        st.dataframe(
+            df,
+            use_container_width=True
+        )
+
+
+    else:
+
+        st.info(
+            "No open positions"
+        )
+
 
 except Exception as e:
-    st.error(f"Performance Error: {e}")
+
+    st.error(
+        f"Position Error: {e}"
+    )
 
 
 
@@ -253,13 +288,56 @@ except Exception as e:
 # PERFORMANCE
 # ==========================
 
-from performance import (
-    get_account_performance,
-    get_symbol_statistics,
-    get_equity_curve,
-    get_open_positions,
-    get_closed_trades
+st.divider()
+
+st.subheader(
+    "📈 Performance"
 )
+
+
+try:
+
+    stats = load_performance()
+
+
+    a,b,c,d,e = st.columns(5)
+
+
+    a.metric(
+        "Trades",
+        stats.get("trades",0)
+    )
+
+
+    b.metric(
+        "Wins",
+        stats.get("wins",0)
+    )
+
+
+    c.metric(
+        "Losses",
+        stats.get("losses",0)
+    )
+
+
+    d.metric(
+        "Win Rate",
+        f'{stats.get("win_rate",0)}%'
+    )
+
+
+    e.metric(
+        "Total P/L",
+        money(stats.get("total_pnl",0))
+    )
+
+
+except Exception as e:
+
+    st.error(
+        f"Performance Error: {e}"
+    )
 
 
 
