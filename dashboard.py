@@ -10,22 +10,13 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 
-from performance import get_open_positions
-st.subheader("📊 Open Positions")
-
-positions = get_open_positions()
-
-if not positions.empty:
-    st.dataframe(
-        positions,
-        use_container_width=True
-    )
-else:
-    st.info("No open positions")
-
-from scanner import run_scanner
-
-    )
+from performance import (
+    get_account_performance,
+    get_symbol_statistics,
+    get_equity_curve,
+    get_open_positions,
+    get_closed_trades
+)
 
 # ==========================
 # PAGE CONFIG
