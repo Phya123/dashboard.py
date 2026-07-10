@@ -12,20 +12,56 @@ from alpaca.data.timeframe import TimeFrame
 
 from performance import get_open_positions
 
-st.subheader("📊 Open Positions")
+st.divider()
 
-positions = get_open_positions()
+st.subheader(
+    "📈 Performance"
+)
 
-if not positions.empty:
-    st.dataframe(
-        positions,
-        use_container_width=True
+
+try:
+
+    stats = load_performance()
+
+
+    a,b,c,d,e = st.columns(5)
+
+
+    a.metric(
+        "Trades",
+        stats.get("trades",0)
     )
-else:
-    st.info("No open positions")
 
-from scanner import run_scanner
 
+    b.metric(
+        "Wins",
+        stats.get("wins",0)
+    )
+
+
+    c.metric(
+        "Losses",
+        stats.get("losses",0)
+    )
+
+
+    d.metric(
+        "Win Rate",
+        f'{stats.get("win_rate",0)}%'
+    )
+
+
+    e.metric(
+        "Total P/L",
+        money(stats.get("total_pnl",0))
+    )
+
+
+except Exception as e:
+
+    st.error(
+        f"Performance Error: {e}"
+    )
 
 # ==========================
 # PAGE CONFIG
