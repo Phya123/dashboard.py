@@ -35,10 +35,7 @@ load_dotenv()
 API_KEY = os.getenv("ALPACA_API_KEY")
 SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 
-PAPER = os.getenv(
-    "ALPACA_PAPER",
-    "false"
-).lower() == "false"
+PAPER = os.getenv("ALPACA_PAPER", "false").lower() == "true"
 
 
 
