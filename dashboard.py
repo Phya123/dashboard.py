@@ -10,7 +10,9 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from charts import create_price_chart
+
 from performance import get_open_positions
+
 st.subheader("📊 Open Positions")
 
 positions = get_open_positions()
