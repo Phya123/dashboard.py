@@ -1,9 +1,7 @@
 {
   "creation_date": "2026-07-09",
   "correspondent": "LPCA",
-  "account_no": "971290700",
-  "master_account_no": "971290700",
-  "account_name": "William Bush",
+  
   "representative": "Alpaca",
   "currency": "USD",
   "trade_activities": [
