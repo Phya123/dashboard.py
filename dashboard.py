@@ -18,7 +18,6 @@ from performance import (
     load_trade_journal,
     load_symbol_stats,
 )
-
 # ==========================
 # PAGE CONFIG
 # ==========================
