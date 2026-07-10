@@ -15,7 +15,7 @@ def get_trading_client():
     return TradingClient(
         api_key=API_KEY,
         secret_key=SECRET_KEY,
-        paper=Live
+        paper=false
     )
 
 
