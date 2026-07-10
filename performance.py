@@ -9,21 +9,6 @@ import pandas as pd
 
 TRADE_HISTORY = "alpaca_trade_history.json"
 
-# ==========================
-# COMPATIBILITY FUNCTIONS
-# ==========================
-
-def load_trade_journal():
-
-    df = calculate_closed_trades()
-
-    return df
-
-
-
-def load_symbol_stats():
-
-    return pd.DataFrame()
 
 # ==========================
 # LOAD ALPACA HISTORY
@@ -286,67 +271,3 @@ def get_equity_curve():
 
 
     return df
-def get_open_positions():
-
-    df = load_alpaca_trades()
-
-    if df.empty:
-        return pd.DataFrame()
-
-
-    positions = []
-
-
-    for symbol in df["symbol"].unique():
-
-        stock = df[df["symbol"] == symbol]
-
-
-        qty = 0
-        cost = 0
-
-
-        for _, trade in stock.iterrows():
-
-            amount = float(trade["qty"])
-            price = float(trade["price"])
-
-
-            if trade["side"] == "buy":
-
-                qty += amount
-                cost += amount * price
-
-
-            elif trade["side"] == "sell":
-
-                sell_qty = abs(amount)
-
-                if qty > 0:
-
-                    avg = cost / qty
-
-                    qty -= sell_qty
-                    cost -= avg * sell_qty
-
-
-        if qty > 0:
-
-            positions.append({
-
-                "symbol": symbol,
-
-                "qty": round(
-                    qty,
-                    6
-                ),
-
-                "avg_entry": round(
-                    cost / qty,
-                    2
-                )
-
-            })
-
-
-    return pd.DataFrame(positions)
