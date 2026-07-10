@@ -288,56 +288,13 @@ except Exception as e:
 # PERFORMANCE
 # ==========================
 
-st.divider()
-
-st.subheader(
-    "📈 Performance"
+from performance import (
+    get_account_performance,
+    get_symbol_statistics,
+    get_equity_curve,
+    get_open_positions,
+    get_closed_trades
 )
-
-
-try:
-
-    stats = load_performance()
-
-
-    a,b,c,d,e = st.columns(5)
-
-
-    a.metric(
-        "Trades",
-        stats.get("trades",0)
-    )
-
-
-    b.metric(
-        "Wins",
-        stats.get("wins",0)
-    )
-
-
-    c.metric(
-        "Losses",
-        stats.get("losses",0)
-    )
-
-
-    d.metric(
-        "Win Rate",
-        f'{stats.get("win_rate",0)}%'
-    )
-
-
-    e.metric(
-        "Total P/L",
-        money(stats.get("total_pnl",0))
-    )
-
-
-except Exception as e:
-
-    st.error(
-        f"Performance Error: {e}"
-    )
 
 
 
