@@ -1,19 +1,28 @@
 # ============================================================
-# EML SENTINEL - ALPACA LIVE PERFORMANCE ENGINE
-# No CSV / No JSON / Alpaca API Only
+# ALPACA CLIENTS
 # ============================================================
 
-import os
-import pandas as pd
-from datetime import datetime, timedelta
+if not API_KEY or not SECRET_KEY:
+    raise RuntimeError(
+        "Missing Alpaca API credentials. "
+        "Check ALPACA_API_KEY and ALPACA_SECRET_KEY in your .env or Streamlit secrets."
+    )
 
-from dotenv import load_dotenv
 
-from alpaca.trading.client import TradingClient
-from alpaca.trading.requests import GetOrdersRequest
-from alpaca.trading.enums import QueryOrderStatus
+@st.cache_resource
+def get_trading_client():
 
-from alpaca.data.historical import StockHistoricalDataClient
+    return TradingClient(
+        api_key=API_KEY,
+        secret_key=SECRET_KEY,
+        paper=PAPER
+    )
+
+
+data_client = StockHistoricalDataClient(
+    api_key=API_KEY,
+    secret_key=SECRET_KEY
+)
 
 
 # ============================================================
@@ -32,20 +41,7 @@ PAPER = os.getenv(
 ).lower() == "true"
 
 
-# ============================================================
-# ALPACA CLIENTS
-# ============================================================
 
-trading_client = TradingClient(
-    API_KEY,
-    SECRET_KEY,
-    paper=PAPER
-)
-
-data_client = StockHistoricalDataClient(
-    API_KEY,
-    SECRET_KEY
-)
 
 
 # ============================================================
