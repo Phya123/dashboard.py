@@ -13,7 +13,9 @@ from performance import (
     get_symbol_statistics,
     get_equity_curve,
     get_open_positions,
-    get_closed_trades
+    get_closed_trades,
+    load_trade_journal,
+    load_symbol_stats,
 )
 
 # ==========================
