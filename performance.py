@@ -1,3 +1,56 @@
+import os
+import pandas as pd
+from datetime import datetime, timedelta
+
+from dotenv import load_dotenv
+
+from alpaca.trading.client import TradingClient
+from alpaca.data.historical import StockHistoricalDataClient
+
+
+# ============================================================
+# LOAD ENVIRONMENT
+# ============================================================
+
+load_dotenv()
+
+
+API_KEY = os.getenv("ALPACA_API_KEY")
+SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+
+PAPER = os.getenv(
+    "ALPACA_PAPER",
+    "false"
+).lower() == "true"
+
+
+# ============================================================
+# CHECK CREDENTIALS
+# ============================================================
+
+if not API_KEY or not SECRET_KEY:
+    raise RuntimeError(
+        "Missing Alpaca credentials. "
+        "Set ALPACA_API_KEY and ALPACA_SECRET_KEY."
+    )
+
+
+# ============================================================
+# ALPACA READ-ONLY CLIENTS
+# ============================================================
+
+trading_client = TradingClient(
+    api_key=API_KEY,
+    secret_key=SECRET_KEY,
+    paper=false
+)
+
+
+data_client = StockHistoricalDataClient(
+    api_key=API_KEY,
+    secret_key=SECRET_KEY
+)
+
 # ============================================================
 # ALPACA CLIENTS
 # ============================================================
