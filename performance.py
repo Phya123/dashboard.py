@@ -304,3 +304,19 @@ def get_account_performance():
         "avg_win": data.get("avg_win", 0),
         "avg_loss": data.get("avg_loss", 0)
     }
+
+performance.py
+
+imports
+
+load_alpaca_trades()
+
+calculate_closed_trades()
+
+load_performance()
+
+get_equity_curve()
+
+⬇️ ADD THIS HERE
+
+get_open_positions()
