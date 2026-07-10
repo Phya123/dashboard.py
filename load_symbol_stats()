@@ -1,0 +1,31 @@
+def load_symbol_stats():
+
+    journal = load_trade_journal()
+
+    if journal.empty:
+        return pd.DataFrame(columns=[
+            "Symbol",
+            "Trades",
+            "Wins",
+            "Losses",
+            "Total_PnL",
+            "Average_PnL"
+        ])
+
+    stats = (
+        journal.groupby("symbol")
+        .agg(
+            Trades=("symbol", "count"),
+            Wins=("pnl", lambda x: (x > 0).sum()),
+            Losses=("pnl", lambda x: (x < 0).sum()),
+            Total_PnL=("pnl", "sum"),
+            Average_PnL=("pnl", "mean")
+        )
+        .reset_index()
+        .rename(columns={"symbol": "Symbol"})
+    )
+
+    stats["Total_PnL"] = stats["Total_PnL"].round(2)
+    stats["Average_PnL"] = stats["Average_PnL"].round(2)
+
+    return stats
