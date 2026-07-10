@@ -8,6 +8,7 @@ from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
+
 from performance import (
     get_account_performance,
     get_symbol_statistics,
