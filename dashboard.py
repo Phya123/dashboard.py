@@ -11,56 +11,20 @@ from alpaca.data.timeframe import TimeFrame
 
 
 from performance import get_open_positions
+st.subheader("📊 Open Positions")
 
-st.divider()
+positions = get_open_positions()
 
-st.subheader(
-    "📈 Performance"
-)
-
-
-try:
-
-    stats = load_performance()
-
-
-    a,b,c,d,e = st.columns(5)
-
-
-    a.metric(
-        "Trades",
-        stats.get("trades",0)
+if not positions.empty:
+    st.dataframe(
+        positions,
+        use_container_width=True
     )
+else:
+    st.info("No open positions")
 
+from scanner import run_scanner
 
-    b.metric(
-        "Wins",
-        stats.get("wins",0)
-    )
-
-
-    c.metric(
-        "Losses",
-        stats.get("losses",0)
-    )
-
-
-    d.metric(
-        "Win Rate",
-        f'{stats.get("win_rate",0)}%'
-    )
-
-
-    e.metric(
-        "Total P/L",
-        money(stats.get("total_pnl",0))
-    )
-
-
-except Exception as e:
-
-    st.error(
-        f"Performance Error: {e}"
     )
 
 # ==========================
@@ -239,56 +203,52 @@ except Exception as e:
 st.divider()
 
 st.subheader(
-    "📊 Open Positions"
+    "📈 Performance"
 )
 
 
 try:
 
-    positions = trading_client.get_all_positions()
+    stats = load_performance()
 
 
-    if positions:
+    a,b,c,d,e = st.columns(5)
 
 
-        data = []
+    a.metric(
+        "Trades",
+        stats.get("trades",0)
+    )
 
 
-        for p in positions:
-
-            data.append(
-                {
-                    "Symbol": p.symbol,
-                    "Qty": p.qty,
-                    "Entry": p.avg_entry_price,
-                    "Current": p.current_price,
-                    "Market Value": p.market_value,
-                    "P/L": p.unrealized_pl,
-                    "P/L %": float(p.unrealized_plpc) * 100
-                }
-            )
+    b.metric(
+        "Wins",
+        stats.get("wins",0)
+    )
 
 
-        df = pd.DataFrame(data)
+    c.metric(
+        "Losses",
+        stats.get("losses",0)
+    )
 
 
-        st.dataframe(
-            df,
-            use_container_width=True
-        )
+    d.metric(
+        "Win Rate",
+        f'{stats.get("win_rate",0)}%'
+    )
 
 
-    else:
-
-        st.info(
-            "No open positions"
-        )
+    e.metric(
+        "Total P/L",
+        money(stats.get("total_pnl",0))
+    )
 
 
 except Exception as e:
 
     st.error(
-        f"Position Error: {e}"
+        f"Performance Error: {e}"
     )
 
 
