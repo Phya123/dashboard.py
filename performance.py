@@ -305,18 +305,14 @@ def get_account_performance():
         "avg_loss": data.get("avg_loss", 0)
     }
 
-performance.py
+st.subheader("📊 Open Positions")
 
-imports
+positions = get_open_positions()
 
-load_alpaca_trades()
-
-calculate_closed_trades()
-
-load_performance()
-
-get_equity_curve()
-
-⬇️ ADD THIS HERE
-
-get_open_positions()
+if not positions.empty:
+    st.dataframe(
+        positions,
+        use_container_width=True
+    )
+else:
+    st.info("No open positions")
