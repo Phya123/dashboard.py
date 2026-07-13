@@ -1,22 +1,38 @@
 import os
-from datetime import datetime
-
 import pandas as pd
 import streamlit as st
-from market_stream import get_live_market_stream
+
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
-from alpaca.data.requests import StockBarsRequest
-from alpaca.data.timeframe import TimeFrame
 
-from charts import create_price_chart
+from scanner import (
+    run_scanner,
+    get_symbol_data
+)
+
+from charts import (
+    create_candlestick_chart,
+    create_volume_chart
+)
+
 from performance import (
     load_performance,
     load_trade_journal,
     load_symbol_stats
 )
-from scanner import run_scanner
-from scanner import run_scanner
+
+
+# ==========================
+# PAGE CONFIG
+# ==========================
+
+st.set_page_config(
+    page_title="EML SENTINEL AI COMMAND CENTER",
+    page_icon="🤖",
+    layout="wide"
+)
+
+
 # ==========================
 # HEDGE FUND WATCHLIST
 # ==========================
@@ -38,15 +54,6 @@ WATCHLIST = [
     "TSM",
     "NVS"
 ]
-# ==========================
-# PAGE CONFIG
-# ==========================
-
-st.set_page_config(
-    page_title="EML SENTINEL AI COMMAND CENTER",
-    page_icon="🤖",
-    layout="wide"
-)
 
 
 # ==========================
@@ -84,13 +91,8 @@ SECRET_KEY = (
 
 
 if not API_KEY or not SECRET_KEY:
-
-    st.error(
-        "Missing Alpaca API credentials."
-    )
-
+    st.error("Missing Alpaca API credentials.")
     st.stop()
-
 
 
 @st.cache_resource
@@ -102,19 +104,15 @@ def get_clients():
         paper=False
     )
 
-
     data = StockHistoricalDataClient(
         API_KEY,
         SECRET_KEY
     )
 
-
     return trading, data
 
 
-
 trading_client, data_client = get_clients()
-
 
 
 # ==========================
