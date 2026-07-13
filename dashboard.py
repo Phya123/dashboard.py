@@ -1,16 +1,26 @@
 import os
+from datetime import datetime
+
 import pandas as pd
 import streamlit as st
 
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
+
 
 from scanner import (
     run_scanner,
     get_symbol_data
 )
 
+from market_stream import (
+    get_live_market_stream
+)
+
 from charts import (
+    create_price_chart,
     create_candlestick_chart,
     create_volume_chart
 )
@@ -37,7 +47,7 @@ st.set_page_config(
 # HEDGE FUND WATCHLIST
 # ==========================
 
-
+WATCHLIST = [
     "SPY",
     "QQQ",
     "NVDA",
@@ -57,7 +67,7 @@ st.set_page_config(
 
 
 # ==========================
-# SYMBOLS
+# SENTINEL SYMBOLS
 # ==========================
 
 SYMBOLS = [
@@ -127,7 +137,7 @@ st.subheader(
 
 selected = st.selectbox(
     "Select Symbol",
-    SYMBOLS
+    WATCHLIST
 )
 
 
