@@ -239,45 +239,25 @@ try:
                     x=bars["timestamp"],
                     y=bars["close"],
                     mode="lines",
-                    name=terminal_symbol
+                    name=terminal_symbol,
                 )
             )
 
-            price_min = bars["close"].min()
-            price_max = bars["close"].max()
-
-            padding = (price_max - price_min) * 0.2
-
-            if padding == 0:
-                padding = 0.25
-
-            fig.update_yaxes(
-                range=[
-                    price_min - padding,
-                    price_max + padding
-                ]
-            )
+            ymin = bars["close"].min()
+            ymax = bars["close"].max()
+            pad = max((ymax - ymin) * 0.2, 0.25)
 
             fig.update_layout(
                 height=400,
                 margin=dict(l=10, r=10, t=30, b=10),
+                showlegend=False,
                 xaxis_title="Time",
                 yaxis_title="Price",
-                showlegend=False
+                yaxis=dict(range=[ymin - pad, ymax + pad]),
             )
 
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
+            st.plotly_chart(fig, use_container_width=True)
 
-        else:
-            st.warning("Price data unavailable")
-
-except Exception as e:
-    st.error("Live Market Terminal temporarily unavailable")
-    st.caption(str(e))
-    
         else:
             st.warning("Price data unavailable")
 
