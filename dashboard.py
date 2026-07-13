@@ -9,24 +9,14 @@ from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
-
-from scanner import (
-    run_scanner,
-    get_symbol_data
-)
-
-from market_stream import (
-    get_live_market_stream
-)
+from scanner import run_scanner
 
 from charts import (
-    create_price_chart,
     create_candlestick_chart,
     create_volume_chart
 )
 
 from performance import (
-    load_performance,
     load_trade_journal,
     load_symbol_stats
 )
@@ -101,7 +91,7 @@ SECRET_KEY = (
 
 
 if not API_KEY or not SECRET_KEY:
-    st.error("Missing Alpaca API credentials.")
+    st.error("Missing Alpaca API credentials")
     st.stop()
 
 
@@ -124,14 +114,87 @@ def get_clients():
 
 trading_client, data_client = get_clients()
 
+
+
 # ==========================
-# CHARTS
+# HELPERS
+# ==========================
+
+def money(value):
+
+    try:
+        return f"${float(value):,.2f}"
+
+    except:
+        return "$0.00"
+
+
+
+# ==========================
+# HEADER
+# ==========================
+
+st.title(
+    "🤖 EML SENTINEL AI COMMAND CENTER"
+)
+
+st.caption(
+    "LIVE Alpaca Monitor | Dashboard Trading Disabled"
+)
+
+
+
+# ==========================
+# ACCOUNT
+# ==========================
+
+st.subheader("💰 Account")
+
+
+try:
+
+    account = trading_client.get_account()
+    clock = trading_client.get_clock()
+
+
+    c1,c2,c3,c4 = st.columns(4)
+
+
+    c1.metric(
+        "Equity",
+        money(account.equity)
+    )
+
+    c2.metric(
+        "Cash",
+        money(account.cash)
+    )
+
+    c3.metric(
+        "Buying Power",
+        money(account.buying_power)
+    )
+
+    c4.metric(
+        "Market",
+        "OPEN" if clock.is_open else "CLOSED"
+    )
+
+
+except Exception as e:
+
+    st.error(e)
+
+
+
+# ==========================
+# LIVE MARKET TERMINAL
 # ==========================
 
 st.divider()
 
 st.subheader(
-    "📊 Market Charts"
+    "📈 LIVE MARKET TERMINAL"
 )
 
 
@@ -144,7 +207,7 @@ selected = st.selectbox(
 try:
 
     request = StockBarsRequest(
-        symbol_or_symbols=selected,
+        symbol_or_symbols=[selected],
         timeframe=TimeFrame.Minute,
         limit=100
     )
@@ -166,111 +229,38 @@ try:
             bars = bars.xs(selected)
 
 
-        fig = create_price_chart(
+        candle = create_candlestick_chart(
             bars,
             selected
         )
 
 
-        if fig:
+        if candle:
 
             st.plotly_chart(
-                fig,
+                candle,
+                use_container_width=True
+            )
+
+
+        volume = create_volume_chart(
+            bars,
+            selected
+        )
+
+
+        if volume:
+
+            st.plotly_chart(
+                volume,
                 use_container_width=True
             )
 
 
 except Exception as e:
 
-    st.error(
-        f"Chart Error: {e}"
-    )
-# ==========================
-# HELPERS
-# ==========================
-
-def money(value):
-
-    try:
-        return f"${float(value):,.2f}"
-
-    except:
-        return "$0.00"
-
-
-
-def safe_float(value):
-
-    try:
-        return float(value)
-
-    except:
-        return 0.0
-
-
-
-# ==========================
-# HEADER
-# ==========================
-
-st.title(
-    "🤖 EML SENTINEL AI COMMAND CENTER"
-)
-
-
-st.caption(
-    "LIVE Alpaca Monitor | Dashboard Trading Disabled"
-)
-
-
-
-# ==========================
-# ACCOUNT
-# ==========================
-
-st.subheader(
-    "💰 Account"
-)
-
-
-try:
-
-    account = trading_client.get_account()
-
-    clock = trading_client.get_clock()
-
-
-    col1, col2, col3, col4 = st.columns(4)
-
-
-    col1.metric(
-        "Equity",
-        money(account.equity)
-    )
-
-
-    col2.metric(
-        "Cash",
-        money(account.cash)
-    )
-
-
-    col3.metric(
-        "Buying Power",
-        money(account.buying_power)
-    )
-
-
-    col4.metric(
-        "Market",
-        "OPEN" if clock.is_open else "CLOSED"
-    )
-
-
-except Exception as e:
-
-    st.error(
-        f"Account Error: {e}"
+    st.warning(
+        f"Chart waiting for data: {e}"
     )
 
 
@@ -293,33 +283,25 @@ try:
 
     if positions:
 
-
-        data = []
-
+        rows=[]
 
         for p in positions:
 
-            data.append(
-                {
-                    "Symbol": p.symbol,
-                    "Qty": p.qty,
-                    "Entry": p.avg_entry_price,
-                    "Current": p.current_price,
-                    "Market Value": p.market_value,
-                    "P/L": p.unrealized_pl,
-                    "P/L %": float(p.unrealized_plpc) * 100
-                }
-            )
+            rows.append({
 
+                "Symbol":p.symbol,
+                "Qty":p.qty,
+                "Entry":p.avg_entry_price,
+                "Current":p.current_price,
+                "P/L":p.unrealized_pl
 
-        df = pd.DataFrame(data)
+            })
 
 
         st.dataframe(
-            df,
+            pd.DataFrame(rows),
             use_container_width=True
         )
-
 
     else:
 
@@ -330,9 +312,7 @@ try:
 
 except Exception as e:
 
-    st.error(
-        f"Position Error: {e}"
-    )
+    st.error(e)
 
 
 
@@ -343,7 +323,7 @@ except Exception as e:
 st.divider()
 
 st.subheader(
-    "🔍 Live Scanner"
+    "🔍 SENTINEL SCANNER"
 )
 
 
@@ -355,11 +335,8 @@ try:
     )
 
 
-    scan_df = pd.DataFrame(scan)
-
-
     st.dataframe(
-        scan_df,
+        pd.DataFrame(scan),
         use_container_width=True
     )
 
@@ -367,72 +344,39 @@ try:
 except Exception as e:
 
     st.error(
-        f"Scanner Error: {e}"
+        f"Scanner Error {e}"
     )
 
 
 
 # ==========================
-# PERFORMANCE
-# ==========================
-
-st.divider()
-
-st.subheader("📡 SENTINEL LIVE MARKET WATCHLIST")
-
-try:
-
-    market_scan = run_scanner(
-        WATCHLIST,
-        data_client
-    )
-
-    watch_df = pd.DataFrame(
-        market_scan
-    )
-
-    st.dataframe(
-        watch_df,
-        use_container_width=True
-    )
-
-except Exception as e:
-
-    st.error(
-        f"Market stream error: {e}"
-    )
-    
-
-# ==========================
-# LIVE MARKET STREAM
+# HEDGE FUND WATCHLIST
 # ==========================
 
 st.divider()
 
 st.subheader(
-    "📡 Institutional Market Stream"
+    "🏦 Institutional Watchlist"
 )
 
 
 try:
 
-    market_df = get_live_market_stream(
+    watch = run_scanner(
+        WATCHLIST,
         data_client
     )
 
+
     st.dataframe(
-        market_df,
+        pd.DataFrame(watch),
         use_container_width=True
     )
 
 
 except Exception as e:
 
-    st.error(
-        f"Market Stream Error: {e}"
-    )
-
-
+    st.error(e)
 
 
 
@@ -451,24 +395,15 @@ try:
 
     journal = load_trade_journal()
 
-
-    if not journal.empty:
-
-        st.dataframe(
-            journal,
-            use_container_width=True
-        )
-
-    else:
-
-        st.info(
-            "No trades logged yet"
-        )
+    st.dataframe(
+        journal,
+        use_container_width=True
+    )
 
 
 except Exception as e:
 
-    st.error(e)
+    st.warning(e)
 
 
 
@@ -479,26 +414,23 @@ except Exception as e:
 st.divider()
 
 st.subheader(
-    "📊 Symbol Statistics"
+    "📊 Symbol Performance"
 )
 
 
 try:
 
-    symbol_stats = load_symbol_stats()
+    stats = load_symbol_stats()
 
-
-    if not symbol_stats.empty:
-
-        st.dataframe(
-            symbol_stats,
-            use_container_width=True
-        )
+    st.dataframe(
+        stats,
+        use_container_width=True
+    )
 
 
 except Exception as e:
 
-    st.error(e)
+    st.warning(e)
 
 
 
@@ -515,6 +447,7 @@ st.write(
     )
 )
 
+
 st.caption(
-    "EML SENTINEL Dashboard is read-only. No orders can be placed here."
+    "EML SENTINEL is READ ONLY. No trading functions exist in this dashboard."
 )
