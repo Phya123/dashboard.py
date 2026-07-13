@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
-
+from market_stream import get_live_market_stream
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
@@ -339,7 +339,34 @@ except Exception as e:
         f"Performance Error: {e}"
     )
 
+# ==========================
+# LIVE MARKET STREAM
+# ==========================
 
+st.divider()
+
+st.subheader(
+    "📡 Institutional Market Stream"
+)
+
+
+try:
+
+    market_df = get_live_market_stream(
+        data_client
+    )
+
+    st.dataframe(
+        market_df,
+        use_container_width=True
+    )
+
+
+except Exception as e:
+
+    st.error(
+        f"Market Stream Error: {e}"
+    )
 
 # ==========================
 # CHARTS
