@@ -9,7 +9,10 @@ from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
-from scanner import run_scanner
+from scanner import (
+    run_scanner,
+    get_symbol_data
+)
 
 from charts import (
     create_candlestick_chart,
@@ -17,6 +20,7 @@ from charts import (
 )
 
 from performance import (
+    load_performance,
     load_trade_journal,
     load_symbol_stats
 )
