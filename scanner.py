@@ -98,7 +98,7 @@ def analyze_symbol(symbol, data_client):
     )
 
 
-    if df is None or len(df) < MA200:
+    if df is None or df.empty:
 
         return {
 
@@ -116,27 +116,28 @@ def analyze_symbol(symbol, data_client):
 
 
 
-    close = df["close"]
+close = df["close"]
 
+price = float(close.iloc[-1])
 
-    price = float(
-        close.iloc[-1]
+# Calculate moving averages only if enough data exists
+fast = (
+    close.rolling(FAST_MA).mean().iloc[-1]
+    if len(df) >= FAST_MA
+    else price
+)
+
+slow = (
+    close.rolling(SLOW_MA).mean().iloc[-1]
+    if len(df) >= SLOW_MA
+    else price
+)
+
+ma200 = (
+    close.rolling(MA200).mean().iloc[-1]
+    if len(df) >= MA200
+    else price
     )
-
-
-    fast = close.rolling(
-        FAST_MA
-    ).mean().iloc[-1]
-
-
-    slow = close.rolling(
-        SLOW_MA
-    ).mean().iloc[-1]
-
-
-    ma200 = close.rolling(
-        MA200
-    ).mean().iloc[-1]
 
 
     atr = calculate_atr(df)
@@ -238,3 +239,4 @@ def run_scanner(symbols, data_client):
 
 
     return results
+                       
