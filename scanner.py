@@ -33,7 +33,8 @@ def get_symbol_data(symbol, data_client):
 
         df = bars.df
 
-        if df.empty:
+        if df is None or df.empty:
+            print(f"{symbol} NO DATA")
             return None
 
 
@@ -49,9 +50,9 @@ def get_symbol_data(symbol, data_client):
 
     except Exception as e:
 
-    print(f"{symbol} DATA ERROR: {e}")
+        print(f"{symbol} DATA ERROR: {e}")
 
-    return None
+        return None
 
 
 
