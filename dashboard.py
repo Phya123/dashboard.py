@@ -37,7 +37,7 @@ st.set_page_config(
 # HEDGE FUND WATCHLIST
 # ==========================
 
-WATCHLIST = [
+
     "SPY",
     "QQQ",
     "NVDA",
@@ -114,7 +114,67 @@ def get_clients():
 
 trading_client, data_client = get_clients()
 
+# ==========================
+# CHARTS
+# ==========================
 
+st.divider()
+
+st.subheader(
+    "📊 Market Charts"
+)
+
+
+selected = st.selectbox(
+    "Select Symbol",
+    SYMBOLS
+)
+
+
+try:
+
+    request = StockBarsRequest(
+        symbol_or_symbols=selected,
+        timeframe=TimeFrame.Minute,
+        limit=100
+    )
+
+
+    bars = data_client.get_stock_bars(
+        request
+    ).df
+
+
+    if not bars.empty:
+
+
+        if isinstance(
+            bars.index,
+            pd.MultiIndex
+        ):
+
+            bars = bars.xs(selected)
+
+
+        fig = create_price_chart(
+            bars,
+            selected
+        )
+
+
+        if fig:
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+
+except Exception as e:
+
+    st.error(
+        f"Chart Error: {e}"
+    )
 # ==========================
 # HELPERS
 # ==========================
@@ -362,67 +422,7 @@ except Exception as e:
         f"Market Stream Error: {e}"
     )
 
-# ==========================
-# CHARTS
-# ==========================
 
-st.divider()
-
-st.subheader(
-    "📊 Market Charts"
-)
-
-
-selected = st.selectbox(
-    "Select Symbol",
-    SYMBOLS
-)
-
-
-try:
-
-    request = StockBarsRequest(
-        symbol_or_symbols=selected,
-        timeframe=TimeFrame.Minute,
-        limit=100
-    )
-
-
-    bars = data_client.get_stock_bars(
-        request
-    ).df
-
-
-    if not bars.empty:
-
-
-        if isinstance(
-            bars.index,
-            pd.MultiIndex
-        ):
-
-            bars = bars.xs(selected)
-
-
-        fig = create_price_chart(
-            bars,
-            selected
-        )
-
-
-        if fig:
-
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
-
-
-except Exception as e:
-
-    st.error(
-        f"Chart Error: {e}"
-    )
 
 
 
