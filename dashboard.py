@@ -191,81 +191,51 @@ except Exception as e:
 
 
 
-# ==========================
-# LIVE MARKET TERMINAL
-# ==========================
+# ============================================================
+# LIVE MARKET TERMINAL (SAFE READ ONLY)
+# ============================================================
 
-st.divider()
-
-st.subheader(
-    "📈 LIVE MARKET TERMINAL"
-)
-
-
-selected = st.selectbox(
-    "Select Symbol",
-    WATCHLIST
-)
-
+st.subheader("📡 Live Market Terminal")
 
 try:
+    terminal_symbol = st.selectbox(
+        "Select Symbol",
+        WATCHLIST,
+        key="terminal_symbol"
+    )
 
-    request = StockBarsRequest(
-        symbol_or_symbols=[selected],
+    bars_request = StockBarsRequest(
+        symbol_or_symbols=terminal_symbol,
         timeframe=TimeFrame.Minute,
         limit=100
     )
 
+    bars = data_client.get_stock_bars(bars_request).df
 
-    bars = data_client.get_stock_bars(
-        request
-    ).df
+    if bars.empty:
+        st.warning(f"No live market data available for {terminal_symbol}")
 
+    else:
+        bars = bars.reset_index()
 
-    if not bars.empty:
+        if "close" in bars.columns:
+            latest_price = bars["close"].iloc[-1]
 
-
-        if isinstance(
-            bars.index,
-            pd.MultiIndex
-        ):
-
-            bars = bars.xs(selected)
-
-
-        candle = create_candlestick_chart(
-            bars,
-            selected
-        )
-
-
-        if candle:
-
-            st.plotly_chart(
-                candle,
-                use_container_width=True
+            st.metric(
+                label=f"{terminal_symbol} Last Price",
+                value=f"${latest_price:.2f}"
             )
 
-
-        volume = create_volume_chart(
-            bars,
-            selected
-        )
-
-
-        if volume:
-
-            st.plotly_chart(
-                volume,
-                use_container_width=True
+            st.line_chart(
+                bars.set_index("timestamp")["close"]
             )
 
+        else:
+            st.warning("Price data unavailable")
 
 except Exception as e:
-
-    st.warning(
-        f"Chart waiting for data: {e}"
-    )
+    st.error("Live Market Terminal temporarily unavailable")
+    st.caption(str(e))
 
 
 
