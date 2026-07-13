@@ -3,6 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
+import plotly.graph_objects as go
 
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
@@ -216,9 +217,14 @@ try:
         st.warning(f"No live market data available for {terminal_symbol}")
 
     else:
+
+        if isinstance(bars.index, pd.MultiIndex):
+            bars = bars.xs(terminal_symbol)
+
         bars = bars.reset_index()
 
         if "close" in bars.columns:
+
             latest_price = bars["close"].iloc[-1]
 
             st.metric(
@@ -226,10 +232,52 @@ try:
                 value=f"${latest_price:.2f}"
             )
 
-            st.line_chart(
-                bars.set_index("timestamp")["close"]
+            fig = go.Figure()
+
+            fig.add_trace(
+                go.Scatter(
+                    x=bars["timestamp"],
+                    y=bars["close"],
+                    mode="lines",
+                    name=terminal_symbol
+                )
             )
 
+            price_min = bars["close"].min()
+            price_max = bars["close"].max()
+
+            padding = (price_max - price_min) * 0.2
+
+            if padding == 0:
+                padding = 0.25
+
+            fig.update_yaxes(
+                range=[
+                    price_min - padding,
+                    price_max + padding
+                ]
+            )
+
+            fig.update_layout(
+                height=400,
+                margin=dict(l=10, r=10, t=30, b=10),
+                xaxis_title="Time",
+                yaxis_title="Price",
+                showlegend=False
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+        else:
+            st.warning("Price data unavailable")
+
+except Exception as e:
+    st.error("Live Market Terminal temporarily unavailable")
+    st.caption(str(e))
+    
         else:
             st.warning("Price data unavailable")
 
