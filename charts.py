@@ -1,103 +1,73 @@
-import pandas as pd
-import plotly.graph_objects as go
-
-
 # ==========================
-# CANDLESTICK CHART
+# MARKET CHARTS
 # ==========================
 
-def create_candlestick_chart(df, symbol):
+st.divider()
 
-    if df is None or df.empty:
-        return None
+st.subheader("📈 LIVE MARKET TERMINAL")
 
-    fig = go.Figure()
 
-    fig.add_trace(
-        go.Candlestick(
-            x=df.index,
-            open=df["open"],
-            high=df["high"],
-            low=df["low"],
-            close=df["close"],
-            name=symbol
-        )
+selected_symbol = st.selectbox(
+    "Select Symbol",
+    SYMBOLS
+)
+
+
+try:
+
+    request = StockBarsRequest(
+        symbol_or_symbols=[selected_symbol],
+        timeframe=TimeFrame.Minute,
+        limit=100
     )
 
 
-    # MA20
-    if len(df) >= 20:
-        df["MA20"] = (
-            df["close"]
-            .rolling(20)
-            .mean()
+    bars = data_client.get_stock_bars(request).df
+
+
+    if bars is not None and not bars.empty:
+
+        if isinstance(bars.index, pd.MultiIndex):
+            bars = bars.xs(selected_symbol)
+
+
+        price_chart = create_candlestick_chart(
+            bars,
+            selected_symbol
         )
 
-        fig.add_trace(
-            go.Scatter(
-                x=df.index,
-                y=df["MA20"],
-                name="MA20"
+
+        if price_chart:
+
+            st.plotly_chart(
+                price_chart,
+                use_container_width=True
             )
+
+
+        volume_chart = create_volume_chart(
+            bars,
+            selected_symbol
         )
 
 
-    # MA50
-    if len(df) >= 50:
-        df["MA50"] = (
-            df["close"]
-            .rolling(50)
-            .mean()
-        )
+        if volume_chart:
 
-        fig.add_trace(
-            go.Scatter(
-                x=df.index,
-                y=df["MA50"],
-                name="MA50"
+            st.plotly_chart(
+                volume_chart,
+                use_container_width=True
             )
+
+
+    else:
+
+        st.info(
+            "No market data available. Market may be closed."
         )
 
 
-    fig.update_layout(
-        title=f"{symbol} Market Chart",
-        xaxis_title="Time",
-        yaxis_title="Price",
-        height=600,
-        xaxis_rangeslider_visible=False
-    )
+except Exception as e:
 
-
-    return fig
-
-
-
-# ==========================
-# VOLUME CHART
-# ==========================
-
-def create_volume_chart(df, symbol):
-
-    if df is None or df.empty:
-        return None
-
-
-    fig = go.Figure()
-
-
-    fig.add_trace(
-        go.Bar(
-            x=df.index,
-            y=df["volume"],
-            name="Volume"
-        )
-    )
-
-
-    fig.update_layout(
-        title=f"{symbol} Volume",
-        height=300
-    )
-
-
-    return fig
+    st.error(
+        f"Chart Error: {e}"
+                          )
