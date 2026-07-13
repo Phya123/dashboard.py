@@ -1,120 +1,91 @@
 import pandas as pd
-from alpaca.data.requests import StockLatestBarRequest
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
 
-
-# ==========================
-# HEDGE FUND WATCHLIST
-# DASHBOARD ONLY
-# ==========================
 
 WATCHLIST = [
-    # Index
     "SPY",
     "QQQ",
-    "DIA",
-    "IWM",
-    "VTI",
-
-    # Mega Cap Tech
+    "NVDA",
     "AAPL",
     "MSFT",
-    "NVDA",
-    "GOOGL",
-    "AMZN",
-    "META",
-    "TSLA",
-    "AVGO",
     "AMD",
-    "ORCL",
-
-    # Semiconductor / AI
-    "TSM",
-    "ASML",
-    "MU",
-    "ARM",
-    "SMCI",
-
-    # Financial
-    "JPM",
-    "GS",
-    "MS",
-    "BAC",
-    "V",
-    "MA",
-
-    # Energy
-    "XOM",
-    "CVX",
-    "COP",
-    "SLB",
-    "XLE",
-
-    # Healthcare
-    "LLY",
-    "JNJ",
-    "UNH",
-    "NVS",
-    "MRK",
-
-    # Defense
+    "META",
+    "AMZN",
+    "GOOGL",
+    "TSLA",
     "LMT",
-    "RTX",
-    "NOC",
-    "GD",
-
-    # Consumer
-    "COST",
-    "WMT",
-    "HD",
-    "MCD"
+    "XLE",
+    "ASML",
+    "TSM",
+    "NVS"
 ]
 
-
-# ==========================
-# LIVE MARKET DATA
-# ==========================
 
 def get_live_market_stream(data_client):
 
     results = []
 
-    try:
+    for symbol in WATCHLIST:
 
-        request = StockLatestBarRequest(
-            symbol_or_symbols=WATCHLIST
-        )
+        try:
 
-        bars = data_client.get_stock_latest_bar(
-            request
-        )
+            request = StockBarsRequest(
+                symbol_or_symbols=symbol,
+                timeframe=TimeFrame.Minute,
+                limit=2
+            )
 
 
-        for symbol, bar in bars.items():
+            bars = data_client.get_stock_bars(
+                request
+            )
+
+
+            df = bars.df
+
+
+            if df.empty:
+                continue
+
+
+            if isinstance(df.index, pd.MultiIndex):
+
+                df = df.xs(symbol)
+
+
+            latest = df.iloc[-1]
+
 
             results.append(
                 {
                     "Symbol": symbol,
-                    "Price": round(
-                        float(bar.close),
+                    "Price": round(float(latest["close"]), 2),
+                    "Open": round(float(latest["open"]), 2),
+                    "High": round(float(latest["high"]), 2),
+                    "Low": round(float(latest["low"]), 2),
+                    "Volume": int(latest["volume"]),
+                    "Change": round(
+                        float(latest["close"]) - float(latest["open"]),
                         2
-                    ),
-                    "Volume": int(
-                        bar.volume
-                    ),
-                    "Updated": bar.timestamp
+                    )
                 }
             )
 
 
-        return pd.DataFrame(results)
+        except Exception as e:
+
+            results.append(
+                {
+                    "Symbol": symbol,
+                    "Price": "ERROR",
+                    "Open": "-",
+                    "High": "-",
+                    "Low": "-",
+                    "Volume": "-",
+                    "Change": str(e)
+                }
+            )
 
 
-    except Exception as e:
-
-        return pd.DataFrame(
-            {
-                "Error": [
-                    str(e)
-                ]
-            }
-)
+    return pd.DataFrame(results)
