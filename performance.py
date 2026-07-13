@@ -37,42 +37,62 @@ def load_symbol_stats():
 
 def load_alpaca_trades():
 
-    if not os.path.exists(TRADE_HISTORY):
-        return pd.DataFrame()
-
     try:
-        with open(TRADE_HISTORY, "r") as f:
-            data = json.load(f)
+        load_dotenv()
 
-        trades = data.get(
-            "trade_activities",
-            []
+        api_key = (
+            os.getenv("APCA_API_KEY_ID")
+            or os.getenv("ALPACA_API_KEY")
         )
 
-        df = pd.DataFrame(trades)
-
-        if df.empty:
-            return df
-
-
-        df["qty"] = pd.to_numeric(
-            df["qty"],
-            errors="coerce"
+        secret_key = (
+            os.getenv("APCA_API_SECRET_KEY")
+            or os.getenv("ALPACA_API_SECRET_KEY")
         )
 
-        df["price"] = pd.to_numeric(
-            df["price"],
-            errors="coerce"
+        if not api_key or not secret_key:
+            return pd.DataFrame()
+
+        client = TradingClient(
+            api_key,
+            secret_key,
+            paper=False
         )
 
+        request = GetOrdersRequest(
+            status=QueryOrderStatus.CLOSED,
+            limit=500
+        )
 
-        return df
+        orders = client.get_orders(
+            filter=request
+        )
 
+        trades = []
+
+        for order in orders:
+
+            if order.filled_qty and order.filled_avg_price:
+
+                trades.append({
+                    "symbol": order.symbol,
+                    "qty": float(order.filled_qty),
+                    "price": float(order.filled_avg_price),
+                    "side": order.side.value,
+                    "executed_at": str(order.filled_at),
+                    "trade_date": (
+                        order.filled_at.strftime("%Y-%m-%d")
+                        if order.filled_at
+                        else ""
+                    )
+                })
+
+        return pd.DataFrame(trades)
 
     except Exception as e:
 
         print(
-            "Trade history error:",
+            "Alpaca order history error:",
             e
         )
 
@@ -88,17 +108,12 @@ def calculate_closed_trades():
 
     df = load_alpaca_trades()
 
-
     if df.empty:
-
         return pd.DataFrame()
-
 
     results = []
 
-
     symbols = df["symbol"].unique()
-
 
     for symbol in symbols:
 
