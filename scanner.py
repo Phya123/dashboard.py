@@ -22,7 +22,7 @@ def get_symbol_data(symbol, data_client):
     try:
 
         request = StockBarsRequest(
-            symbol_or_symbols=symbol,
+            symbol_or_symbols=[symbol],
             timeframe=TimeFrame.Minute,
             limit=250
         )
@@ -47,9 +47,11 @@ def get_symbol_data(symbol, data_client):
         return df
 
 
-    except Exception:
+    except Exception as e:
 
-        return None
+    print(f"{symbol} DATA ERROR: {e}")
+
+    return None
 
 
 
