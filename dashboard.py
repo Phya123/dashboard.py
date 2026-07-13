@@ -16,8 +16,28 @@ from performance import (
     load_symbol_stats
 )
 from scanner import run_scanner
+from scanner import run_scanner
+# ==========================
+# HEDGE FUND WATCHLIST
+# ==========================
 
-
+WATCHLIST = [
+    "SPY",
+    "QQQ",
+    "NVDA",
+    "AAPL",
+    "MSFT",
+    "AMD",
+    "META",
+    "AMZN",
+    "GOOGL",
+    "TSLA",
+    "LMT",
+    "XLE",
+    "ASML",
+    "TSM",
+    "NVS"
+]
 # ==========================
 # PAGE CONFIG
 # ==========================
@@ -290,54 +310,30 @@ except Exception as e:
 
 st.divider()
 
-st.subheader(
-    "📈 Performance"
-)
-
+st.subheader("📡 SENTINEL LIVE MARKET WATCHLIST")
 
 try:
 
-    stats = load_performance()
-
-
-    a,b,c,d,e = st.columns(5)
-
-
-    a.metric(
-        "Trades",
-        stats.get("trades",0)
+    market_scan = run_scanner(
+        WATCHLIST,
+        data_client
     )
 
-
-    b.metric(
-        "Wins",
-        stats.get("wins",0)
+    watch_df = pd.DataFrame(
+        market_scan
     )
 
-
-    c.metric(
-        "Losses",
-        stats.get("losses",0)
+    st.dataframe(
+        watch_df,
+        use_container_width=True
     )
-
-
-    d.metric(
-        "Win Rate",
-        f'{stats.get("win_rate",0)}%'
-    )
-
-
-    e.metric(
-        "Total P/L",
-        money(stats.get("total_pnl",0))
-    )
-
 
 except Exception as e:
 
     st.error(
-        f"Performance Error: {e}"
+        f"Market stream error: {e}"
     )
+    
 
 # ==========================
 # LIVE MARKET STREAM
