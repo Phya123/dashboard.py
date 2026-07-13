@@ -29,7 +29,33 @@ def load_trade_journal():
 
 def load_symbol_stats():
 
-    return pd.DataFrame()
+    df = calculate_closed_trades()
+
+    if df.empty:
+        return pd.DataFrame()
+
+    stats = (
+        df.groupby("symbol")
+        .agg(
+            trades=("symbol", "count"),
+            wins=("pnl", lambda x: (x > 0).sum()),
+            losses=("pnl", lambda x: (x < 0).sum()),
+            total_pnl=("pnl", "sum"),
+            avg_pnl=("pnl", "mean")
+        )
+        .reset_index()
+    )
+
+    stats["win_rate"] = (
+        stats["wins"] /
+        stats["trades"] *
+        100
+    ).round(2)
+
+    stats["total_pnl"] = stats["total_pnl"].round(2)
+    stats["avg_pnl"] = stats["avg_pnl"].round(2)
+
+    return stats
 
 # ==========================
 # LOAD ALPACA HISTORY
