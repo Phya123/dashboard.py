@@ -1,195 +1,103 @@
-import plotly.graph_objects as go
 import pandas as pd
-
+import plotly.graph_objects as go
 
 
 # ==========================
-# PRICE CHART
+# CANDLESTICK CHART
 # ==========================
 
-def create_price_chart(
-    bars,
-    symbol
-):
+def create_candlestick_chart(df, symbol):
 
-    try:
+    if df is None or df.empty:
+        return None
 
-        df = bars.copy()
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Candlestick(
+            x=df.index,
+            open=df["open"],
+            high=df["high"],
+            low=df["low"],
+            close=df["close"],
+            name=symbol
+        )
+    )
 
 
-        if df.empty:
-            return None
-
-
-        if "close" not in df.columns:
-            return None
-
-
-
-        # Moving averages
-
+    # MA20
+    if len(df) >= 20:
         df["MA20"] = (
             df["close"]
             .rolling(20)
             .mean()
         )
 
+        fig.add_trace(
+            go.Scatter(
+                x=df.index,
+                y=df["MA20"],
+                name="MA20"
+            )
+        )
 
+
+    # MA50
+    if len(df) >= 50:
         df["MA50"] = (
             df["close"]
             .rolling(50)
             .mean()
         )
 
-
-
-        fig = go.Figure()
-
-
-
-        # Candlesticks
-
         fig.add_trace(
-
-            go.Candlestick(
-
-                x=df.index,
-
-                open=df["open"],
-
-                high=df["high"],
-
-                low=df["low"],
-
-                close=df["close"],
-
-                name=symbol
-
-            )
-
-        )
-
-
-
-        # MA20
-
-        fig.add_trace(
-
             go.Scatter(
-
                 x=df.index,
-
-                y=df["MA20"],
-
-                mode="lines",
-
-                name="MA 20"
-
-            )
-
-        )
-
-
-
-        # MA50
-
-        fig.add_trace(
-
-            go.Scatter(
-
-                x=df.index,
-
                 y=df["MA50"],
-
-                mode="lines",
-
-                name="MA 50"
-
+                name="MA50"
             )
-
         )
 
 
-
-        fig.update_layout(
-
-            title=f"{symbol} LIVE CHART",
-
-            xaxis_title="Time",
-
-            yaxis_title="Price",
-
-            height=600,
-
-            xaxis_rangeslider_visible=False
-
-        )
+    fig.update_layout(
+        title=f"{symbol} Market Chart",
+        xaxis_title="Time",
+        yaxis_title="Price",
+        height=600,
+        xaxis_rangeslider_visible=False
+    )
 
 
-        return fig
-
-
-
-    except Exception:
-
-        return None
-
+    return fig
 
 
 
 # ==========================
-# EQUITY CURVE
+# VOLUME CHART
 # ==========================
 
-def create_equity_chart(df):
+def create_volume_chart(df, symbol):
 
-
-    if df.empty:
-
+    if df is None or df.empty:
         return None
-
-
-
-    if "equity" not in df.columns:
-
-        return None
-
 
 
     fig = go.Figure()
 
 
-
     fig.add_trace(
-
-        go.Scatter(
-
+        go.Bar(
             x=df.index,
-
-            y=df["equity"],
-
-            mode="lines",
-
-            name="Equity"
-
+            y=df["volume"],
+            name="Volume"
         )
-
     )
-
 
 
     fig.update_layout(
-
-        title="Portfolio Growth",
-
-        xaxis_title="Trade",
-
-        yaxis_title="P/L",
-
-        height=400
-
+        title=f"{symbol} Volume",
+        height=300
     )
-
 
 
     return fig
