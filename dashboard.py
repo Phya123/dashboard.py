@@ -190,70 +190,55 @@ except Exception as e:
 
 
 # ============================================================
-# LIVE MARKET TERMINAL (SAFE READ ONLY)
+# LIVE MARKET DATA LOADER
 # ============================================================
 
-st.subheader("📡 Live Market Terminal")
+def get_live_chart_data(symbol):
 
-try:
-    terminal_symbol = st.selectbox(
-        "Select Symbol",
-        WATCHLIST,
-        key="terminal_symbol"
-    )
+    try:
 
-    bars_request = StockBarsRequest(
-        symbol_or_symbols=terminal_symbol,
-        timeframe=TimeFrame.Minute,
-        limit=100
-    )
+        request = StockBarsRequest(
+            symbol_or_symbols=[symbol],
+            timeframe=TimeFrame.Minute,
+            limit=100
+        )
 
-    bars = data_client.get_stock_bars(bars_request).df
+        bars = data_client.get_stock_bars(request)
 
-    if bars.empty:
-        st.warning(f"No live market data available for {terminal_symbol}")
+        df = bars.df
 
-    else:
 
-        if isinstance(bars.index, pd.MultiIndex):
-            bars = bars.xs(terminal_symbol)
+        if df.empty:
+            return None
 
-        bars = bars.reset_index()
 
-        if "close" in bars.columns:
+        # Alpaca returns multi-index
+        if "symbol" in df.index.names:
 
-            latest_price = bars["close"].iloc[-1]
-
-            st.metric(
-                label=f"{terminal_symbol} Last Price",
-                value=f"${latest_price:.2f}"
+            df = df.xs(
+                symbol,
+                level="symbol"
             )
 
-            fig = go.Figure()
 
-            fig.add_trace(
-                go.Scatter(
-                    x=bars["timestamp"],
-                    y=bars["close"],
-                    mode="lines",
-                    name=terminal_symbol,
-                )
-            )
+        # Make sure columns are lowercase
 
-            ymin = bars["close"].min()
-            ymax = bars["close"].max()
-            pad = max((ymax - ymin) * 0.2, 0.25)
+        df.columns = [
+            c.lower()
+            for c in df.columns
+        ]
 
-            fig.update_layout(
-                height=400,
-                margin=dict(l=10, r=10, t=30, b=10),
-                showlegend=False,
-                xaxis_title="Time",
-                yaxis_title="Price",
-                yaxis=dict(range=[ymin - pad, ymax + pad]),
-            )
 
-            st.plotly_chart(fig, use_container_width=True)
+        return df
+
+
+    except Exception as e:
+
+        st.error(
+            f"Market data error {symbol}: {e}"
+        )
+
+        return None
 
         else:
             st.warning("Price data unavailable")
