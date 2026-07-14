@@ -208,11 +208,32 @@ def get_live_chart_data(symbol):
         df = bars.df
 
 
+        # If market is closed, fallback to daily candles
+
         if df.empty:
+
+            request = StockBarsRequest(
+                symbol_or_symbols=[symbol],
+                timeframe=TimeFrame.Day,
+                limit=100
+            )
+
+            bars = data_client.get_stock_bars(request)
+
+            df = bars.df
+
+
+        if df.empty:
+
+            st.warning(
+                f"Price data unavailable for {symbol}"
+            )
+
             return None
 
 
-        # Alpaca returns multi-index
+        # Alpaca returns multi-index dataframe
+
         if "symbol" in df.index.names:
 
             df = df.xs(
@@ -221,7 +242,7 @@ def get_live_chart_data(symbol):
             )
 
 
-        # Make sure columns are lowercase
+        # Normalize columns
 
         df.columns = [
             c.lower()
@@ -235,17 +256,14 @@ def get_live_chart_data(symbol):
     except Exception as e:
 
         st.error(
-            f"Market data error {symbol}: {e}"
+            "Live Market Terminal temporarily unavailable"
+        )
+
+        st.caption(
+            str(e)
         )
 
         return None
-
-        else:
-            st.warning("Price data unavailable")
-
-except Exception as e:
-    st.error("Live Market Terminal temporarily unavailable")
-    st.caption(str(e))
 
 
 # ==========================
