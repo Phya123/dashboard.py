@@ -13,27 +13,27 @@ def get_symbol_data(symbol, data_client):
 
         # Try minute data first
         request = StockBarsRequest(
-            symbol_or_symbols=symbol,
-            timeframe=TimeFrame.Day
-            limit=250,
-        )
+    symbol_or_symbols=[symbol],
+    timeframe=TimeFrame.Minute,
+    limit=200
+)
 
-        bars = data_client.get_stock_bars(request)
-        df = bars.df
+bars = data_client.get_stock_bars(request)
+
+df = bars.df
 
 
-        # Handle empty minute data
-        if df is None or df.empty:
+if df.empty:
 
-            # Fallback to daily data
-            request = StockBarsRequest(
-                symbol_or_symbols=symbol,
-                timeframe=TimeFrame.Day,
-                limit=250,
-            )
+    request = StockBarsRequest(
+        symbol_or_symbols=[symbol],
+        timeframe=TimeFrame.Day,
+        limit=100
+    )
 
-            bars = data_client.get_stock_bars(request)
-            df = bars.df
+    bars = data_client.get_stock_bars(request)
+
+    df = bars.df
 
 
         if df is None or df.empty:
