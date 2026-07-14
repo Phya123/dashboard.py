@@ -14,7 +14,7 @@ def get_symbol_data(symbol, data_client):
         # Try minute data first
         request = StockBarsRequest(
             symbol_or_symbols=symbol,
-            timeframe=TimeFrame.Minute,
+            timeframe=TimeFrame.Day
             limit=250,
         )
 
