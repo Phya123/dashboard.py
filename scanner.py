@@ -9,46 +9,64 @@ ATR_PERIOD = 14
 
 
 def get_symbol_data(symbol, data_client):
+
     try:
 
         # Try minute data first
         request = StockBarsRequest(
-    symbol_or_symbols=[symbol],
-    timeframe=TimeFrame.Minute,
-    limit=200
-)
+            symbol_or_symbols=[symbol],
+            timeframe=TimeFrame.Minute,
+            limit=200
+        )
 
-bars = data_client.get_stock_bars(request)
+        bars = data_client.get_stock_bars(request)
 
-df = bars.df
+        df = bars.df
 
 
-if df.empty:
+        # Market closed fallback
+        if df.empty:
 
-    request = StockBarsRequest(
-        symbol_or_symbols=[symbol],
-        timeframe=TimeFrame.Day,
-        limit=100
-    )
+            request = StockBarsRequest(
+                symbol_or_symbols=[symbol],
+                timeframe=TimeFrame.Day,
+                limit=100
+            )
 
-    bars = data_client.get_stock_bars(request)
+            bars = data_client.get_stock_bars(request)
 
-    df = bars.df
+            df = bars.df
 
 
         if df is None or df.empty:
             return None
 
 
+        # Alpaca multi-index cleanup
         if isinstance(df.index, pd.MultiIndex):
-            df = df.xs(symbol)
+
+            df = df.xs(
+                symbol,
+                level="symbol"
+            )
+
+
+        # Normalize columns
+        df.columns = [
+            c.lower()
+            for c in df.columns
+        ]
 
 
         return df.dropna()
 
 
     except Exception as e:
-        print(f"{symbol}: {e}")
+
+        print(
+            f"{symbol}: {e}"
+        )
+
         return None
 
 
