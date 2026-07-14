@@ -15,10 +15,7 @@ from scanner import (
     get_symbol_data
 )
 
-from charts import (
-    create_candlestick_chart,
-    create_volume_chart
-)
+from charts import create_candlestick_chart
 
 from performance import (
     load_performance,
