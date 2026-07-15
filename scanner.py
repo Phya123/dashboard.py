@@ -173,4 +173,29 @@ def get_symbol_data(symbol, data_client):
     return market.get_bars(
         symbol
         )
-    
+# ============================================================
+# DASHBOARD COMPATIBILITY FUNCTION
+# ============================================================
+
+def get_symbol_data(symbol, data_client):
+
+    try:
+
+        from market_data import MarketDataEngine
+
+        market = MarketDataEngine(
+            data_client
+        )
+
+        return market.get_bars(
+            symbol
+        )
+
+
+    except Exception as e:
+
+        print(
+            f"get_symbol_data error {symbol}: {e}"
+        )
+
+        return None
