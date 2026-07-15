@@ -116,7 +116,56 @@ def get_clients():
 
 trading_client, data_client = get_clients()
 
+# ============================================================
+# LIVE MARKET DATA
+# ============================================================
 
+def get_live_chart_data(symbol):
+
+    try:
+
+        request = StockBarsRequest(
+            symbol_or_symbols=[symbol],
+            timeframe=TimeFrame.Minute,
+            limit=150
+        )
+
+        bars = data_client.get_stock_bars(request)
+
+        df = bars.df
+
+        # Market closed fallback
+        if df.empty:
+
+            request = StockBarsRequest(
+                symbol_or_symbols=[symbol],
+                timeframe=TimeFrame.Day,
+                limit=150
+            )
+
+            bars = data_client.get_stock_bars(request)
+
+            df = bars.df
+
+        if df.empty:
+            return None
+
+        if isinstance(df.index, pd.MultiIndex):
+
+            df = df.xs(
+                symbol,
+                level="symbol"
+            )
+
+        df.columns = [str(c).lower() for c in df.columns]
+
+        return df.sort_index()
+
+    except Exception as e:
+
+        st.error(f"Chart Error: {e}")
+
+        return None
 
 # ==========================
 # HELPERS
@@ -379,7 +428,59 @@ except Exception as e:
 
     st.error(e)
 
+# ==========================
+# LIVE MARKET TERMINAL
+# ==========================
 
+st.divider()
+
+st.subheader(
+    "📈 Live Market Terminal"
+)
+
+chart_symbol = st.selectbox(
+    "Select Symbol",
+    WATCHLIST,
+    key="live_chart_symbol"
+)
+
+try:
+
+    chart_df = get_live_chart_data(
+        chart_symbol
+    )
+
+    if chart_df is not None:
+
+        fig = create_candlestick_chart(
+            chart_df,
+            chart_symbol
+        )
+
+        if fig is not None:
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+        else:
+
+            st.warning(
+                "Unable to build chart."
+            )
+
+    else:
+
+        st.warning(
+            "No market data available."
+        )
+
+except Exception as e:
+
+    st.error(
+        f"Live Market Terminal Error: {e}"
+    )
 
 # ==========================
 # TRADE JOURNAL
