@@ -1,9 +1,9 @@
-import plotly.graph_objects as go
-
-
 # ============================================================
 # EML SENTINEL CHART ENGINE
+# Institutional Market Terminal
 # ============================================================
+
+import plotly.graph_objects as go
 
 
 def create_candlestick_chart(df, symbol):
@@ -13,7 +13,11 @@ def create_candlestick_chart(df, symbol):
         if df is None or df.empty:
             return None
 
+
         fig = go.Figure()
+
+
+        # Candles
 
         fig.add_trace(
             go.Candlestick(
@@ -26,12 +30,44 @@ def create_candlestick_chart(df, symbol):
             )
         )
 
+
+        # Volume
+
+        if "volume" in df.columns:
+
+            fig.add_trace(
+                go.Bar(
+                    x=df.index,
+                    y=df["volume"],
+                    name="Volume",
+                    yaxis="y2"
+                )
+            )
+
+
         fig.update_layout(
-            title=f"{symbol} LIVE MARKET",
+
+            title=f"{symbol} LIVE MARKET TERMINAL",
+
             template="plotly_dark",
-            height=600,
-            xaxis_rangeslider_visible=False
+
+            height=700,
+
+            xaxis_rangeslider_visible=False,
+
+            yaxis=dict(
+                title="Price"
+            ),
+
+            yaxis2=dict(
+                title="Volume",
+                overlaying="y",
+                side="right",
+                showgrid=False
+            )
+
         )
+
 
         return fig
 
@@ -39,18 +75,14 @@ def create_candlestick_chart(df, symbol):
     except Exception as e:
 
         print(
-            f"Chart Error {symbol}: {e}"
+            f"Chart error {symbol}: {e}"
         )
 
         return None
 
 
 
-# ============================================================
-# BACKWARD COMPATIBILITY
-# Keeps older dashboard imports working
-# ============================================================
-
+# Keeps old dashboard calls working
 
 def render_candlestick(df, symbol):
 
