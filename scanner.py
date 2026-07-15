@@ -157,34 +157,20 @@ def analyze_symbol(symbol, market_data):
 
 
 
-def run_scanner(symbols, data_client):
+# ============================================================
+# BACKWARD COMPATIBILITY
+# Dashboard still imports this function
+# ============================================================
+
+def get_symbol_data(symbol, data_client):
 
     from market_data import MarketDataEngine
 
-    # Allow old dashboard calls to keep working
-    if hasattr(data_client, "get_bars"):
+    market = MarketDataEngine(
+        data_client
+    )
 
-        market_data = data_client
-
-    else:
-
-        market_data = MarketDataEngine(
-            data_client
+    return market.get_bars(
+        symbol
         )
-
-
-    results = []
-
-
-    for symbol in symbols:
-
-        results.append(
-            analyze_symbol(
-                symbol,
-                market_data
-            )
-        )
-
-
-    return results
     
