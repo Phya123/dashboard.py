@@ -1,10 +1,11 @@
 # ============================================================
-# EML SENTINEL
-# INSTITUTIONAL MARKET SCANNER
+# EML SENTINEL SCANNER
+# Compatible with existing dashboard
 # ============================================================
 
 import pandas as pd
 
+from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 
@@ -12,6 +13,66 @@ FAST_MA = 20
 SLOW_MA = 50
 MA200 = 200
 ATR_PERIOD = 14
+
+
+def get_symbol_data(symbol, data_client):
+
+    try:
+
+        request = StockBarsRequest(
+            symbol_or_symbols=[symbol],
+            timeframe=TimeFrame.Minute,
+            limit=200
+        )
+
+        bars = data_client.get_stock_bars(request)
+
+        df = bars.df
+
+
+        # Closed market fallback
+        if df.empty:
+
+            request = StockBarsRequest(
+                symbol_or_symbols=[symbol],
+                timeframe=TimeFrame.Day,
+                limit=200
+            )
+
+            bars = data_client.get_stock_bars(request)
+
+            df = bars.df
+
+
+        if df.empty:
+            return None
+
+
+        if isinstance(df.index, pd.MultiIndex):
+
+            df = df.xs(
+                symbol,
+                level="symbol"
+            )
+
+
+        df.columns = [
+            str(c).lower()
+            for c in df.columns
+        ]
+
+
+        return df.dropna()
+
+
+    except Exception as e:
+
+        print(
+            f"{symbol} data error: {e}"
+        )
+
+        return None
+
 
 
 def calculate_atr(df):
@@ -24,9 +85,9 @@ def calculate_atr(df):
         [
             high - low,
             (high - close.shift()).abs(),
-            (low - close.shift()).abs(),
+            (low - close.shift()).abs()
         ],
-        axis=1,
+        axis=1
     ).max(axis=1)
 
     return tr.rolling(
@@ -35,167 +96,112 @@ def calculate_atr(df):
 
 
 
-def analyze_symbol(symbol, market_data):
+def analyze_symbol(symbol, data_client):
 
-    try:
-
-        df = market_data.get_bars(
-            symbol,
-            timeframe=TimeFrame.Minute,
-            limit=200
-        )
-
-
-        if df is None or df.empty:
-
-            return {
-
-                "Symbol": symbol,
-                "Price": "N/A",
-                "Trend": "NO DATA",
-                "Fast MA": "-",
-                "Slow MA": "-",
-                "MA200": "-",
-                "ATR": "-",
-                "Volatility": "-",
-                "Signal": "BAD DATA"
-
-            }
-
-
-        close = df["close"]
-
-
-        price = float(
-            close.iloc[-1]
-        )
-
-
-        fast = (
-            close.rolling(FAST_MA)
-            .mean()
-            .iloc[-1]
-        )
-
-
-        slow = (
-            close.rolling(SLOW_MA)
-            .mean()
-            .iloc[-1]
-        )
-
-
-        ma200 = (
-            close.rolling(MA200)
-            .mean()
-            .iloc[-1]
-        )
-
-
-        atr = calculate_atr(df)
-
-
-        volatility = (
-            atr / price * 100
-            if price
-            else 0
-        )
-
-
-        if fast > slow:
-
-            trend = "BULLISH"
-
-        else:
-
-            trend = "BEARISH"
-
-
-        if price < ma200:
-
-            signal = "BELOW MA200"
-
-        elif trend == "BULLISH":
-
-            signal = "WATCH BUY"
-
-        else:
-
-            signal = "WATCH"
-
-
-
-        return {
-
-            "Symbol": symbol,
-            "Price": round(price,2),
-            "Trend": trend,
-            "Fast MA": round(float(fast),2),
-            "Slow MA": round(float(slow),2),
-            "MA200": round(float(ma200),2),
-            "ATR": round(float(atr),4),
-            "Volatility": round(float(volatility),2),
-            "Signal": signal
-
-        }
-
-
-    except Exception as e:
-
-        print(
-            f"Scanner error {symbol}: {e}"
-        )
-
-        return {
-
-            "Symbol": symbol,
-            "Price": "ERROR",
-            "Trend": "-",
-            "Signal": "ERROR"
-
-        }
-
-
-
-# ============================================================
-# BACKWARD COMPATIBILITY
-# Dashboard still imports this function
-# ============================================================
-
-def get_symbol_data(symbol, data_client):
-
-    from market_data import MarketDataEngine
-
-    market = MarketDataEngine(
+    df = get_symbol_data(
+        symbol,
         data_client
     )
 
-    return market.get_bars(
-        symbol
+
+    if df is None or df.empty:
+
+        return {
+
+            "Symbol": symbol,
+            "Price": "N/A",
+            "Trend": "NO DATA",
+            "Fast MA": "-",
+            "Slow MA": "-",
+            "MA200": "-",
+            "ATR": "-",
+            "Volatility": "-",
+            "Signal": "BAD DATA"
+
+        }
+
+
+    close = df["close"]
+
+    price = float(
+        close.iloc[-1]
+    )
+
+
+    fast = close.rolling(
+        FAST_MA
+    ).mean().iloc[-1]
+
+
+    slow = close.rolling(
+        SLOW_MA
+    ).mean().iloc[-1]
+
+
+    ma200 = close.rolling(
+        MA200
+    ).mean().iloc[-1]
+
+
+    atr = calculate_atr(df)
+
+    volatility = (
+        atr / price * 100
+        if price
+        else 0
+    )
+
+
+    trend = (
+        "BULLISH"
+        if fast > slow
+        else "BEARISH"
+    )
+
+
+    if price < ma200:
+
+        signal = "BELOW MA200"
+
+    elif trend == "BULLISH":
+
+        signal = "WATCH BUY"
+
+    else:
+
+        signal = "WATCH"
+
+
+
+    return {
+
+        "Symbol": symbol,
+        "Price": round(price,2),
+        "Trend": trend,
+        "Fast MA": round(float(fast),2),
+        "Slow MA": round(float(slow),2),
+        "MA200": round(float(ma200),2),
+        "ATR": round(float(atr),4),
+        "Volatility": round(float(volatility),2),
+        "Signal": signal
+
+    }
+
+
+
+def run_scanner(symbols, data_client):
+
+    results = []
+
+
+    for symbol in symbols:
+
+        results.append(
+            analyze_symbol(
+                symbol,
+                data_client
+            )
         )
-# ============================================================
-# DASHBOARD COMPATIBILITY FUNCTION
-# ============================================================
-
-def get_symbol_data(symbol, data_client):
-
-    try:
-
-        from market_data import MarketDataEngine
-
-        market = MarketDataEngine(
-            data_client
-        )
-
-        return market.get_bars(
-            symbol
-        )
 
 
-    except Exception as e:
-
-        print(
-            f"get_symbol_data error {symbol}: {e}"
-        )
-
-        return None
+    return results
