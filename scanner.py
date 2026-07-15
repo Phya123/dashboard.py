@@ -161,7 +161,6 @@ def run_scanner(symbols, market_data):
 
     results = []
 
-
     for symbol in symbols:
 
         results.append(
@@ -171,5 +170,18 @@ def run_scanner(symbols, market_data):
             )
         )
 
-
     return results
+
+
+def get_symbol_data(symbol, data_client):
+
+    from market_data import MarketDataEngine
+
+    market = MarketDataEngine(
+        data_client
+    )
+
+    return market.get_bars(
+        symbol
+        )
+    
