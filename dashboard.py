@@ -40,7 +40,11 @@ from command_center.panels import (
     account_panel,
     status_panel()
 )
-from intelligence.data_bridge import build_sentinel_state   
+   
+# ==========================
+# PAGE CONFIG
+# ==========================
+
 # ==========================
 # PAGE CONFIG
 # ==========================
@@ -50,6 +54,13 @@ st.set_page_config(
     page_icon="🤖",
     layout="wide"
 )
+
+
+# ==========================
+# SENTINEL STATUS HEADER
+# ==========================
+
+status_panel()
 # ==========================
 # ALPACA CONNECTION
 # ==========================
