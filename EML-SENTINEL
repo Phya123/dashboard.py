@@ -13,3 +13,8 @@ EML-SENTINEL/
 │
 └── data/
     └── sentinel_state.json
+EML-SENTINEL/
+
+├── intelligence/
+│   ├── __init__.py
+│   └── data_bridge.py
