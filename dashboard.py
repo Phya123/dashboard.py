@@ -167,18 +167,17 @@ sentinel_state = build_sentinel_state(
 
 status_panel()
 
-
 ai_panel(
     sentinel_state
 )
 
+activity_panel()
 
 community_panel({
     "members": 0,
     "skills": 0,
     "opportunities": 0
 })
-
 
 eml_ecosystem_panel()
 
