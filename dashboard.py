@@ -54,14 +54,13 @@ st.set_page_config(
     layout="wide"
 )
 
+market_status = (
+    "OPEN"
+    if trading_client.get_clock().is_open
+    else "CLOSED"
+)
 # ==========================
-# STATUS HEADER
-# ==========================
-
-status_panel()
-
-# ==========================
-# BUILD SENTINEL STATE
+# SENTINEL STATE
 # ==========================
 
 sentinel_state = build_sentinel_state(
@@ -69,6 +68,13 @@ sentinel_state = build_sentinel_state(
     positions,
     market_status
 )
+
+
+# ==========================
+# COMMAND CENTER PANELS
+# ==========================
+
+status_panel()
 
 ai_panel(sentinel_state)
 
