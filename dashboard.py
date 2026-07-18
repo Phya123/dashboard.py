@@ -23,7 +23,8 @@ from command_center.panels import (
     status_panel,
     community_panel
 )
-
+from command_center.panels import sentinel_ai_chat
+sentinel_ai_chat()
 
 
 from ecosystem.eml_hub import eml_ecosystem_panel
