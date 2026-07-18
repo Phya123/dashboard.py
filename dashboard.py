@@ -21,7 +21,8 @@ from command_center.panels import (
     ai_panel,
     account_panel,
     status_panel,
-    community_panel
+    community_panel,
+    sentinel_ai_chat
 )
 
 
