@@ -48,7 +48,11 @@ from command_center.panels import (
 # PAGE CONFIG
 # ==========================
 
-st.set_page_config(...)
+st.set_page_config(
+    page_title="EML SENTINEL AI COMMAND CENTER",
+    page_icon="🤖",
+    layout="wide"
+)
 
 # ==========================
 # STATUS HEADER
