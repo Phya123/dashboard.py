@@ -11,6 +11,7 @@ from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 from neighborlink.community import neighborlink_panel
+from ecosystem.eml_hub import eml_ecosystem_panel
 
 from scanner import (
     run_scanner,
@@ -114,7 +115,7 @@ status_panel()
 
 neighborlink_panel()
 
-
+eml_ecosystem_panel()
 
 # ==========================
 # HEDGE FUND WATCHLIST
