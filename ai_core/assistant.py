@@ -1,6 +1,22 @@
 import json
 from datetime import datetime
 from ai_core.explain import explain_dashboard
+from ai_core.explain import explain_dashboard
+
+
+def sentinel_response(question):
+
+    if "dashboard" in question.lower():
+        return explain_dashboard()
+
+    return f"""
+Sentinel received:
+
+{question}
+
+AI intelligence module is online.
+Advanced reasoning will connect through the Sentinel AI Core.
+"""
 
 
 def sentinel_response(question):
