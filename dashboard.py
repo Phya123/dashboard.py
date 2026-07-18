@@ -176,7 +176,8 @@ command_center_layout(
     eml_ecosystem_panel,
     ai_panel,
     account_panel,
-    sentinel_ai_chat
+    sentinel_ai_chat,
+    status_panel
 )
 
 
