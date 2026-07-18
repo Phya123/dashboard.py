@@ -113,7 +113,7 @@ def get_symbol_data(symbol, data_client, market_open=True):
         
 
 
-        return df.dropna()
+        
 
 
     except Exception as e:
