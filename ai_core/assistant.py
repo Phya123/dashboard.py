@@ -1,29 +1,34 @@
-class SentinelAI:
-
-    def __init__(self):
-        self.name = "EML Sentinel AI"
+import json
+from datetime import datetime
 
 
-    def analyze_market(self, state):
-
-        return {
-            "engine": state.get("engine", "UNKNOWN"),
-            "market": state.get("market_status", "UNKNOWN"),
-            "risk": state.get("risk", "UNKNOWN"),
-            "positions": len(state.get("positions", [])),
-            "message": "Sentinel intelligence online"
-        }
+def load_state():
+    with open("data/sentinel_state.json") as f:
+        return json.load(f)
 
 
-    def greeting(self, user="User"):
+def sentinel_summary():
 
-        return f"""
-        Welcome {user}.
+    state = load_state()
 
-        {self.name} is online.
+    return {
+        "message":
+        f"""
+        Sentinel AI ONLINE.
 
-        Monitoring:
-        ✓ Market intelligence
-        ✓ Portfolio awareness
-        ✓ Risk conditions
+        Market:
+        {state['market']['status']}
+
+        Equity:
+        ${state['market']['equity']}
+
+        Positions:
+        {state['market']['positions']}
+
+        Community Members:
+        {state['community']['members']}
+
+        Last Scan:
+        {datetime.now()}
         """
+    }
