@@ -66,7 +66,7 @@ def account_panel(account):
         )
 
     with col3:
-    ecosystem_panel()
+        ecosystem_panel()
 
 
 # =========================
