@@ -98,7 +98,7 @@ def community_panel(data):
 # 🚀 EML ECOSYSTEM PANEL
 # =========================
 
-def ecosystem_panel(data):
+
 
     st.divider()
 
