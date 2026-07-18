@@ -1,8 +1,4 @@
 import os
-import os
-
-print("FILES IN NEIGHBORLINK:")
-print(os.listdir("neighborlink"))
 import json
 from datetime import datetime
 
@@ -14,10 +10,10 @@ from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
+
 from intelligence.data_bridge import build_sentinel_state
 
 from neighborlink.community import neighborlink_panel
-
 from ecosystem.eml_hub import eml_ecosystem_panel
 
 from scanner import (
@@ -28,20 +24,15 @@ from scanner import (
 from charts import create_candlestick_chart
 
 from performance import (
-    load_performance,
     load_trade_journal,
     load_symbol_stats
 )
 
-# NEW AI IMPORT
-from ai_core.assistant import SentinelAI
 from command_center.panels import (
     ai_panel,
     account_panel,
     status_panel
 )
-
-   
 
 
 # ==========================
@@ -54,119 +45,9 @@ st.set_page_config(
     layout="wide"
 )
 
-market_status = (
-    "OPEN"
-    if trading_client.get_clock().is_open
-# ==========================
-# SENTINEL READ ONLY DATA
-# ==========================
-
-account = trading_client.get_account()
-
-positions = trading_client.get_all_positions()
-
-market_status = (
-    "OPEN"
-    if trading_client.get_clock().is_open
-    else "CLOSED"
-)
-    
-# ==========================
-# SENTINEL STATE
-# ==========================
-
-sentinel_state = build_sentinel_state(
-    account,
-    positions,
-    market_status
-)
-
 
 # ==========================
-# COMMAND CENTER PANELS
-# ==========================
-
-status_panel()
-
-ai_panel(sentinel_state)
-
-neighborlink_panel()
-
-eml_ecosystem_panel()
-# ==========================
-# ALPACA CONNECTION
-# ==========================
-
-API_KEY = (
-    os.getenv("APCA_API_KEY_ID")
-    or os.getenv("ALPACA_API_KEY")
-)
-
-SECRET_KEY = (
-    os.getenv("APCA_API_SECRET_KEY")
-    or os.getenv("ALPACA_SECRET_KEY")
-)
-
-
-if not API_KEY or not SECRET_KEY:
-    st.error("Missing Alpaca API credentials")
-    st.stop()
-
-
-@st.cache_resource
-def get_clients():
-
-    trading = TradingClient(
-        API_KEY,
-        SECRET_KEY,
-        paper=False
-    )
-
-    data = StockHistoricalDataClient(
-        API_KEY,
-        SECRET_KEY
-    )
-
-    return trading, data
-
-
-trading_client, data_client = get_clients()
-
-
-# ==========================
-# SENTINEL READ ONLY DATA
-# ==========================
-
-account = trading_client.get_account()
-
-positions = trading_client.get_all_positions()
-
-market_status = (
-    "OPEN"
-    if trading_client.get_clock().is_open
-    else "CLOSED"
-)
-
-
-sentinel_state = build_sentinel_state(
-    account,
-    positions,
-    market_status
-)
-
-status_panel()
-# ==========================
-# EML SENTINEL OS PANELS
-# ==========================
-
-ai_panel(sentinel_state)
-
-neighborlink_panel()
-
-eml_ecosystem_panel()
-
-# ==========================
-# HEDGE FUND WATCHLIST
+# SYMBOLS
 # ==========================
 
 WATCHLIST = [
@@ -187,10 +68,6 @@ WATCHLIST = [
     "NVS"
 ]
 
-
-# ==========================
-# SENTINEL SYMBOLS
-# ==========================
 
 SYMBOLS = [
     "LMT",
@@ -216,6 +93,7 @@ API_KEY = (
     or os.getenv("ALPACA_API_KEY")
 )
 
+
 SECRET_KEY = (
     os.getenv("APCA_API_SECRET_KEY")
     or os.getenv("ALPACA_SECRET_KEY")
@@ -227,11 +105,8 @@ if not API_KEY or not SECRET_KEY:
     st.stop()
 
 
-@st.cache_resource
-# ==========================
-# ALPACA CLIENTS
-# ==========================
 
+@st.cache_resource
 def get_clients():
 
     trading = TradingClient(
@@ -248,21 +123,72 @@ def get_clients():
     return trading, data
 
 
+
+# Create Alpaca clients FIRST
+
 trading_client, data_client = get_clients()
 
 
+
 # ==========================
-# SENTINEL READ ONLY DATA
+# READ ONLY SENTINEL DATA
 # ==========================
 
 account = trading_client.get_account()
 
 positions = trading_client.get_all_positions()
 
+
 market_status = (
     "OPEN"
     if trading_client.get_clock().is_open
     else "CLOSED"
+)
+
+
+
+# ==========================
+# BUILD SENTINEL INTELLIGENCE
+# ==========================
+
+sentinel_state = build_sentinel_state(
+    account,
+    positions,
+    market_status
+)
+
+
+
+# ==========================
+# COMMAND CENTER HEADER
+# ==========================
+
+status_panel()
+
+
+ai_panel(
+    sentinel_state
+)
+
+
+neighborlink_panel()
+
+
+eml_ecosystem_panel()
+
+
+
+# ==========================
+# MAIN HEADER
+# ==========================
+
+st.title(
+    "🤖 EML SENTINEL AI COMMAND CENTER"
+)
+
+
+st.caption(
+    "LIVE Alpaca Monitor | Dashboard Trading Disabled"
 )
 
 # ============================================================
