@@ -27,3 +27,7 @@ neighborlink/
 
 ├── __init__.py
 └── community.py
+ecosystem/
+
+├── __init__.py
+└── eml_hub.py
