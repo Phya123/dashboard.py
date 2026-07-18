@@ -1,4 +1,8 @@
 import os
+import os
+
+print("FILES IN NEIGHBORLINK:")
+print(os.listdir("neighborlink"))
 import json
 from datetime import datetime
 
