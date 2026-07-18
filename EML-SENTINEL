@@ -1,77 +1,52 @@
 EML-SENTINEL/
 
-├── bot.py                         🔒 Trading engine (do not mix UI)
-├── dashboard.py                   🎛 Main READ ONLY command center
+├── bot.py                         🔒 Trading Engine (isolated)
+├── dashboard.py                   🎛 Main READ ONLY Command Center
 
-├── ai_core/                       🤖 Sentinel intelligence layer
+├── ai_core/                       🤖 Sentinel Intelligence
 │   ├── __init__.py
-│   ├── assistant.py               AI conversation + summaries
-│   ├── prompts.py                 AI instructions/personality
-│   └── memory.py                  User/session memory
+│   ├── assistant.py               AI reasoning
+│   ├── prompts.py                 System prompts
+│   ├── memory.py                  Session memory
+│   ├── explain.py                 Dashboard explanations
+│   └── chat.py                    AI responses
 
-├── command_center/                🖥 Dashboard interface
-│   ├── __init__.py
-│   ├── panels.py                  UI panels
-│   ├── terminal.py                Market terminal
-│   └── activity.py                Unified activity feed
-
-├── intelligence/                  🧠 Data processing
-│   ├── __init__.py
-│   ├── data_bridge.py             Connect Alpaca → Dashboard
-│   ├── analytics.py               Performance analysis
-│   └── alerts.py                  AI alerts
-
-├── neighborlink/                  🌎 Human network
-│   ├── __init__.py
-│   ├── community.py               ✅ existing
-│   ├── profiles.py                User profiles
-│   ├── opportunities.py           Jobs/projects/missions
-│   ├── skills.py                  Skill marketplace
-│   ├── chat.py                    Peer messaging
-│   └── database.py                Storage layer
-
-├── ecosystem/                     🚀 EML universe
-│   ├── __init__.py
-│   ├── eml_hub.py                 Ecosystem dashboard
-│   ├── coin.py                    EML Coin tracking
-│   ├── nft.py                     NFT collection
-│   └── brand.py                   Shoes/clothing
-
-├── security/
-│   ├── permissions.py             User access control
-│   └── audit.py                   Activity logs
-
-├── data/
-│   ├── sentinel_state.json
-│   ├── users.json
-│   ├── skills.json
-│   ├── messages.json
-│   └── opportunities.json
-
-└── requirements.txt
-EML-SENTINEL/
-│
 ├── command_center/
 │   ├── __init__.py
 │   ├── panels.py
+│   ├── activity.py
 │   ├── terminal.py
-│   └── activity.py   ← CREATE THIS
-neighborlink/
-├── database.py
-├── profiles.py
-├── skills.py
-├── opportunities.py
-└── chat.py
-users.json
-skills.json
-opportunities.json
-messages.json
-        |
-        ↓
-neighborlink/database.py
-        |
-        ↓
-dashboard.py
-        |
-        ↓
-NeighborLink Hub
+│   └── ai_panel.py                🆕 AI interface
+
+├── intelligence/
+│   ├── __init__.py
+│   ├── data_bridge.py
+│   ├── analytics.py
+│   └── alerts.py
+
+├── neighborlink/
+│   ├── __init__.py
+│   ├── database.py
+│   ├── community.py
+│   ├── profiles.py
+│   ├── skills.py
+│   ├── opportunities.py
+│   └── chat.py
+
+├── ecosystem/
+│   ├── __init__.py
+│   ├── eml_hub.py
+│   ├── coin.py
+│   ├── nft.py
+│   └── brand.py
+
+├── security/
+│   ├── permissions.py
+│   └── audit.py
+
+└── data/
+    ├── sentinel_state.json
+    ├── users.json
+    ├── skills.json
+    ├── opportunities.json
+    └── messages.json
