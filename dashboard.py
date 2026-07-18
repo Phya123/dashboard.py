@@ -178,18 +178,7 @@ eml_ecosystem_panel()
 
 
 
-# ==========================
-# MAIN HEADER
-# ==========================
 
-st.title(
-    "🤖 EML SENTINEL AI COMMAND CENTER"
-)
-
-
-st.caption(
-    "LIVE Alpaca Monitor | Dashboard Trading Disabled"
-)
 
 # ============================================================
 # LIVE MARKET DATA
