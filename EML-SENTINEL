@@ -23,3 +23,7 @@ EML-SENTINEL/
 
 └── intelligence/
     └── data_bridge.py
+neighborlink/
+
+├── __init__.py
+└── community.py
