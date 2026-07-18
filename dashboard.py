@@ -57,8 +57,20 @@ st.set_page_config(
 market_status = (
     "OPEN"
     if trading_client.get_clock().is_open
+# ==========================
+# SENTINEL READ ONLY DATA
+# ==========================
+
+account = trading_client.get_account()
+
+positions = trading_client.get_all_positions()
+
+market_status = (
+    "OPEN"
+    if trading_client.get_clock().is_open
     else "CLOSED"
 )
+    
 # ==========================
 # SENTINEL STATE
 # ==========================
