@@ -1,5 +1,36 @@
 import streamlit as st
+from ai_core.assistant import sentinel_response
+from ai_core.explain import explain_dashboard
 
+def sentinel_ai_chat():
+
+    st.divider()
+
+    st.subheader("🤖 Sentinel AI Assistant")
+
+
+    if st.button("📘 Explain This Dashboard"):
+
+        st.info(
+            explain_dashboard()
+        )
+
+
+    question = st.text_input(
+        "💬 Ask Sentinel",
+        placeholder="Ask about your portfolio or dashboard..."
+    )
+
+
+    if st.button("🚀 Ask Sentinel"):
+
+        if question:
+
+            response = sentinel_response(
+                question
+            )
+
+            st.success(response)
 
 # =========================
 # 🧠 SENTINEL HEADER
