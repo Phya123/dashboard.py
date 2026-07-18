@@ -1,6 +1,33 @@
 import streamlit as st
 
 
+
+def neighborlink_panel(data):
+
+    st.divider()
+
+    st.subheader("🌎 NeighborLink Community")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Members",
+            data.get("members",0)
+        )
+
+    with col2:
+        st.metric(
+            "Skills",
+            data.get("skills",0)
+        )
+
+    with col3:
+        st.metric(
+            "Opportunities",
+            data.get("opportunities",0)
+        )
+
 # =========================
 # 🧠 SENTINEL HEADER
 # =========================
