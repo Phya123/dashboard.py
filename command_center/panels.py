@@ -66,10 +66,7 @@ def account_panel(account):
         )
 
     with col3:
-        st.metric(
-            "Buying Power",
-            f"${account.buying_power}"
-        )
+    ecosystem_panel()
 
 
 # =========================
