@@ -38,6 +38,16 @@ st.set_page_config(
     layout="wide"
 )
 # ==========================
+# EML SENTINEL OS PANELS
+# ==========================
+
+with open("data/sentinel_state.json") as f:
+    state = json.load(f)
+
+ai_panel(state)
+
+status_panel()
+# ==========================
 # EML SENTINEL AI PANEL
 # ==========================
 
