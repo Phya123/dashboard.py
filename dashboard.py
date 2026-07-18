@@ -38,7 +38,7 @@ from ai_core.assistant import SentinelAI
 from command_center.panels import (
     ai_panel,
     account_panel,
-    status_panel
+    status_panel()
 )
 from intelligence.data_bridge import build_sentinel_state   
 # ==========================
@@ -111,14 +111,12 @@ sentinel_state = build_sentinel_state(
     market_status
 )
 
-
+status_panel()
 # ==========================
 # EML SENTINEL OS PANELS
 # ==========================
 
 ai_panel(sentinel_state)
-
-status_panel()
 
 neighborlink_panel()
 
