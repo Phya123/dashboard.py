@@ -1,16 +1,22 @@
-import streamlit as st
+import json
+import os
 
 
-def neighborlink_panel():
+DATA_PATH = "data/"
 
-    st.divider()
 
-    st.subheader("🌎 NeighborLink Community")
+def load_database(file):
 
-    st.json({
-        "status": "ONLINE",
-        "members": 0,
-        "opportunities": 0,
-        "skills_available": 0,
-        "message": "Connecting people, skills, and opportunities."
-    })
+    path = DATA_PATH + file
+
+    if not os.path.exists(path):
+        return []
+
+    with open(path) as f:
+        return json.load(f)
+
+
+def save_database(file,data):
+
+    with open(DATA_PATH + file,"w") as f:
+        json.dump(data,f,indent=4)
