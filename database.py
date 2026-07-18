@@ -1,3 +1,4 @@
+print("✅ NeighborLink database module loaded")
 import sqlite3
 import os
 neighborlink/database.py
