@@ -12,8 +12,8 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from intelligence.data_bridge import build_sentinel_state
+from command_center.panels import community_panel
 
-from neighborlink.community import neighborlink_panel
 from ecosystem.eml_hub import eml_ecosystem_panel
 
 from scanner import (
