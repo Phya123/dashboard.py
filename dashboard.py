@@ -12,6 +12,9 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from intelligence.data_bridge import build_sentinel_state
+
+from command_center.activity import activity_panel
+
 from command_center.layout import command_center_layout
 
 from command_center.panels import (
@@ -21,7 +24,7 @@ from command_center.panels import (
     community_panel
 )
 
-from command_center.activity import activity_panel
+
 
 from ecosystem.eml_hub import eml_ecosystem_panel
 
@@ -171,7 +174,7 @@ command_center_layout(
     account,
     community_panel,
     activity_panel,
-    ecosystem_panel,
+    eml_ecosystem_panel,
     ai_panel,
     account_panel
 )
