@@ -66,11 +66,10 @@ def account_panel(account):
         )
 
     with col3:
-        ecosystem_panel({
-        "coin": "LIVE",
-        "nft": "ONLINE",
-        "brand": "ONLINE"
-    })
+        st.metric(
+            "Buying Power",
+            f"${account.buying_power}"
+        )
 
 # =========================
 # 🌎 NEIGHBORLINK PANEL
@@ -99,16 +98,6 @@ def community_panel(data):
 # =========================
 
 
-
-    st.divider()
-
-    st.subheader("🌐 EML Ecosystem Hub")
-
-    st.write({
-        "🪙 EML Coin": data.get("coin", "LIVE"),
-        "🎨 NFT Collection": data.get("nft", "ONLINE"),
-        "👟 EML Brand": data.get("brand", "ONLINE")
-    })
 
 
 # =========================
