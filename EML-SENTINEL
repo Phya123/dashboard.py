@@ -1,30 +1,51 @@
 EML-SENTINEL/
 
-├── bot.py
-├── dashboard.py
+├── bot.py                         🔒 Trading engine (do not mix UI)
+├── dashboard.py                   🎛 Main READ ONLY command center
 
-├── ai_core/
+├── ai_core/                       🤖 Sentinel intelligence layer
 │   ├── __init__.py
-│   └── assistant.py
+│   ├── assistant.py               AI conversation + summaries
+│   ├── prompts.py                 AI instructions/personality
+│   └── memory.py                  User/session memory
 
-├── command_center/
+├── command_center/                🖥 Dashboard interface
 │   ├── __init__.py
-│   └── panels.py
+│   ├── panels.py                  UI panels
+│   ├── terminal.py                Market terminal
+│   └── activity.py                Unified activity feed
 
-├── intelligence/
+├── intelligence/                  🧠 Data processing
 │   ├── __init__.py
-│   └── data_bridge.py
+│   ├── data_bridge.py             Connect Alpaca → Dashboard
+│   ├── analytics.py               Performance analysis
+│   └── alerts.py                  AI alerts
 
-├── neighborlink/
+├── neighborlink/                  🌎 Human network
 │   ├── __init__.py
-│   ├── community.py        ✅ already have
-│   ├── profiles.py         🆕 create
-│   ├── opportunities.py    🆕 create
-│   └── database.py         🆕 create
+│   ├── community.py               ✅ existing
+│   ├── profiles.py                User profiles
+│   ├── opportunities.py           Jobs/projects/missions
+│   ├── skills.py                  Skill marketplace
+│   ├── chat.py                    Peer messaging
+│   └── database.py                Storage layer
 
-├── ecosystem/
+├── ecosystem/                     🚀 EML universe
 │   ├── __init__.py
-│   └── eml_hub.py
+│   ├── eml_hub.py                 Ecosystem dashboard
+│   ├── coin.py                    EML Coin tracking
+│   ├── nft.py                     NFT collection
+│   └── brand.py                   Shoes/clothing
 
-└── data/
-    └── sentinel_state.json
+├── security/
+│   ├── permissions.py             User access control
+│   └── audit.py                   Activity logs
+
+├── data/
+│   ├── sentinel_state.json
+│   ├── users.json
+│   ├── skills.json
+│   ├── messages.json
+│   └── opportunities.json
+
+└── requirements.txt
