@@ -45,9 +45,13 @@ st.set_page_config(
 # EML SENTINEL OS PANELS
 # ==========================
 
-state = sentinel_state
+sentinel_state = build_sentinel_state(
+    account,
+    positions,
+    market_status
+)
 
-ai_panel(state)
+ai_panel(sentinel_state)
 
 status_panel()
 
