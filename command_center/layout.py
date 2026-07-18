@@ -6,9 +6,11 @@ def command_center_layout(
     account,
     community_panel,
     activity_panel,
-    eml_ecosystem_panel,
+    ecosystem_panel,
     ai_panel,
-    account_panel
+    account_panel,
+    sentinel_ai_chat,
+    status_panel
 ):
 
     st.title("🧠 EML SENTINEL COMMAND CENTER")
@@ -19,20 +21,30 @@ def command_center_layout(
 
 
     # =========================
-    # TOP ROW
+    # STATUS
+    # =========================
+
+    status_panel()
+
+
+    # =========================
     # AI + ACCOUNT
     # =========================
 
-    left, right = st.columns([1, 1])
+    left, right = st.columns([1,1])
 
 
     with left:
+
         ai_panel(
             sentinel_state
         )
 
+        sentinel_ai_chat()
+
 
     with right:
+
         account_panel(
             account
         )
@@ -48,16 +60,19 @@ def command_center_layout(
 
 
     with col1:
+
         community_panel({
-            "members": 0,
-            "skills": 0,
-            "opportunities": 0
+            "members":0,
+            "skills":0,
+            "opportunities":0
         })
 
 
     with col2:
+
         activity_panel()
 
 
     with col3:
-        eml_ecosystem_panel()
+
+        ecosystem_panel()
