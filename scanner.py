@@ -15,37 +15,74 @@ MA200 = 200
 ATR_PERIOD = 14
 
 
-def get_symbol_data(symbol, data_client):
+def get_symbol_data(symbol, data_client, market_open=True):
 
     try:
 
+        # Select timeframe based on market status
+        timeframe = (
+            TimeFrame.Minute
+            if market_open
+            else TimeFrame.Day
+        )
+
         request = StockBarsRequest(
             symbol_or_symbols=[symbol],
-            timeframe=TimeFrame.Minute,
-            limit=200
+            timeframe=timeframe,
+            limit=250
         )
 
         bars = data_client.get_stock_bars(request)
 
         df = bars.df
 
-
-        # Closed market fallback
-        if df.empty:
+        # Fallback to daily data if minute data is empty
+        if df.empty and market_open:
 
             request = StockBarsRequest(
                 symbol_or_symbols=[symbol],
                 timeframe=TimeFrame.Day,
-                limit=200
+                limit=250
             )
 
             bars = data_client.get_stock_bars(request)
 
             df = bars.df
 
-
         if df.empty:
             return None
+
+        # Handle Alpaca MultiIndex
+        if isinstance(df.index, pd.MultiIndex):
+
+            df = df.xs(
+                symbol,
+                level="symbol"
+            )
+
+        # Normalize column names
+        df.columns = [
+            str(c).lower()
+            for c in df.columns
+        ]
+
+        # Remove missing rows
+        df = df.dropna()
+
+        # Sort oldest -> newest
+        df = df.sort_index()
+
+        # Need enough history for MA200
+        if len(df) < MA200:
+            return None
+
+        return df
+
+    except Exception as e:
+
+        print(f"{symbol} data error: {e}")
+
+        return None
 
 
         if isinstance(df.index, pd.MultiIndex):
@@ -56,10 +93,24 @@ def get_symbol_data(symbol, data_client):
             )
 
 
+                # Normalize column names
         df.columns = [
             str(c).lower()
             for c in df.columns
         ]
+
+        # Remove missing values
+        df = df.dropna()
+
+        # Sort by date (oldest → newest)
+        df = df.sort_index()
+
+        # Need enough history for MA200
+        if len(df) < MA200:
+            return None
+
+        return df
+        
 
 
         return df.dropna()
