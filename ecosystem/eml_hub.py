@@ -22,16 +22,16 @@ def eml_ecosystem_panel():
 
     with col1:
 
-        st.metric(
-            "🪙 EML Coin",
-            "LIVE",
-            "Tracking"
-        )
+    st.metric(
+        "🪙 EML Coin",
+        "LIVE",
+        "Tracking"
+    )
 
-        st.caption(
-            f"Contract: {EML_COIN_ADDRESS[:8]}..."
-        )
-
+    st.link_button(
+        "View EML Coin",
+        EML_COIN_LINK
+    )
 
     with col2:
 
