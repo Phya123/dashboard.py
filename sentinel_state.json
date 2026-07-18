@@ -1,7 +1,28 @@
 {
-    "engine": "ONLINE",
-    "market_status": "OPEN",
-    "positions": [],
-    "risk": "LOW",
-    "message": "Sentinel intelligence online"
+  "sentinel": {
+    "status": "ONLINE",
+    "mode": "READ ONLY",
+    "version": "1.0"
+  },
+
+  "market": {
+    "status": "CLOSED",
+    "equity": 834.96,
+    "cash": 629.78,
+    "positions": 6
+  },
+
+  "community": {
+    "members": 0,
+    "skills": 0,
+    "opportunities": 0
+  },
+
+  "ecosystem": {
+    "coin": "LIVE",
+    "nft": "ONLINE",
+    "brand": "ONLINE"
+  },
+
+  "activity": []
 }
