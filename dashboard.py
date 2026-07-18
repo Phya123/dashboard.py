@@ -42,14 +42,70 @@ st.set_page_config(
     layout="wide"
 )
 # ==========================
-# EML SENTINEL OS PANELS
+# ALPACA CONNECTION
 # ==========================
+
+API_KEY = (
+    os.getenv("APCA_API_KEY_ID")
+    or os.getenv("ALPACA_API_KEY")
+)
+
+SECRET_KEY = (
+    os.getenv("APCA_API_SECRET_KEY")
+    or os.getenv("ALPACA_SECRET_KEY")
+)
+
+
+if not API_KEY or not SECRET_KEY:
+    st.error("Missing Alpaca API credentials")
+    st.stop()
+
+
+@st.cache_resource
+def get_clients():
+
+    trading = TradingClient(
+        API_KEY,
+        SECRET_KEY,
+        paper=False
+    )
+
+    data = StockHistoricalDataClient(
+        API_KEY,
+        SECRET_KEY
+    )
+
+    return trading, data
+
+
+trading_client, data_client = get_clients()
+
+
+# ==========================
+# SENTINEL READ ONLY DATA
+# ==========================
+
+account = trading_client.get_account()
+
+positions = trading_client.get_all_positions()
+
+market_status = (
+    "OPEN"
+    if trading_client.get_clock().is_open
+    else "CLOSED"
+)
+
 
 sentinel_state = build_sentinel_state(
     account,
     positions,
     market_status
 )
+
+
+# ==========================
+# EML SENTINEL OS PANELS
+# ==========================
 
 ai_panel(sentinel_state)
 
