@@ -1,27 +1,30 @@
 EML-SENTINEL/
 
-├── bot.py                  # EXISTING (leave alone)
-├── dashboard.py            # EXISTING Command Center
-│
+├── bot.py
+├── dashboard.py
+
 ├── ai_core/
 │   ├── __init__.py
 │   └── assistant.py
-│
+
 ├── command_center/
 │   ├── __init__.py
 │   └── panels.py
-│
+
 ├── intelligence/
 │   ├── __init__.py
 │   └── data_bridge.py
-│
+
 ├── neighborlink/
 │   ├── __init__.py
-│   └── community.py
-│
+│   ├── community.py        ✅ already have
+│   ├── profiles.py         🆕 create
+│   ├── opportunities.py    🆕 create
+│   └── database.py         🆕 create
+
 ├── ecosystem/
 │   ├── __init__.py
 │   └── eml_hub.py
-│
+
 └── data/
     └── sentinel_state.json
