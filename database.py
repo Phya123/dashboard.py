@@ -1,7 +1,8 @@
 print("✅ NeighborLink database module loaded")
+
 import sqlite3
 import os
-neighborlink/database.py
+
 
 DB_PATH = "data/neighborlink.db"
 
@@ -16,15 +17,11 @@ def get_connection():
     return sqlite3.connect(DB_PATH)
 
 
-
 def initialize_database():
 
     conn = get_connection()
 
     cursor = conn.cursor()
-
-
-    # USERS TABLE
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
@@ -42,8 +39,6 @@ def initialize_database():
     )
     """)
 
-
-    # OPPORTUNITIES TABLE
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS opportunities (
@@ -65,7 +60,6 @@ def initialize_database():
     conn.commit()
 
     conn.close()
-
 
 
 def get_member_count():
