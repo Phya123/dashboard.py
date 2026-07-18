@@ -1,80 +1,48 @@
-import json
-from datetime import datetime
-from ai_core.explain import explain_dashboard
-from ai_core.explain import explain_dashboard
+import datetime
 
 
 def sentinel_response(question):
 
-    if "dashboard" in question.lower():
-        return explain_dashboard()
+    q = question.lower()
 
-    return f"""
-Sentinel received:
 
-{question}
+    if "price" in q or "stock" in q or "qqq" in q:
 
-AI intelligence module is online.
-Advanced reasoning will connect through the Sentinel AI Core.
+        return (
+            "I can analyze market information, but I need the "
+            "live market data connection added to my AI bridge. "
+            "The Market Terminal already connects to Alpaca."
+        )
+
+
+    if "dashboard" in q or "explain" in q:
+
+        return """
+EML SENTINEL COMMAND CENTER:
+
+🤖 AI Core monitors your ecosystem.
+
+💰 Account Intelligence shows Alpaca account status.
+
+📈 Market Terminal displays price charts.
+
+🔍 Scanner analyzes watchlist symbols.
+
+🌎 NeighborLink connects people, skills, and opportunities.
+
+🌐 EML Ecosystem tracks your brand, coin, and digital assets.
+
+Dashboard mode is READ ONLY.
 """
 
 
-def sentinel_response(question):
+    if "hello" in q or "hi" in q:
 
-    question = question.lower()
-
-
-    if "dashboard" in question or "explain" in question:
-        return explain_dashboard()
-
-
-    if "risk" in question:
-        return (
-            "Your Sentinel risk monitor shows the current "
-            "risk level displayed on your dashboard."
-        )
-
-
-    if "position" in question:
-        return (
-            "Your open positions are displayed in the "
-            "Open Positions panel."
-        )
+        return "Sentinel AI online. How can I help you understand your command center?"
 
 
     return (
-        "I am Sentinel AI. "
-        "Ask me about your dashboard, portfolio, "
-        "market terminal, or EML ecosystem."
+        f"Sentinel received your question:\n\n"
+        f"{question}\n\n"
+        "I am online. More intelligence modules can be connected next."
     )
-
-def load_state():
-    with open("data/sentinel_state.json") as f:
-        return json.load(f)
-
-
-def sentinel_summary():
-
-    state = load_state()
-
-    return {
-        "message":
-        f"""
-        Sentinel AI ONLINE.
-
-        Market:
-        {state['market']['status']}
-
-        Equity:
-        ${state['market']['equity']}
-
-        Positions:
-        {state['market']['positions']}
-
-        Community Members:
-        {state['community']['members']}
-
-        Last Scan:
-        {datetime.now()}
-        """
-    }
