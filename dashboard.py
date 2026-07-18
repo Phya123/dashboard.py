@@ -31,7 +31,7 @@ from command_center.panels import (
     account_panel,
     status_panel
 )
-    
+from intelligence.data_bridge import build_sentinel_state   
 # ==========================
 # PAGE CONFIG
 # ==========================
@@ -45,8 +45,7 @@ st.set_page_config(
 # EML SENTINEL OS PANELS
 # ==========================
 
-with open("data/sentinel_state.json") as f:
-    state = json.load(f)
+state = sentinel_state
 
 ai_panel(state)
 
@@ -349,6 +348,11 @@ st.subheader(
 try:
 
     positions = trading_client.get_all_positions()
+    sentinel_state = build_sentinel_state(
+    account,
+    positions,
+    market_status
+    )
 
 
     if positions:
