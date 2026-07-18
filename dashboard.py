@@ -48,36 +48,11 @@ from command_center.panels import (
 # PAGE CONFIG
 # ==========================
 
-# 1. Imports
-
-# 2. Page config
-st.set_page_config(...)
-
-# 3. Connect to Alpaca
-trading_client, data_client = get_clients()
-
-# 4. Read-only account data
-account = trading_client.get_account()
-positions = trading_client.get_all_positions()
-
-market_status = (
-    "OPEN"
-    if trading_client.get_clock().is_open
-    else "CLOSED"
+st.set_page_config(
+    page_title="EML SENTINEL AI COMMAND CENTER",
+    page_icon="🤖",
+    layout="wide"
 )
-
-# 5. Build Sentinel state
-sentinel_state = build_sentinel_state(
-    account,
-    positions,
-    market_status
-)
-
-# 6. Display panels
-status_panel()
-ai_panel(sentinel_state)
-neighborlink_panel()
-eml_ecosystem_panel()
 
 # ==========================
 # STATUS HEADER
