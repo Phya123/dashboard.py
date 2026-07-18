@@ -6,7 +6,7 @@ def command_center_layout(
     account,
     community_panel,
     activity_panel,
-    ecosystem_panel,
+    eml_ecosystem_panel,
     ai_panel,
     account_panel
 ):
@@ -60,8 +60,4 @@ def command_center_layout(
 
 
     with col3:
-        ecosystem_panel({
-            "coin": "LIVE",
-            "nft": "ONLINE",
-            "brand": "ONLINE"
-        })
+        eml_ecosystem_panel()
