@@ -1,0 +1,15 @@
+EML-SENTINEL/
+
+├── bot.py                  # EXISTING (leave alone)
+├── dashboard.py            # EXISTING Command Center
+│
+├── ai_core/
+│   ├── __init__.py
+│   └── assistant.py
+│
+├── command_center/
+│   ├── __init__.py
+│   └── panels.py
+│
+└── data/
+    └── sentinel_state.json
