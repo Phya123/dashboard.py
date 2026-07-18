@@ -39,7 +39,7 @@ from ai_core.assistant import SentinelAI
 from command_center.panels import (
     ai_panel,
     account_panel,
-    status_panel
+    
 )
    
 
@@ -48,25 +48,29 @@ from command_center.panels import (
 # PAGE CONFIG
 # ==========================
 
-st.set_page_config(
-    page_title="EML SENTINEL AI COMMAND CENTER",
-    page_icon="🤖",
-    layout="wide"
+st.set_page_config(...)
+
+# ==========================
+# STATUS HEADER
+# ==========================
+
+status_panel()
+
+# ==========================
+# BUILD SENTINEL STATE
+# ==========================
+
+sentinel_state = build_sentinel_state(
+    account,
+    positions,
+    market_status
 )
 
+ai_panel(sentinel_state)
 
-# ==========================
-# TOP STATUS
-# ==========================
+neighborlink_panel()
 
-status_panel()
-
-
-# ==========================
-# SENTINEL STATUS HEADER
-# ==========================
-
-status_panel()
+eml_ecosystem_panel()
 # ==========================
 # ALPACA CONNECTION
 # ==========================
