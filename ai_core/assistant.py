@@ -1,25 +1,29 @@
-class EMLAssistant:
+class SentinelAI:
 
     def __init__(self):
         self.name = "EML Sentinel AI"
 
 
-    def analyze(self, data):
+    def analyze_market(self, state):
 
-        response = {
-            "market": "Analyzing market conditions...",
-            "risk": "Calculating risk exposure...",
-            "community": "Scanning opportunities..."
+        return {
+            "engine": state.get("engine", "UNKNOWN"),
+            "market": state.get("market_status", "UNKNOWN"),
+            "risk": state.get("risk", "UNKNOWN"),
+            "positions": len(state.get("positions", [])),
+            "message": "Sentinel intelligence online"
         }
 
-        return response
 
-
-    def greeting(self, user):
+    def greeting(self, user="User"):
 
         return f"""
-        Good morning {user}.
+        Welcome {user}.
 
-        I am {self.name}.
-        Your intelligence system is online.
+        {self.name} is online.
+
+        Monitoring:
+        ✓ Market intelligence
+        ✓ Portfolio awareness
+        ✓ Risk conditions
         """
