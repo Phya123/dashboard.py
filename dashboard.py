@@ -12,6 +12,7 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from intelligence.data_bridge import build_sentinel_state
+from command_center.layout import command_center_layout
 
 from command_center.panels import (
     ai_panel,
@@ -165,21 +166,15 @@ sentinel_state = build_sentinel_state(
 # COMMAND CENTER HEADER
 # ==========================
 
-status_panel()
-
-ai_panel(
-    sentinel_state
+command_center_layout(
+    sentinel_state,
+    account,
+    community_panel,
+    activity_panel,
+    ecosystem_panel,
+    ai_panel,
+    account_panel
 )
-
-activity_panel()
-
-community_panel({
-    "members": 0,
-    "skills": 0,
-    "opportunities": 0
-})
-
-eml_ecosystem_panel()
 
 
 
