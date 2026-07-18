@@ -51,32 +51,9 @@ with open("data/sentinel_state.json") as f:
 ai_panel(state)
 
 status_panel()
-# ==========================
-# EML SENTINEL AI PANEL
-# ==========================
-
-st.divider()
-
-st.subheader("🤖 EML Sentinel AI")
 
 
-try:
 
-    with open("data/sentinel_state.json") as f:
-        state = json.load(f)
-
-    ai = SentinelAI()
-
-    response = ai.analyze_market(state)
-
-    st.json(response)
-
-
-except Exception as e:
-
-    st.warning(
-        f"AI waiting for data: {e}"
-    )
 
 # ==========================
 # HEDGE FUND WATCHLIST
