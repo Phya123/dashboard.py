@@ -1,18 +1,30 @@
 import streamlit as st
 
+from neighborlink.database import (
+    initialize_database,
+    get_member_count
+)
+
 
 def neighborlink_panel():
 
+    initialize_database()
+
+    members = get_member_count()
+
+
     st.divider()
 
-    st.subheader("🌎 NeighborLink Community")
+    st.subheader(
+        "🌎 NeighborLink Community"
+    )
 
 
     st.json({
 
         "status": "ONLINE",
 
-        "members": 0,
+        "members": members,
 
         "opportunities": 0,
 
