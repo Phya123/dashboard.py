@@ -1,7 +1,11 @@
 import streamlit as st
 
 
-EML_COIN_LINK = "https://pump.fun/9Hiy7cj9532c4mY5Q23q9fHDQ4ANfhcDg9FpPiegpump"
+EML_COIN_LINK = (
+    "https://pump.fun/"
+    "9Hiy7cj9532c4mY5Q23q9fHDQ4ANfhcDg9FpPiegpump"
+)
+
 
 NFT_LINK = (
     "https://opensea.io/item/ethereum/"
@@ -22,16 +26,17 @@ def eml_ecosystem_panel():
 
     with col1:
 
-    st.metric(
-        "🪙 EML Coin",
-        "LIVE",
-        "Tracking"
-    )
+        st.metric(
+            "🪙 EML Coin",
+            "LIVE",
+            "Tracking"
+        )
 
-    st.link_button(
-        "View EML Coin",
-        EML_COIN_LINK
-    )
+        st.link_button(
+            "View EML Coin",
+            EML_COIN_LINK
+        )
+
 
     with col2:
 
