@@ -12,7 +12,15 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from intelligence.data_bridge import build_sentinel_state
-from command_center.panels import community_panel
+
+from command_center.panels import (
+    ai_panel,
+    account_panel,
+    status_panel,
+    community_panel
+)
+
+from command_center.activity import activity_panel
 
 from ecosystem.eml_hub import eml_ecosystem_panel
 
@@ -26,12 +34,6 @@ from charts import create_candlestick_chart
 from performance import (
     load_trade_journal,
     load_symbol_stats
-)
-
-from command_center.panels import (
-    ai_panel,
-    account_panel,
-    status_panel
 )
 
 
