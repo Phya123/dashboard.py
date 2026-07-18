@@ -19,3 +19,7 @@ EML-SENTINEL/
 │   ├── __init__.py
 │   └── data_bridge.py
 __init__.py
+EML-SENTINEL/
+
+└── intelligence/
+    └── data_bridge.py
