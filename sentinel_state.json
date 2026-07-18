@@ -1,7 +1,7 @@
 {
     "engine": "ONLINE",
-    "market_status": "UNKNOWN",
+    "market_status": "OPEN",
     "positions": [],
-    "risk": "MONITORING",
-    "message": "EML Sentinel Command Center connected"
+    "risk": "LOW",
+    "message": "Sentinel intelligence online"
 }
