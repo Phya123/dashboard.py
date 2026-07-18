@@ -16,37 +16,61 @@ def build_sentinel_state(
         })
 
 
-    if len(position_list) == 0:
-        risk = "LOW"
+# ==========================
+# SENTINEL RISK ENGINE
+# ==========================
 
-    elif len(position_list) < 5:
-        risk = "MODERATE"
+equity = float(account.equity)
 
-    else:
-        risk = "HIGH"
+cash = float(account.cash)
 
-
-    state = {
-
-        "engine": "ONLINE",
-
-        "market_status": market_status,
-
-        "equity": account.equity,
-
-        "cash": account.cash,
-
-        "buying_power": account.buying_power,
-
-        "positions": position_list,
-
-        "position_count": len(position_list),
-
-        "risk": risk,
-
-        "message": "Live Alpaca read-only intelligence connected"
-
-    }
+exposure = equity - cash
 
 
-    return state
+if equity > 0:
+    exposure_percent = (
+        exposure / equity
+    ) * 100
+else:
+    exposure_percent = 0
+
+
+if exposure_percent < 30:
+    risk = "LOW"
+
+elif exposure_percent < 70:
+    risk = "MODERATE"
+
+else:
+    risk = "HIGH"
+
+
+state = {
+
+    "engine": "ONLINE",
+
+    "market_status": market_status,
+
+    "equity": account.equity,
+
+    "cash": account.cash,
+
+    "buying_power": account.buying_power,
+
+    "positions": position_list,
+
+    "position_count": len(position_list),
+
+    "risk": risk,
+
+    "exposure_percent": round(
+        exposure_percent,
+        2
+    ),
+
+    "message": "Live Alpaca read-only intelligence connected"
+
+}
+
+
+return state
