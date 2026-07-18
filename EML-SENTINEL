@@ -11,23 +11,17 @@ EML-SENTINEL/
 │   ├── __init__.py
 │   └── panels.py
 │
-└── data/
-    └── sentinel_state.json
-EML-SENTINEL/
-
 ├── intelligence/
 │   ├── __init__.py
 │   └── data_bridge.py
-__init__.py
-EML-SENTINEL/
-
-└── intelligence/
-    └── data_bridge.py
-neighborlink/
-
-├── __init__.py
-└── community.py
-ecosystem/
-
-├── __init__.py
-└── eml_hub.py
+│
+├── neighborlink/
+│   ├── __init__.py
+│   └── community.py
+│
+├── ecosystem/
+│   ├── __init__.py
+│   └── eml_hub.py
+│
+└── data/
+    └── sentinel_state.json
