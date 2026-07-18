@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime
 
 import pandas as pd
@@ -23,6 +24,9 @@ from performance import (
     load_symbol_stats
 )
 
+# NEW AI IMPORT
+from ai_core.assistant import SentinelAI
+
     
 # ==========================
 # PAGE CONFIG
@@ -33,7 +37,32 @@ st.set_page_config(
     page_icon="🤖",
     layout="wide"
 )
+# ==========================
+# EML SENTINEL AI PANEL
+# ==========================
 
+st.divider()
+
+st.subheader("🤖 EML Sentinel AI")
+
+
+try:
+
+    with open("data/sentinel_state.json") as f:
+        state = json.load(f)
+
+    ai = SentinelAI()
+
+    response = ai.analyze_market(state)
+
+    st.json(response)
+
+
+except Exception as e:
+
+    st.warning(
+        f"AI waiting for data: {e}"
+    )
 
 # ==========================
 # HEDGE FUND WATCHLIST
