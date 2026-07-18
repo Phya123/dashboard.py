@@ -10,6 +10,7 @@ from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
+from neighborlink.community import neighborlink_panel
 
 from scanner import (
     run_scanner,
@@ -111,6 +112,7 @@ ai_panel(sentinel_state)
 
 status_panel()
 
+neighborlink_panel()
 
 
 
