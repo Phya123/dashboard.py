@@ -56,19 +56,19 @@ def account_panel(account):
     with col1:
         st.metric(
             "Equity",
-            f"${account.get('equity','N/A')}"
+            f"${account.equity}"
         )
 
     with col2:
         st.metric(
             "Cash",
-            f"${account.get('cash','N/A')}"
+            f"${account.cash}"
         )
 
     with col3:
         st.metric(
             "Buying Power",
-            f"${account.get('buying_power','N/A')}"
+            f"${account.buying_power}"
         )
 
 
