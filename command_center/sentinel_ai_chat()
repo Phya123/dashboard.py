@@ -1,0 +1,22 @@
+def sentinel_ai_chat():
+
+    from ai_core.assistant import sentinel_response
+
+    st.divider()
+
+    st.subheader("🤖 Sentinel AI Assistant")
+
+
+    question = st.text_input(
+        "💬 Ask Sentinel",
+        placeholder="Ask about your portfolio, market, or app..."
+    )
+
+
+    if st.button("Ask Sentinel"):
+
+        if question:
+
+            answer = sentinel_response(question)
+
+            st.success(answer)
