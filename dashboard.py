@@ -26,7 +26,11 @@ from performance import (
 
 # NEW AI IMPORT
 from ai_core.assistant import SentinelAI
-
+from command_center.panels import (
+    ai_panel,
+    account_panel,
+    status_panel
+)
     
 # ==========================
 # PAGE CONFIG
