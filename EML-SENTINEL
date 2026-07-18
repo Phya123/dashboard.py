@@ -56,3 +56,22 @@ EML-SENTINEL/
 │   ├── panels.py
 │   ├── terminal.py
 │   └── activity.py   ← CREATE THIS
+neighborlink/
+├── database.py
+├── profiles.py
+├── skills.py
+├── opportunities.py
+└── chat.py
+users.json
+skills.json
+opportunities.json
+messages.json
+        |
+        ↓
+neighborlink/database.py
+        |
+        ↓
+dashboard.py
+        |
+        ↓
+NeighborLink Hub
