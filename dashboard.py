@@ -121,6 +121,10 @@ if not API_KEY or not SECRET_KEY:
 
 
 @st.cache_resource
+# ==========================
+# ALPACA CLIENTS
+# ==========================
+
 def get_clients():
 
     trading = TradingClient(
@@ -138,6 +142,21 @@ def get_clients():
 
 
 trading_client, data_client = get_clients()
+
+
+# ==========================
+# SENTINEL READ ONLY DATA
+# ==========================
+
+account = trading_client.get_account()
+
+positions = trading_client.get_all_positions()
+
+market_status = (
+    "OPEN"
+    if trading_client.get_clock().is_open
+    else "CLOSED"
+)
 
 # ============================================================
 # LIVE MARKET DATA
