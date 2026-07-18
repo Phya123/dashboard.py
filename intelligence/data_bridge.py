@@ -4,30 +4,6 @@ def build_sentinel_state(
     market_status
 ):
 
-    state = {
-
-        "engine": "ONLINE",
-
-        "market_status": market_status,
-
-        "equity": account.equity,
-
-        "cash": account.cash,
-
-        "buying_power": account.buying_power,
-
-        "positions": [],
-
-        "position_count": len(positions),
-
-        "risk": "MONITORING",
-
-        def build_sentinel_state(
-    account,
-    positions,
-    market_status
-):
-
     position_list = []
 
     for p in positions:
@@ -40,10 +16,6 @@ def build_sentinel_state(
         })
 
 
-    equity = float(account.equity)
-    cash = float(account.cash)
-
-
     if len(position_list) == 0:
         risk = "LOW"
 
@@ -54,15 +26,15 @@ def build_sentinel_state(
         risk = "HIGH"
 
 
-    return {
+    state = {
 
         "engine": "ONLINE",
 
         "market_status": market_status,
 
-        "equity": equity,
+        "equity": account.equity,
 
-        "cash": cash,
+        "cash": account.cash,
 
         "buying_power": account.buying_power,
 
@@ -76,6 +48,5 @@ def build_sentinel_state(
 
     }
 
-    
 
     return state
