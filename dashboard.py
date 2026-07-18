@@ -180,14 +180,17 @@ eml_ecosystem_panel()
 
 
 
+
+
 # ============================================================
-# LIVE MARKET DATA
+# SMART LIVE MARKET DATA LOADER
 # ============================================================
 
 def get_live_chart_data(symbol):
 
     try:
 
+        # Try minute data first
         request = StockBarsRequest(
             symbol_or_symbols=[symbol],
             timeframe=TimeFrame.Minute,
@@ -197,6 +200,7 @@ def get_live_chart_data(symbol):
         bars = data_client.get_stock_bars(request)
 
         df = bars.df
+
 
         # Market closed fallback
         if df.empty:
@@ -211,8 +215,12 @@ def get_live_chart_data(symbol):
 
             df = bars.df
 
+
         if df.empty:
             return None
+
+
+        # Handle Alpaca multi index
 
         if isinstance(df.index, pd.MultiIndex):
 
@@ -221,13 +229,26 @@ def get_live_chart_data(symbol):
                 level="symbol"
             )
 
-        df.columns = [str(c).lower() for c in df.columns]
 
-        return df.sort_index()
+        # Normalize columns
+
+        df.columns = [
+            str(c).lower()
+            for c in df.columns
+        ]
+
+
+        df = df.sort_index()
+
+
+        return df
+
 
     except Exception as e:
 
-        st.error(f"Chart Error: {e}")
+        st.warning(
+            f"Market data unavailable: {e}"
+        )
 
         return None
 
@@ -519,7 +540,7 @@ try:
         chart_symbol
     )
 
-    if chart_df is not None:
+    if chart_df is not None and len(chart_df) > 0:
 
         fig = create_candlestick_chart(
             chart_df,
