@@ -17,6 +17,9 @@ def sentinel_ai_chat():
 
         if question:
 
-            answer = sentinel_response(question)
+            answer = sentinel_response(
+    question,
+    st.session_state.get("sentinel_state")
+)
 
             st.success(answer)
