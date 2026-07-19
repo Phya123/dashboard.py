@@ -135,12 +135,25 @@ ${state.get("buying_power","N/A")}
 
         if symbol.lower() in q:
 
-            return f"""
-📈 Sentinel Symbol Intelligence
+            response = f"""
+📈 Sentinel Market Intelligence
 
-Symbol:
-{symbol}
+Symbol: {symbol}
 
+Current Price:
+${price}
+
+"""
+        market = get_symbol_data(symbol)
+
+        price = "Unavailable"
+
+        if market:
+
+            try:
+                price = round(float(market["close"]), 2)
+            except:
+                pass
 Connected Data:
 ✅ Position tracking
 ✅ Market terminal
