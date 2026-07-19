@@ -3,115 +3,140 @@ from datetime import datetime
 
 def sentinel_response(question, state):
 
+    if not question:
+        return "Ask Sentinel a question."
+
+
     q = question.lower()
 
 
     # =========================
-    # APP EXPLANATION
+    # EXPLAIN APP
     # =========================
 
-    if "explain" in q and "app" in q:
+    if "explain" in q or "what is this" in q:
 
         return """
-EML SENTINEL is an AI command center.
+🧠 EML SENTINEL COMMAND CENTER
 
-It connects:
-🤖 Sentinel AI Intelligence
-📊 Alpaca Market Data
-🌎 NeighborLink Community
+This application is an AI information hub.
+
+Connected systems:
+
+🤖 Sentinel AI
+Explains account, market, and dashboard data.
+
+📊 Alpaca Intelligence
+Displays live account and market information.
+
+🌎 NeighborLink
+Community system for people, skills, and opportunities.
+
 🌐 EML Ecosystem
+Tracks EML Coin, NFTs, shoes, and clothing projects.
 
-The dashboard is READ ONLY.
-It monitors information and explains data.
+🔒 Dashboard Mode:
+READ ONLY
+
+This dashboard monitors information.
 It does not place trades.
 """
 
 
     # =========================
-    # EQUITY
+    # ACCOUNT
     # =========================
 
-    if "equity" in q:
-
-        account = state.get("account")
-
-        if account:
-            return f"""
-Your current account equity is:
-
-${float(account.equity):,.2f}
-
-This represents your total account value.
-"""
-
-        return "Account data is unavailable."
+    account = state.get("account")
 
 
-    # =========================
-    # CASH
-    # =========================
+    if account:
 
-    if "cash" in q:
+        if "equity" in q:
 
-        account = state.get("account")
-
-        return f"""
-Available cash:
-
-${float(account.cash):,.2f}
-"""
+            return (
+                f"Your current account equity is "
+                f"${float(account.equity):,.2f}"
+            )
 
 
-    # =========================
-    # BUYING POWER
-    # =========================
+        if "cash" in q:
 
-    if "buying power" in q:
+            return (
+                f"Your available cash is "
+                f"${float(account.cash):,.2f}"
+            )
 
-        account = state.get("account")
 
-        return f"""
-Buying power:
+        if "buying power" in q:
 
-${float(account.buying_power):,.2f}
-"""
+            return (
+                f"Your buying power is "
+                f"${float(account.buying_power):,.2f}"
+            )
 
 
     # =========================
     # POSITIONS
     # =========================
 
-    if "position" in q:
+    positions = state.get(
+        "positions",
+        []
+    )
 
-        positions = state.get("positions",[])
+
+    if "position" in q or "hold" in q:
 
         if not positions:
-            return "There are currently no positions."
+            return "You currently have no open positions."
 
-        answer="Current positions:\n\n"
+
+        response = "Current positions:\n\n"
+
 
         for p in positions:
 
-            answer += (
-                f"{p.symbol}: "
-                f"{p.qty} shares | "
-                f"P/L ${p.unrealized_pl}\n"
+            response += (
+                f"📈 {p.symbol}\n"
+                f"Shares: {p.qty}\n"
+                f"Current Price: ${p.current_price}\n"
+                f"Unrealized P/L: ${p.unrealized_pl}\n\n"
             )
 
-        return answer
+
+        return response
 
 
 
     # =========================
-    # MARKET STATUS
+    # MARKET
     # =========================
 
     if "market" in q:
 
-        return f"""
-Market status:
+        return (
+            "Current market status: "
+            f"{state.get('market_status','UNKNOWN')}"
+        )
 
-{state.get("market_status","UNKNOWN")}
+
+
+    # =========================
+    # NEIGHBORLINK
+    # =========================
+
+    if "neighbor" in q:
+
+        return """
+🌎 NeighborLink connects people,
+skills, opportunities, and projects.
+
+Future modules:
+- Profiles
+- Skill marketplace
+- Opportunities
+- Community messaging
 """
 
 
@@ -123,9 +148,11 @@ Market status:
 I am connected to Sentinel intelligence.
 
 Try asking:
-- Explain this dashboard
-- What is my equity?
-- How many positions do I have?
-- What is SPY price?
-- Explain NeighborLink
+
+• Explain this app
+• What is my equity?
+• How much cash do I have?
+• How many positions do I have?
+• Explain NeighborLink
+• What is market status?
 """
