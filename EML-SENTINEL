@@ -71,3 +71,7 @@ ai_core/
  ├── prompts.py
  ├── memory.py
  └── explain.py   <-- missing
+EML-SENTINEL/
+│
+└── ai_core/
+    └── assistant.py
