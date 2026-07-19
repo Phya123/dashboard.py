@@ -26,6 +26,14 @@ def command_center_layout(
 
     status_panel()
 
+    ai_panel(
+    sentinel_state
+    )
+
+    sentinel_ai_chat(
+    sentinel_state
+    )
+
 
     # =========================
     # AI + ACCOUNT
