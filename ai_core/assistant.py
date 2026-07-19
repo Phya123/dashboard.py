@@ -1,5 +1,5 @@
 from scanner import get_symbol_data
-
+from ai_core.knowledge import get_knowledge
 
 def sentinel_response(question, state):
 
