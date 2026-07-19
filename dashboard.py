@@ -15,14 +15,12 @@ from intelligence.data_bridge import build_sentinel_state
 
 from command_center.activity import activity_panel
 
-from command_center.layout import command_center_layout
-
 from command_center.panels import (
     ai_panel,
     account_panel,
     status_panel,
     community_panel,
-    
+    sentinel_ai_chat
 )
 
 
