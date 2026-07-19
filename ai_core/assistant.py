@@ -1,48 +1,101 @@
 import datetime
 
 
-def sentinel_response(question):
+def sentinel_response(question, state=None):
 
     q = question.lower()
 
 
-    if "price" in q or "stock" in q or "qqq" in q:
+    if "account" in q or "equity" in q or "cash" in q:
 
-        return (
-            "I can analyze market information, but I need the "
-            "live market data connection added to my AI bridge. "
-            "The Market Terminal already connects to Alpaca."
-        )
+        if state:
+
+            return f"""
+💰 Account Intelligence
+
+Equity: ${state.get('equity','N/A')}
+Cash: ${state.get('cash','N/A')}
+Buying Power: ${state.get('buying_power','N/A')}
+
+Sentinel is monitoring your Alpaca account in READ ONLY mode.
+"""
+
+        return """
+💰 Account Intelligence
+
+Your dashboard is connected to Alpaca.
+Account information is displayed in READ ONLY mode.
+"""
+
+
+    if "position" in q or "holding" in q:
+
+        if state:
+
+            return f"""
+📊 Open Positions
+
+Sentinel is currently tracking:
+{len(state.get('positions', []))} positions.
+
+No trading actions are performed by this dashboard.
+"""
+
+        return "Position data is connected through the Sentinel intelligence layer."
+
+
+    if "market" in q:
+
+        if state:
+
+            return f"""
+📈 Market Status
+
+Current Market:
+{state.get('market_status','UNKNOWN')}
+
+Sentinel is monitoring market conditions.
+"""
+
+        return "Market intelligence module is online."
 
 
     if "dashboard" in q or "explain" in q:
 
         return """
-EML SENTINEL COMMAND CENTER:
+🧠 EML SENTINEL COMMAND CENTER
 
-🤖 AI Core monitors your ecosystem.
+This dashboard has five intelligence areas:
 
-💰 Account Intelligence shows Alpaca account status.
+🤖 Sentinel AI
+Explains your system status.
 
-📈 Market Terminal displays price charts.
+💰 Account Intelligence
+Shows Alpaca account information.
 
-🔍 Scanner analyzes watchlist symbols.
+📊 Market Terminal
+Displays market charts and data.
 
-🌎 NeighborLink connects people, skills, and opportunities.
+🌎 NeighborLink
+Connects people, skills, and opportunities.
 
-🌐 EML Ecosystem tracks your brand, coin, and digital assets.
+🌐 EML Ecosystem
+Tracks EML projects, brand, NFTs, and coin.
 
-Dashboard mode is READ ONLY.
+The dashboard is READ ONLY.
 """
 
 
-    if "hello" in q or "hi" in q:
+    return f"""
+Sentinel AI received:
 
-        return "Sentinel AI online. How can I help you understand your command center?"
+"{question}"
 
-
-    return (
-        f"Sentinel received your question:\n\n"
-        f"{question}\n\n"
-        "I am online. More intelligence modules can be connected next."
-    )
+I am online and connected to the EML SENTINEL command center.
+Ask me about:
+- your account
+- positions
+- market status
+- dashboard features
+- EML ecosystem
+"""
