@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from scanner import get_symbol_data
 
 def sentinel_response(question, state):
 
