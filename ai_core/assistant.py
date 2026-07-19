@@ -106,45 +106,55 @@ ${state.get("buying_power","N/A")}
         return response
 
 
-# =========================
-# SYMBOL INTELLIGENCE
-# =========================
 
-symbols = [
-    "SPY",
-    "QQQ",
-    "NVDA",
-    "AAPL",
-    "MSFT",
-    "AMD",
-    "META",
-    "AMZN",
-    "GOOGL",
-    "TSLA",
-    "LMT",
-    "XLE",
-    "ASML",
-    "TSM",
-    "NVS",
-    "SPCX",
-    "DEO"
-]
+    # Explain App
 
-for symbol in symbols:
+    # Account
 
-    if symbol.lower() in q:
+    # Positions
 
-        market = get_symbol_data(symbol)
 
-        price = "Unavailable"
+    # =========================
+    # SYMBOL INTELLIGENCE
+    # =========================
 
-        if market:
-            try:
-                price = round(float(market["close"]), 2)
-            except Exception:
-                pass
+    symbols = [
+        "SPY",
+        "QQQ",
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMD",
+        "META",
+        "AMZN",
+        "GOOGL",
+        "TSLA",
+        "LMT",
+        "XLE",
+        "ASML",
+        "TSM",
+        "NVS",
+        "SPCX",
+        "DEO"
+    ]
 
-        response = f"""
+
+    for symbol in symbols:
+
+        if symbol.lower() in q:
+
+            market = get_symbol_data(symbol)
+
+            price = "Unavailable"
+
+            if market:
+                try:
+                    price = round(float(market["close"]), 2)
+                except:
+                    pass
+
+
+            return f"""
 📈 Sentinel Market Intelligence
 
 Symbol: {symbol}
@@ -152,19 +162,88 @@ Symbol: {symbol}
 Current Price:
 ${price}
 
-Connected Data:
 ✅ Position Tracking
 ✅ Market Terminal
 ✅ Scanner Monitoring
 
-Sentinel can also provide:
-• Position information
-• Company overview
+Sentinel can provide:
+• Current price
+• Your position
+• Company information
 • Market status
-• Recent news (when connected)
 """
 
-        return response
+
+    # Market Status
+
+    if "market" in q:
+        return f"""
+📊 Market Status
+
+{state.get("market_status","UNKNOWN")}
+"""
+
+
+        return """
+🤖 Sentinel AI
+
+Try asking:
+
+📱 APP
+• Explain this app
+• What does Sentinel do?
+• Explain NeighborLink
+• Explain EML Ecosystem
+
+💰 ACCOUNT
+• What is my equity?
+• How much cash do I have?
+• How much buying power?
+• How many positions do I have?
+• What symbols do I own?
+
+📈 MARKET
+• What is market status?
+• How much is NVDA?
+• How much is AAPL?
+• How much is SPY?
+• How much is QQQ?
+• Tell me about Tesla
+• Tell me about Microsoft
+• Give me market news
+
+🌎 INTELLIGENCE
+• Latest market updates
+• Explain my portfolio
+• Which positions are performing?
+• Explain my holdings
+
+🚀 EML ECOSYSTEM
+• Tell me about EML Coin
+• Tell me about GOAT WALKAS V2
+• Explain the EML Brand
+• Explain NFT collection
+• Explain upcoming drops
+• Explain airdrops and rewards
+
+🔒 SECURITY
+• Is this dashboard trading?
+• What mode is Sentinel in?
+
+Sentinel is connected to:
+✅ Alpaca Intelligence
+✅ Account Data
+✅ Position Tracking
+✅ Market Terminal
+✅ Scanner Monitoring
+✅ EML Ecosystem Hub
+
+Dashboard Mode:
+🔒 READ ONLY
+"""
+
+
+            return response
 
 
     # =========================
