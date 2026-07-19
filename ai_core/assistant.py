@@ -5,6 +5,11 @@ def sentinel_response(question, state):
 
     if not question:
         return "Ask Sentinel a question."
+
+
+    q = question.lower()
+
+
     # =========================
     # SENTINEL STATUS
     # =========================
@@ -78,8 +83,6 @@ ONLINE
 Sentinel is monitoring your connected intelligence systems.
 """
 
-    q = question.lower()
-
 
     # =========================
     # EXPLAIN APP
@@ -94,31 +97,43 @@ EML Sentinel is an AI information command center.
 
 🤖 Sentinel AI
 Answers questions about:
+
 • Account intelligence
 • Positions
 • Symbols
 • Market information
 • Ecosystem information
 
+
 📊 Alpaca Intelligence
+
 Provides:
+
 • Equity
 • Cash
 • Buying power
 • Positions
 • Market status
 
+
 📈 Live Market Terminal
+
 Displays market information and charts.
 
+
 🔍 Sentinel Scanner
+
 Monitors tracked symbols.
 
+
 🌎 NeighborLink
+
 Community system for:
+
 • Skills
 • Opportunities
 • Connections
+
 
 🌐 EML Ecosystem Hub
 
@@ -129,7 +144,9 @@ Tracks:
 👟 GOAT WALKAS V2
 👕 EML Clothing
 
+
 🔒 Dashboard Mode:
+
 READ ONLY
 
 This dashboard monitors information.
@@ -185,7 +202,11 @@ ${state.get("buying_power","N/A")}
     # POSITIONS
     # =========================
 
-    if "position" in q or "holdings" in q or "own" in q:
+    if (
+        "position" in q
+        or "holdings" in q
+        or "own" in q
+    ):
 
         positions = state.get(
             "positions",
@@ -263,14 +284,12 @@ ${state.get("buying_power","N/A")}
 
             price = "Unavailable"
 
-
             data_client = state.get(
                 "data_client"
             )
 
 
             if data_client:
-
 
                 try:
 
@@ -289,7 +308,6 @@ ${state.get("buying_power","N/A")}
                             2
                         )
 
-
                 except Exception:
 
                     price = "Unavailable"
@@ -300,13 +318,13 @@ ${state.get("buying_power","N/A")}
 📈 Sentinel Market Intelligence
 
 Symbol:
+
 {symbol}
 
 
 Current Price:
 
 ${price}
-
 
 """
 
@@ -327,7 +345,7 @@ ${price}
 
                     p.get("symbol")
 
-                    if isinstance(p,dict)
+                    if isinstance(p, dict)
 
                     else p.symbol
 
@@ -360,7 +378,6 @@ ${price}
                     )
 
 
-
             if not found:
 
                 response += """
@@ -376,7 +393,9 @@ You do not currently own this symbol.
 ✅ Scanner Connected
 ✅ Position Tracking Connected
 
+
 Future Modules:
+
 • Company information
 • Market news
 • AI summaries
@@ -392,8 +411,11 @@ Future Modules:
     # EML ECOSYSTEM
     # =========================
 
-
-    if "coin" in q or "eml" in q or "goat" in q:
+    if (
+        "coin" in q
+        or "eml" in q
+        or "goat" in q
+    ):
 
         return """
 
@@ -421,9 +443,12 @@ Digital assets connected to the EML ecosystem.
 
 Shoes + clothing marketplace development.
 
-
 """
 
+
+    # =========================
+    # HELP
+    # =========================
 
     return """
 🤖 Sentinel AI
@@ -431,6 +456,7 @@ Shoes + clothing marketplace development.
 Try asking:
 
 • Explain this app
+• Give me a system report
 • What is my equity?
 • How much cash?
 • How much buying power?
