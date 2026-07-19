@@ -6,7 +6,6 @@ def sentinel_response(question, state):
     if not question:
         return "Ask Sentinel a question."
 
-
     q = question.lower()
 
 
@@ -15,7 +14,6 @@ def sentinel_response(question, state):
     # =========================
 
     if "explain" in q or "what is this" in q:
-
         return """
 🧠 EML SENTINEL COMMAND CENTER
 
@@ -28,13 +26,10 @@ Answers questions about your account, positions, market data, and the app.
 Provides account information, equity, cash, buying power, positions, and market status.
 
 📈 Live Market Terminal
-Displays charts and market information for tracked symbols.
-
-🔍 Sentinel Scanner
-Analyzes your watchlist.
+Displays charts and market information.
 
 🌎 NeighborLink
-A human connection platform for skills, opportunities, and community.
+Community network for skills, opportunities, and connections.
 
 🌐 EML Ecosystem Hub
 Tracks:
@@ -42,9 +37,8 @@ Tracks:
 🎨 NFT Collection
 👟 EML Brand
 
-🔒 Security Rule:
-This dashboard is READ ONLY.
-It does not place trades.
+🔒 Dashboard Mode:
+READ ONLY
 """
 
 
@@ -53,7 +47,6 @@ It does not place trades.
     # =========================
 
     if "equity" in q:
-
         return f"""
 💰 Account Equity
 
@@ -62,7 +55,6 @@ ${state.get("equity","N/A")}
 
 
     if "cash" in q:
-
         return f"""
 💵 Available Cash
 
@@ -71,7 +63,6 @@ ${state.get("cash","N/A")}
 
 
     if "buying power" in q:
-
         return f"""
 ⚡ Buying Power
 
@@ -90,17 +81,17 @@ ${state.get("buying_power","N/A")}
         if not positions:
             return "No open positions found."
 
-        response = "📊 Current Sentinel Positions\n\n"
+        response = "📊 Sentinel Positions\n\n"
 
         for p in positions:
 
             if isinstance(p, dict):
 
                 response += (
-                    f"📈 {p.get('symbol','UNKNOWN')}\n"
-                    f"Shares: {p.get('qty','N/A')}\n"
-                    f"Current Price: ${p.get('current_price','N/A')}\n"
-                    f"Unrealized P/L: ${p.get('unrealized_pl','N/A')}\n\n"
+                    f"📈 {p.get('symbol')}\n"
+                    f"Shares: {p.get('qty')}\n"
+                    f"Price: ${p.get('current_price')}\n"
+                    f"P/L: ${p.get('unrealized_pl')}\n\n"
                 )
 
             else:
@@ -108,29 +99,15 @@ ${state.get("buying_power","N/A")}
                 response += (
                     f"📈 {p.symbol}\n"
                     f"Shares: {p.qty}\n"
-                    f"Current Price: ${p.current_price}\n"
-                    f"Unrealized P/L: ${p.unrealized_pl}\n\n"
+                    f"Price: ${p.current_price}\n"
+                    f"P/L: ${p.unrealized_pl}\n\n"
                 )
-
 
         return response
 
 
     # =========================
-    # MARKET STATUS
-    # =========================
-
-    if "market" in q:
-
-        return f"""
-📊 Market Status
-
-{state.get("market_status","UNKNOWN")}
-"""
-
-
-    # =========================
-    # SYMBOL SEARCH
+    # SYMBOL INTELLIGENCE
     # =========================
 
     symbols = [
@@ -161,36 +138,44 @@ ${state.get("buying_power","N/A")}
             return f"""
 📈 Sentinel Symbol Intelligence
 
-Symbol: {symbol}
+Symbol:
+{symbol}
 
-I can provide:
-• Current price
-• Position information
-• Market status
-• Recent news (when connected)
-• Company information
+Connected Data:
+✅ Position tracking
+✅ Market terminal
+✅ Scanner monitoring
 
-Live symbol data connection is active through Sentinel.
+Next upgrade:
+Live price + news feed connection.
 """
 
 
     # =========================
-    # HELP MENU
+    # MARKET STATUS
     # =========================
 
+    if "market" in q:
+
+        return f"""
+📊 Market Status
+
+{state.get("market_status","UNKNOWN")}
+"""
+
+
     return """
-🤖 Sentinel AI Commands
+🤖 Sentinel AI
 
 Try asking:
 
 • Explain this app
 • What is my equity?
-• How much cash do I have?
+• How much cash?
 • How much buying power?
-• How many positions do I have?
+• What positions do I have?
 • What symbols do I own?
 • What is market status?
 • Tell me about NVDA
 • Tell me about SPY
-• Explain NeighborLink
 """
