@@ -183,7 +183,84 @@ Sentinel can provide:
 {state.get("market_status","UNKNOWN")}
 """
 
+    # =========================
+    # COMPANY INFORMATION
+    # =========================
 
+    companies = {
+        "tesla": {
+            "symbol": "TSLA",
+            "name": "Tesla",
+            "info": "Electric vehicle, energy storage, and AI company."
+        },
+        "nvda": {
+            "symbol": "NVDA",
+            "name": "NVIDIA",
+            "info": "Semiconductor company focused on GPUs, AI chips, and data centers."
+        },
+        "aapl": {
+            "symbol": "AAPL",
+            "name": "Apple",
+            "info": "Technology company known for iPhone, services, and consumer electronics."
+        },
+        "spy": {
+            "symbol": "SPY",
+            "name": "SPY ETF",
+            "info": "ETF that tracks the S&P 500 index."
+        },
+        "qqq": {
+            "symbol": "QQQ",
+            "name": "QQQ ETF",
+            "info": "ETF tracking the Nasdaq-100 technology-focused index."
+        }
+    }
+
+
+    for company in companies:
+
+        if company in q:
+
+            data = companies[company]
+
+            market = get_symbol_data(
+                data["symbol"]
+            )
+
+            price = "Unavailable"
+
+            if market:
+                try:
+                    price = round(
+                        float(market["close"]),
+                        2
+                    )
+                except:
+                    pass
+
+
+            return f"""
+🤖 Sentinel Company Intelligence
+
+Company:
+{data["name"]}
+
+Symbol:
+{data["symbol"]}
+
+Current Price:
+${price}
+
+Overview:
+{data["info"]}
+
+Sentinel can monitor:
+✅ Price data
+✅ Your position
+✅ Market status
+✅ Scanner information
+
+🔒 Dashboard remains READ ONLY.
+"""
         return """
 🤖 Sentinel AI
 
