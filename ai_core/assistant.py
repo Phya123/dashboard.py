@@ -19,26 +19,31 @@ def sentinel_response(question, state):
         return """
 🧠 EML SENTINEL COMMAND CENTER
 
-This application is an AI information hub.
-
-Connected systems:
+EML Sentinel is an AI information command center.
 
 🤖 Sentinel AI
-Explains account, market, and dashboard data.
+Answers questions about your account, positions, market data, and the app.
 
 📊 Alpaca Intelligence
-Displays live account and market information.
+Provides account information, equity, cash, buying power, positions, and market status.
+
+📈 Live Market Terminal
+Displays charts and market information for tracked symbols.
+
+🔍 Sentinel Scanner
+Analyzes your watchlist.
 
 🌎 NeighborLink
-Community system for people, skills, and opportunities.
+A human connection platform for skills, opportunities, and community.
 
-🌐 EML Ecosystem
-Tracks EML Coin, NFTs, shoes, and clothing projects.
+🌐 EML Ecosystem Hub
+Tracks:
+🪙 EML Coin
+🎨 NFT Collection
+👟 EML Brand
 
-🔒 Dashboard Mode:
-READ ONLY
-
-This dashboard monitors information.
+🔒 Security Rule:
+This dashboard is READ ONLY.
 It does not place trades.
 """
 
@@ -47,111 +52,145 @@ It does not place trades.
     # ACCOUNT
     # =========================
 
-    account = state.get("account")
+    if "equity" in q:
+
+        return f"""
+💰 Account Equity
+
+${state.get("equity","N/A")}
+"""
 
 
-    if account:
+    if "cash" in q:
 
-        if "equity" in q:
+        return f"""
+💵 Available Cash
 
-            return (
-                f"Your current account equity is "
-                f"${float(account.equity):,.2f}"
-            )
-
-
-        if "cash" in q:
-
-            return (
-                f"Your available cash is "
-                f"${float(account.cash):,.2f}"
-            )
+${state.get("cash","N/A")}
+"""
 
 
-        if "buying power" in q:
+    if "buying power" in q:
 
-            return (
-                f"Your buying power is "
-                f"${float(account.buying_power):,.2f}"
-            )
+        return f"""
+⚡ Buying Power
+
+${state.get("buying_power","N/A")}
+"""
 
 
     # =========================
     # POSITIONS
     # =========================
 
-    positions = state.get(
-        "positions",
-        []
-    )
+    if "position" in q or "hold" in q or "own" in q:
 
-
-    if "position" in q or "hold" in q:
+        positions = state.get("positions", [])
 
         if not positions:
-            return "You currently have no open positions."
+            return "No open positions found."
 
-
-        response = "Current positions:\n\n"
-
+        response = "📊 Current Sentinel Positions\n\n"
 
         for p in positions:
 
-            response += (
-                f"📈 {p.get('symbol','UNKNOWN')}\n"
-                f"Shares: {p.get('qty','N/A')}\n"
-                f"Current Price: ${p.get('current_price','N/A')}\n"
-                f"Unrealized P/L: ${p.get('unrealized_pl','0')}\n\n"
-            )
+            if isinstance(p, dict):
 
-            return response
+                response += (
+                    f"📈 {p.get('symbol','UNKNOWN')}\n"
+                    f"Shares: {p.get('qty','N/A')}\n"
+                    f"Current Price: ${p.get('current_price','N/A')}\n"
+                    f"Unrealized P/L: ${p.get('unrealized_pl','N/A')}\n\n"
+                )
 
+            else:
+
+                response += (
+                    f"📈 {p.symbol}\n"
+                    f"Shares: {p.qty}\n"
+                    f"Current Price: ${p.current_price}\n"
+                    f"Unrealized P/L: ${p.unrealized_pl}\n\n"
+                )
+
+
+        return response
 
 
     # =========================
-    # MARKET
+    # MARKET STATUS
     # =========================
 
     if "market" in q:
 
-        return (
-            "Current market status: "
-            f"{state.get('market_status','UNKNOWN')}"
-        )
+        return f"""
+📊 Market Status
 
-
-
-    # =========================
-    # NEIGHBORLINK
-    # =========================
-
-    if "neighbor" in q:
-
-        return """
-🌎 NeighborLink connects people,
-skills, opportunities, and projects.
-
-Future modules:
-- Profiles
-- Skill marketplace
-- Opportunities
-- Community messaging
+{state.get("market_status","UNKNOWN")}
 """
 
 
     # =========================
-    # DEFAULT
+    # SYMBOL SEARCH
+    # =========================
+
+    symbols = [
+        "SPY",
+        "QQQ",
+        "NVDA",
+        "AAPL",
+        "MSFT",
+        "AMD",
+        "META",
+        "AMZN",
+        "GOOGL",
+        "TSLA",
+        "LMT",
+        "XLE",
+        "ASML",
+        "TSM",
+        "NVS",
+        "SPCX",
+        "DEO"
+    ]
+
+
+    for symbol in symbols:
+
+        if symbol.lower() in q:
+
+            return f"""
+📈 Sentinel Symbol Intelligence
+
+Symbol: {symbol}
+
+I can provide:
+• Current price
+• Position information
+• Market status
+• Recent news (when connected)
+• Company information
+
+Live symbol data connection is active through Sentinel.
+"""
+
+
+    # =========================
+    # HELP MENU
     # =========================
 
     return """
-I am connected to Sentinel intelligence.
+🤖 Sentinel AI Commands
 
 Try asking:
 
 • Explain this app
 • What is my equity?
 • How much cash do I have?
+• How much buying power?
 • How many positions do I have?
-• Explain NeighborLink
+• What symbols do I own?
 • What is market status?
+• Tell me about NVDA
+• Tell me about SPY
+• Explain NeighborLink
 """
