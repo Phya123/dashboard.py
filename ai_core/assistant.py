@@ -276,11 +276,9 @@ ${state.get("buying_power","N/A")}
     ]
 
 
-    for symbol in symbols:
-
+        for symbol in symbols:
 
         if symbol.lower() in q:
-
 
             price = "Unavailable"
 
@@ -288,43 +286,57 @@ ${state.get("buying_power","N/A")}
                 "data_client"
             )
 
+            if not data_client:
+                data_client = state.get(
+                    "alpaca_data_client"
+                )
 
-            if data_client:
 
-                try:
+            try:
+
+                if data_client:
 
                     market = get_symbol_data(
                         symbol,
                         data_client
                     )
 
-
                     if market:
 
+                        if isinstance(market, dict):
+
+                            price = market.get(
+                                "close",
+                                "Unavailable"
+                            )
+
+                        else:
+
+                            price = market["close"]
+
+
                         price = round(
-                            float(
-                                market["close"]
-                            ),
+                            float(price),
                             2
                         )
 
-                except Exception:
 
-                    price = "Unavailable"
+            except Exception:
 
+                price = "Unavailable"
 
 
             response = f"""
 📈 Sentinel Market Intelligence
 
 Symbol:
-
 {symbol}
 
 
 Current Price:
 
 ${price}
+
 
 """
 
@@ -340,7 +352,6 @@ ${price}
 
             for p in positions:
 
-
                 current_symbol = (
 
                     p.get("symbol")
@@ -354,9 +365,7 @@ ${price}
 
                 if current_symbol == symbol:
 
-
                     found = True
-
 
                     response += """
 
@@ -367,13 +376,13 @@ ${price}
 
                     response += (
 
-                        f"Shares: {p.get('qty') if isinstance(p,dict) else p.qty}\n"
+                        f"Shares: {p.get('qty','N/A') if isinstance(p,dict) else p.qty}\n"
 
-                        f"Entry: ${p.get('avg_entry_price') if isinstance(p,dict) else p.avg_entry_price}\n"
+                        f"Entry: ${p.get('avg_entry_price','N/A') if isinstance(p,dict) else getattr(p,'avg_entry_price','N/A')}\n"
 
-                        f"Current: ${p.get('current_price') if isinstance(p,dict) else p.current_price}\n"
+                        f"Current: ${p.get('current_price','N/A') if isinstance(p,dict) else getattr(p,'current_price','N/A')}\n"
 
-                        f"P/L: ${p.get('unrealized_pl') if isinstance(p,dict) else p.unrealized_pl}\n"
+                        f"P/L: ${p.get('unrealized_pl','N/A') if isinstance(p,dict) else getattr(p,'unrealized_pl','N/A')}\n"
 
                     )
 
@@ -393,6 +402,10 @@ You do not currently own this symbol.
 ✅ Scanner Connected
 ✅ Position Tracking Connected
 
+"""
+
+
+            return response
 
 Future Modules:
 
