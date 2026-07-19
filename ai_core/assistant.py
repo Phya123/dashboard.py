@@ -1,86 +1,82 @@
 from scanner import get_symbol_data
 
+
 def sentinel_response(question, state):
 
     if not question:
         return "Ask Sentinel a question."
 
-
     q = question.lower()
 
 
-
     # =========================
-    # SENTINEL STATUS
+    # SENTINEL STATUS REPORT
     # =========================
 
     if (
         "status" in q
         or "system" in q
-        or "what is happening" in q
         or "report" in q
+        or "what is happening" in q
     ):
 
-        positions = state.get(
-            "positions",
-            []
-        )
+        positions = state.get("positions", [])
 
         return f"""
-🧠 Sentinel System Report
+🧠 SENTINEL SYSTEM REPORT
 
 
-🤖 AI Core
+🤖 AI CORE
 
 ONLINE
 
 
-🔒 Dashboard
+🔒 DASHBOARD
 
 READ ONLY
 
 
-📊 Alpaca Intelligence
+📊 ALPACA INTELLIGENCE
 
 CONNECTED
 
 
-💰 Account Equity
+💰 EQUITY
 
 ${state.get("equity","N/A")}
 
 
-💵 Cash
+💵 CASH
 
 ${state.get("cash","N/A")}
 
 
-⚡ Buying Power
+⚡ BUYING POWER
 
 ${state.get("buying_power","N/A")}
 
 
-📈 Open Positions
+📈 POSITIONS
 
 {len(positions)}
 
 
-🌎 NeighborLink
+🌎 NEIGHBORLINK
 
 ONLINE
 
 
-🌐 EML Ecosystem
+🌐 EML ECOSYSTEM
 
 ONLINE
 
 
-📊 Market
+📊 MARKET
 
 {state.get("market_status","UNKNOWN")}
 
 
-Sentinel is monitoring your connected intelligence systems.
+Sentinel is monitoring connected intelligence systems.
 """
 
 
@@ -91,21 +87,25 @@ Sentinel is monitoring your connected intelligence systems.
     if "explain" in q or "what is this" in q:
 
         return """
+
 🧠 EML SENTINEL COMMAND CENTER
 
-EML Sentinel is an AI information command center.
 
-🤖 Sentinel AI
-Answers questions about:
+Sentinel is an AI information operating system.
+
+
+🤖 SENTINEL AI
+
+Provides:
 
 • Account intelligence
-• Positions
-• Symbols
+• Portfolio information
+• Symbol analysis
 • Market information
 • Ecosystem information
 
 
-📊 Alpaca Intelligence
+📊 ALPACA INTELLIGENCE
 
 Provides:
 
@@ -116,41 +116,50 @@ Provides:
 • Market status
 
 
-📈 Live Market Terminal
+📈 MARKET TERMINAL
 
-Displays market information and charts.
+Displays:
+
+• Symbol information
+• Price monitoring
+• Charts
 
 
-🔍 Sentinel Scanner
+🔍 SENTINEL SCANNER
 
-Monitors tracked symbols.
+Monitors tracked markets.
 
 
-🌎 NeighborLink
+🌎 NEIGHBORLINK
 
-Community system for:
+Community intelligence system for:
 
 • Skills
 • Opportunities
 • Connections
 
 
-🌐 EML Ecosystem Hub
+🌐 EML ECOSYSTEM HUB
 
 Tracks:
 
 🪙 EML Coin
+
 🎨 NFT Collection
+
 👟 GOAT WALKAS V2
+
 👕 EML Clothing
 
 
-🔒 Dashboard Mode:
+🔒 SECURITY
+
+Dashboard Mode:
 
 READ ONLY
 
-This dashboard monitors information.
-It does NOT place trades.
+No trading actions happen inside this dashboard.
+
 """
 
 
@@ -170,7 +179,7 @@ ${state.get("equity","N/A")}
     if "cash" in q:
 
         return f"""
-💵 Available Cash
+💵 Cash Available
 
 ${state.get("cash","N/A")}
 """
@@ -186,40 +195,24 @@ ${state.get("buying_power","N/A")}
 
 
     # =========================
-    # MARKET STATUS
-    # =========================
-
-    if "market status" in q or q == "market":
-
-        return f"""
-📊 Market Status
-
-{state.get("market_status","UNKNOWN")}
-"""
-
-
-    # =========================
     # POSITIONS
     # =========================
 
     if (
         "position" in q
-        or "holdings" in q
+        or "holding" in q
+        or "portfolio" in q
         or "own" in q
     ):
 
-        positions = state.get(
-            "positions",
-            []
-        )
+        positions = state.get("positions", [])
 
         if not positions:
-
             return "No open positions found."
 
 
         response = """
-📊 Sentinel Positions
+📊 SENTINEL POSITIONS
 
 """
 
@@ -280,11 +273,14 @@ ${state.get("buying_power","N/A")}
 
             price = "Unavailable"
 
+
             data_client = state.get(
                 "data_client"
             )
 
+
             if not data_client:
+
                 data_client = state.get(
                     "alpaca_data_client"
                 )
@@ -298,6 +294,7 @@ ${state.get("buying_power","N/A")}
                         symbol,
                         data_client
                     )
+
 
                     if market:
 
@@ -324,10 +321,14 @@ ${state.get("buying_power","N/A")}
                 price = "Unavailable"
 
 
-            response = f"""
-📈 Sentinel Market Intelligence
+
+            return f"""
+
+📈 SENTINEL MARKET INTELLIGENCE
+
 
 Symbol:
+
 {symbol}
 
 
@@ -336,86 +337,38 @@ Current Price:
 ${price}
 
 
-"""
+CONNECTED:
+
+✅ Market Terminal
+
+✅ Scanner
+
+✅ Position Tracking
 
 
-            positions = state.get(
-                "positions",
-                []
-            )
-
-
-            found = False
-
-
-            for p in positions:
-
-                current_symbol = (
-
-                    p.get("symbol")
-
-                    if isinstance(p, dict)
-
-                    else p.symbol
-
-                )
-
-
-                if current_symbol == symbol:
-
-                    found = True
-
-                    response += """
-
-💼 Your Position
-
-"""
-
-
-                    response += (
-
-                        f"Shares: {p.get('qty','N/A') if isinstance(p,dict) else p.qty}\n"
-
-                        f"Entry: ${p.get('avg_entry_price','N/A') if isinstance(p,dict) else getattr(p,'avg_entry_price','N/A')}\n"
-
-                        f"Current: ${p.get('current_price','N/A') if isinstance(p,dict) else getattr(p,'current_price','N/A')}\n"
-
-                        f"P/L: ${p.get('unrealized_pl','N/A') if isinstance(p,dict) else getattr(p,'unrealized_pl','N/A')}\n"
-
-                    )
-
-
-            if not found:
-
-                response += """
-
-You do not currently own this symbol.
-
-"""
-
-
-            response += """
-
-✅ Market Terminal Connected
-✅ Scanner Connected
-✅ Position Tracking Connected
-
-"""
-
-
-                response += """
-
-Future Modules:
+Sentinel can expand with:
 
 • Company information
-• Market news
+• News intelligence
 • AI summaries
 
 """
 
 
-            return response
+    # =========================
+    # MARKET STATUS
+    # =========================
 
+    if "market" in q:
+
+        return f"""
+
+📊 MARKET STATUS
+
+
+{state.get("market_status","UNKNOWN")}
+
+"""
 
 
     # =========================
@@ -430,29 +383,30 @@ Future Modules:
 
         return """
 
-🌐 EML Ecosystem Intelligence
+🌐 EML ECOSYSTEM INTELLIGENCE
 
 
-🪙 EML Coin
+🪙 EML COIN
 
-Tracking ecosystem development.
+Digital ecosystem project tracking.
 
 
 👟 GOAT WALKAS V2
 
-Upcoming EML footwear release.
+EML footwear project.
 
-Early participants will receive special ecosystem rewards and merchandise opportunities.
-
-
-🎨 NFT Collection
-
-Digital assets connected to the EML ecosystem.
+Early ecosystem participants may receive special rewards and merchandise opportunities.
 
 
-👕 EML Brand
+🎨 NFT COLLECTION
+
+Digital assets connected to the ecosystem.
+
+
+👕 EML BRAND
 
 Shoes + clothing marketplace development.
+
 
 """
 
@@ -462,21 +416,37 @@ Shoes + clothing marketplace development.
     # =========================
 
     return """
-🤖 Sentinel AI
+
+🤖 SENTINEL AI
+
 
 Try asking:
 
+
 • Explain this app
+
 • Give me a system report
+
 • What is my equity?
+
 • How much cash?
+
 • How much buying power?
+
 • How many positions do I have?
+
 • What symbols do I own?
+
 • How much is NVDA?
+
 • How much is AAPL?
+
 • Tell me about Tesla
+
 • What is market status?
+
 • Explain EML Coin
+
 • Explain GOAT WALKAS V2
+
 """
