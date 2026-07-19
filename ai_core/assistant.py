@@ -106,36 +106,45 @@ ${state.get("buying_power","N/A")}
         return response
 
 
-    # =========================
-    # SYMBOL INTELLIGENCE
-    # =========================
+# =========================
+# SYMBOL INTELLIGENCE
+# =========================
 
-    symbols = [
-        "SPY",
-        "QQQ",
-        "NVDA",
-        "AAPL",
-        "MSFT",
-        "AMD",
-        "META",
-        "AMZN",
-        "GOOGL",
-        "TSLA",
-        "LMT",
-        "XLE",
-        "ASML",
-        "TSM",
-        "NVS",
-        "SPCX",
-        "DEO"
-    ]
+symbols = [
+    "SPY",
+    "QQQ",
+    "NVDA",
+    "AAPL",
+    "MSFT",
+    "AMD",
+    "META",
+    "AMZN",
+    "GOOGL",
+    "TSLA",
+    "LMT",
+    "XLE",
+    "ASML",
+    "TSM",
+    "NVS",
+    "SPCX",
+    "DEO"
+]
 
+for symbol in symbols:
 
-    for symbol in symbols:
+    if symbol.lower() in q:
 
-        if symbol.lower() in q:
+        market = get_symbol_data(symbol)
 
-            response = f"""
+        price = "Unavailable"
+
+        if market:
+            try:
+                price = round(float(market["close"]), 2)
+            except Exception:
+                pass
+
+        response = f"""
 📈 Sentinel Market Intelligence
 
 Symbol: {symbol}
@@ -143,25 +152,19 @@ Symbol: {symbol}
 Current Price:
 ${price}
 
-"""
-        market = get_symbol_data(symbol)
-
-        price = "Unavailable"
-
-        if market:
-
-            try:
-                price = round(float(market["close"]), 2)
-            except:
-                pass
 Connected Data:
-✅ Position tracking
-✅ Market terminal
-✅ Scanner monitoring
+✅ Position Tracking
+✅ Market Terminal
+✅ Scanner Monitoring
 
-Next upgrade:
-Live price + news feed connection.
+Sentinel can also provide:
+• Position information
+• Company overview
+• Market status
+• Recent news (when connected)
 """
+
+        return response
 
 
     # =========================
