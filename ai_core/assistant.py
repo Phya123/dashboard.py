@@ -98,14 +98,13 @@ It does not place trades.
         for p in positions:
 
             response += (
-                f"📈 {p.symbol}\n"
-                f"Shares: {p.qty}\n"
-                f"Current Price: ${p.current_price}\n"
-                f"Unrealized P/L: ${p.unrealized_pl}\n\n"
+                f"📈 {p.get('symbol','UNKNOWN')}\n"
+                f"Shares: {p.get('qty','N/A')}\n"
+                f"Current Price: ${p.get('current_price','N/A')}\n"
+                f"Unrealized P/L: ${p.get('unrealized_pl','0')}\n\n"
             )
 
-
-        return response
+            return response
 
 
 
