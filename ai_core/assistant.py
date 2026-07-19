@@ -1,101 +1,131 @@
-import datetime
+from datetime import datetime
 
 
-def sentinel_response(question, state=None):
+def sentinel_response(question, state):
 
     q = question.lower()
 
 
-    if "account" in q or "equity" in q or "cash" in q:
+    # =========================
+    # APP EXPLANATION
+    # =========================
 
-        if state:
-
-            return f"""
-💰 Account Intelligence
-
-Equity: ${state.get('equity','N/A')}
-Cash: ${state.get('cash','N/A')}
-Buying Power: ${state.get('buying_power','N/A')}
-
-Sentinel is monitoring your Alpaca account in READ ONLY mode.
-"""
+    if "explain" in q and "app" in q:
 
         return """
-💰 Account Intelligence
+EML SENTINEL is an AI command center.
 
-Your dashboard is connected to Alpaca.
-Account information is displayed in READ ONLY mode.
+It connects:
+🤖 Sentinel AI Intelligence
+📊 Alpaca Market Data
+🌎 NeighborLink Community
+🌐 EML Ecosystem
+
+The dashboard is READ ONLY.
+It monitors information and explains data.
+It does not place trades.
 """
 
 
-    if "position" in q or "holding" in q:
+    # =========================
+    # EQUITY
+    # =========================
 
-        if state:
+    if "equity" in q:
 
+        account = state.get("account")
+
+        if account:
             return f"""
-📊 Open Positions
+Your current account equity is:
 
-Sentinel is currently tracking:
-{len(state.get('positions', []))} positions.
+${float(account.equity):,.2f}
 
-No trading actions are performed by this dashboard.
+This represents your total account value.
 """
 
-        return "Position data is connected through the Sentinel intelligence layer."
+        return "Account data is unavailable."
 
+
+    # =========================
+    # CASH
+    # =========================
+
+    if "cash" in q:
+
+        account = state.get("account")
+
+        return f"""
+Available cash:
+
+${float(account.cash):,.2f}
+"""
+
+
+    # =========================
+    # BUYING POWER
+    # =========================
+
+    if "buying power" in q:
+
+        account = state.get("account")
+
+        return f"""
+Buying power:
+
+${float(account.buying_power):,.2f}
+"""
+
+
+    # =========================
+    # POSITIONS
+    # =========================
+
+    if "position" in q:
+
+        positions = state.get("positions",[])
+
+        if not positions:
+            return "There are currently no positions."
+
+        answer="Current positions:\n\n"
+
+        for p in positions:
+
+            answer += (
+                f"{p.symbol}: "
+                f"{p.qty} shares | "
+                f"P/L ${p.unrealized_pl}\n"
+            )
+
+        return answer
+
+
+
+    # =========================
+    # MARKET STATUS
+    # =========================
 
     if "market" in q:
 
-        if state:
+        return f"""
+Market status:
 
-            return f"""
-📈 Market Status
-
-Current Market:
-{state.get('market_status','UNKNOWN')}
-
-Sentinel is monitoring market conditions.
-"""
-
-        return "Market intelligence module is online."
-
-
-    if "dashboard" in q or "explain" in q:
-
-        return """
-🧠 EML SENTINEL COMMAND CENTER
-
-This dashboard has five intelligence areas:
-
-🤖 Sentinel AI
-Explains your system status.
-
-💰 Account Intelligence
-Shows Alpaca account information.
-
-📊 Market Terminal
-Displays market charts and data.
-
-🌎 NeighborLink
-Connects people, skills, and opportunities.
-
-🌐 EML Ecosystem
-Tracks EML projects, brand, NFTs, and coin.
-
-The dashboard is READ ONLY.
+{state.get("market_status","UNKNOWN")}
 """
 
 
-    return f"""
-Sentinel AI received:
+    # =========================
+    # DEFAULT
+    # =========================
 
-"{question}"
+    return """
+I am connected to Sentinel intelligence.
 
-I am online and connected to the EML SENTINEL command center.
-Ask me about:
-- your account
-- positions
-- market status
-- dashboard features
-- EML ecosystem
+Try asking:
+- Explain this dashboard
+- What is my equity?
+- How many positions do I have?
+- What is SPY price?
+- Explain NeighborLink
 """
