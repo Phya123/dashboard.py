@@ -75,3 +75,10 @@ EML-SENTINEL/
 │
 └── ai_core/
     └── assistant.py
+EML-SENTINEL/
+│
+├── ai_core/
+│   ├── assistant.py
+│   ├── knowledge.py      ← NEW
+│   ├── prompts.py
+│   └── memory.py
