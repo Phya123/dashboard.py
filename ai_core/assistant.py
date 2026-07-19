@@ -1,6 +1,5 @@
 from scanner import get_symbol_data
 
-
 def sentinel_response(question, state):
 
     if not question:
@@ -8,6 +7,7 @@ def sentinel_response(question, state):
 
 
     q = question.lower()
+
 
 
     # =========================
@@ -254,7 +254,6 @@ ${state.get("buying_power","N/A")}
     # =========================
 
     symbols = [
-
         "SPY",
         "QQQ",
         "NVDA",
@@ -272,11 +271,10 @@ ${state.get("buying_power","N/A")}
         "NVS",
         "SPCX",
         "DEO"
-
     ]
 
 
-        for symbol in symbols:
+    for symbol in symbols:
 
         if symbol.lower() in q:
 
