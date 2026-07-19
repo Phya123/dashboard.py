@@ -5,6 +5,78 @@ def sentinel_response(question, state):
 
     if not question:
         return "Ask Sentinel a question."
+    # =========================
+    # SENTINEL STATUS
+    # =========================
+
+    if (
+        "status" in q
+        or "system" in q
+        or "what is happening" in q
+        or "report" in q
+    ):
+
+        positions = state.get(
+            "positions",
+            []
+        )
+
+        return f"""
+🧠 Sentinel System Report
+
+
+🤖 AI Core
+
+ONLINE
+
+
+🔒 Dashboard
+
+READ ONLY
+
+
+📊 Alpaca Intelligence
+
+CONNECTED
+
+
+💰 Account Equity
+
+${state.get("equity","N/A")}
+
+
+💵 Cash
+
+${state.get("cash","N/A")}
+
+
+⚡ Buying Power
+
+${state.get("buying_power","N/A")}
+
+
+📈 Open Positions
+
+{len(positions)}
+
+
+🌎 NeighborLink
+
+ONLINE
+
+
+🌐 EML Ecosystem
+
+ONLINE
+
+
+📊 Market
+
+{state.get("market_status","UNKNOWN")}
+
+
+Sentinel is monitoring your connected intelligence systems.
+"""
 
     q = question.lower()
 
