@@ -40,7 +40,9 @@ def command_center_layout(
             sentinel_state
         )
 
-        sentinel_ai_chat()
+        sentinel_ai_chat(
+            sentinel_state
+        )
 
 
     with right:
