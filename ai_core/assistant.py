@@ -403,7 +403,7 @@ You do not currently own this symbol.
 """
 
 
-            return response
+                response += """
 
 Future Modules:
 
