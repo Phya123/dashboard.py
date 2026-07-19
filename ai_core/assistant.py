@@ -143,18 +143,32 @@ ${state.get("buying_power","N/A")}
 
         if symbol.lower() in q:
 
-            market = get_symbol_data(symbol)
+            data_client = state.get("data_client")
 
             price = "Unavailable"
 
-            if market:
+            if data_client:
+
                 try:
-                    price = round(float(market["close"]), 2)
-                except:
-                    pass
+
+                    market = get_symbol_data(
+                        symbol,
+                        data_client
+                    )
+
+                    if market:
+
+                        price = round(
+                            float(market["close"]),
+                            2
+                        )
+
+                except Exception:
+
+                    price = "Unavailable"
 
 
-            return f"""
+            response = f"""
 📈 Sentinel Market Intelligence
 
 Symbol: {symbol}
@@ -162,26 +176,63 @@ Symbol: {symbol}
 Current Price:
 ${price}
 
+"""
+
+
+            # Check ownership
+
+            positions = state.get(
+                "positions",
+                []
+            )
+
+            for p in positions:
+
+                if isinstance(p, dict):
+
+                    owned = p.get("symbol")
+
+                else:
+
+                    owned = p.symbol
+
+
+                if owned == symbol:
+
+                    response += f"""
+💼 Your Position
+
+Shares:
+{p.get('qty') if isinstance(p,dict) else p.qty}
+
+Entry:
+${p.get('avg_entry_price') if isinstance(p,dict) else p.avg_entry_price}
+
+Current:
+${p.get('current_price') if isinstance(p,dict) else p.current_price}
+
+P/L:
+${p.get('unrealized_pl') if isinstance(p,dict) else p.unrealized_pl}
+"""
+
+
+
+            response += """
+
 ✅ Position Tracking
 ✅ Market Terminal
 ✅ Scanner Monitoring
 
 Sentinel can provide:
 • Current price
-• Your position
-• Company information
+• Your holdings
 • Market status
+• Company information
+• News integration
 """
 
 
-    # Market Status
-
-    if "market" in q:
-        return f"""
-📊 Market Status
-
-{state.get("market_status","UNKNOWN")}
-"""
+            return response
 
     # =========================
     # COMPANY INFORMATION
