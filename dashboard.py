@@ -162,7 +162,13 @@ sentinel_state = build_sentinel_state(
     positions,
     market_status
 )
-
+st.session_state["sentinel_state"] = {
+    "equity": account.equity,
+    "cash": account.cash,
+    "buying_power": account.buying_power,
+    "market_status": market_status,
+    "positions": positions
+}
 
 
 # ==========================
