@@ -161,6 +161,7 @@ sentinel_state = build_sentinel_state(
     positions,
     market_status
 )
+sentinel_state["data_client"] = data_client
 st.session_state["sentinel_state"] = {
     "equity": account.equity,
     "cash": account.cash,
