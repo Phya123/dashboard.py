@@ -65,36 +65,29 @@ def profile_panel():
                 "Create Sentinel Profile"
             )
 
-            if submitted:
+                        if submitted:
 
-    st.write("BUTTON PRESSED")
-
-    if name and sentinel_id:
-
-        st.write("CREATING PROFILE")
-
-        create_profile(
-            name,
-            sentinel_id
-        )
-
-        st.success(
-            "Sentinel Profile Created"
-        )
-
-        st.rerun()
-
-    else:
-
-        st.warning(
-            "Please complete all fields."
-        )
+                st.write("BUTTON PRESSED")
 
                 if name and sentinel_id:
+
+                    st.write("CREATING PROFILE")
 
                     create_profile(
                         name,
                         sentinel_id
+                    )
+
+                    st.success(
+                        "Sentinel Profile Created"
+                    )
+
+                    st.rerun()
+
+                else:
+
+                    st.warning(
+                        "Please complete all fields."
                     )
 
                     st.success(
