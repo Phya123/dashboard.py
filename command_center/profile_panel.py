@@ -5,79 +5,71 @@ from onboarding.profile import (
     create_profile
 )
 
-try:
-    from onboarding.profile import load_profiles
-except ModuleNotFoundError:
-    def load_profiles():
-        return []
+
 
 
 
 def profile_panel():
 
-    st.subheader(
-        "👤 Sentinel User Profile"
-    )
+    st.divider()
 
+    st.subheader("👤 Sentinel User Profile")
 
-    profiles = load_profiles()
+    profile = load_profiles()
 
+    if profile:
 
-    if not profiles:
+        st.success("Sentinel Profile Active")
+
+        st.write(
+            f"Name: {profile.get('name')}"
+        )
+
+        st.write(
+            f"Sentinel ID: {profile.get('sentinel_id')}"
+        )
+
+        st.write(
+            f"Created: {profile.get('created')}"
+        )
+
+    else:
 
         st.info(
             "No Sentinel profile created yet."
         )
 
-        return
+        with st.form("sentinel_profile_form"):
 
+            name = st.text_input(
+                "Your Name"
+            )
 
-    user = profiles[-1]
+            sentinel_id = st.text_input(
+                "Sentinel ID"
+            )
 
+            submitted = st.form_submit_button(
+                "Create Sentinel Profile"
+            )
 
-    st.write(
-        f"Name: {user.get('name','N/A')}"
-    )
+            if submitted:
 
+                if name and sentinel_id:
 
-    st.write(
-        f"Username: {user.get('username','N/A')}"
-    )
+                    create_profile(
+                        name,
+                        sentinel_id
+                    )
 
+                    st.success(
+                        "Sentinel Profile Created"
+                    )
 
-    st.write(
-        "Interests:"
-    )
+                    st.rerun()
 
+                else:
 
-    for item in user.get(
-        "interests",
-        []
-    ):
-
-        st.write(
-            f"- {item}"
-        )
-
-
-    st.write(
-        "Goals:"
-    )
-
-
-    for goal in user.get(
-        "goals",
-        []
-    ):
-
-        st.write(
-            f"- {goal}"
-        )
-
-
-    st.divider()
-
-
-    st.caption(
-        "🧠 Sentinel personalization active"
-    )
+                    st.warning(
+                        "Please complete all fields."
+                    )
