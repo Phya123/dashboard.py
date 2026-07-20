@@ -1,5 +1,16 @@
 import streamlit as st
 
+try:
+    from onboarding.profile import load_profiles, create_profile
+except ModuleNotFoundError:
+
+    def load_profiles():
+        return None
+
+    def create_profile(name, sentinel_id):
+        return None
+import streamlit as st
+
 from onboarding.profile import load_profiles
 
 
