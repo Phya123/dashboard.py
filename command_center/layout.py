@@ -17,8 +17,17 @@ from command_center.profile_panel import profile_panel
 
 
 
-def command_center_layout(sentinel_state):
-
+def command_center_layout(
+    sentinel_state,
+    account,
+    community_panel,
+    activity_panel,
+    eml_ecosystem_panel,
+    ai_panel,
+    account_panel,
+    sentinel_ai_chat,
+    status_panel,
+):
 
     st.title(
         "🧠 EML SENTINEL COMMAND CENTER"
