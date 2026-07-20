@@ -1,4 +1,14 @@
 import streamlit as st
+
+from command_center.panels import (
+    sentinel_ai_chat,
+    ai_panel,
+    account_panel,
+    community_panel
+)
+
+from command_center.activity import activity_panel
+from ecosystem.eml_hub import ecosystem_panel
 from command_center.profile_panel import profile_panel
 
 def command_center_layout(
