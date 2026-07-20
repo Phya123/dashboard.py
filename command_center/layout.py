@@ -1,5 +1,5 @@
 import streamlit as st
-
+from command_center.profile_panel import profile_panel
 
 def command_center_layout(
     sentinel_state,
@@ -9,7 +9,7 @@ def command_center_layout(
     ecosystem_panel,
     ai_panel,
     account_panel,
-    sentinel_ai_chat,
+    sentinel_ai_chat(sentinel_state),
     status_panel
 ):
 
@@ -38,30 +38,37 @@ def command_center_layout(
 
 
     # AI ASSISTANT GOES HERE
-    st.divider()
 
-    sentinel_ai_chat(
-        sentinel_state
-    )
+st.divider()
 
+sentinel_ai_chat(
+    sentinel_state
+)
 
-    st.divider()
+ai_panel()
 
+profile_panel()
 
-    col1, col2, col3 = st.columns(3)
-
-
-    with col1:
-        community_panel({
-            "members":0,
-            "skills":0,
-            "opportunities":0
-        })
+account_panel()
 
 
-    with col2:
-        activity_panel()
+st.divider()
 
 
-    with col3:
-        ecosystem_panel()
+col1, col2, col3 = st.columns(3)
+
+
+with col1:
+    community_panel({
+        "members":0,
+        "skills":0,
+        "opportunities":0
+    })
+
+
+with col2:
+    activity_panel()
+
+
+with col3:
+    ecosystem_panel()
