@@ -57,3 +57,6 @@ EML-SENTINEL/
     ├── skills.json
     ├── opportunities.json
     └── messages.json
+onboarding/
+├── __init__.py
+└── profile.py
