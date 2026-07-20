@@ -8,77 +8,90 @@ from command_center.panels import (
 )
 
 from command_center.activity import activity_panel
-from ecosystem.eml_hub import ecosystem_panel
-from command_center.profile_panel import profile_panel
 
-def command_center_layout(
-    sentinel_state,
-    account,
-    community_panel,
-    activity_panel,
-    ecosystem_panel,
-    ai_panel,
-    account_panel,
-    sentinel_ai_chat()),
-    status_panel
-):
+from ecosystem.eml_hub import eml_ecosystem_panel
 
-    status_panel()
+from onboarding.profile_panel import profile_panel
 
-    st.title("🧠 EML SENTINEL COMMAND CENTER")
+
+def command_center_layout(sentinel_state):
+
+
+    st.title(
+        "🧠 EML SENTINEL COMMAND CENTER"
+    )
+
 
     st.caption(
         "🤖 SENTINEL AI CORE ONLINE | 🔒 DASHBOARD READ ONLY"
     )
 
 
-    col1, col2 = st.columns([1,1])
+    # =========================
+    # AI ASSISTANT
+    # =========================
+
+    st.divider()
+
+    sentinel_ai_chat(
+        sentinel_state
+    )
+
+
+    # =========================
+    # USER PROFILE
+    # =========================
+
+    st.divider()
+
+    profile_panel()
+
+
+    # =========================
+    # ACCOUNT
+    # =========================
+
+    st.divider()
+
+    account_panel(
+        sentinel_state
+    )
+
+
+    # =========================
+    # THREE PANEL SECTION
+    # =========================
+
+    st.divider()
+
+
+    col1, col2, col3 = st.columns(3)
 
 
     with col1:
-        ai_panel(
-            sentinel_state
+
+        community_panel(
+            {
+                "members": 0,
+                "skills": 0,
+                "opportunities": 0
+            }
         )
 
 
     with col2:
-        account_panel(
-            account
-        )
+
+        activity_panel()
 
 
-    # AI ASSISTANT GOES HERE
+    with col3:
 
-st.divider()
-
-sentinel_ai_chat(
-    sentinel_state
-)
-
-ai_panel()
-
-profile_panel()
-
-account_panel()
+        eml_ecosystem_panel()
 
 
-st.divider()
+    st.divider()
 
 
-col1, col2, col3 = st.columns(3)
-
-
-with col1:
-    community_panel({
-        "members":0,
-        "skills":0,
-        "opportunities":0
-    })
-
-
-with col2:
-    activity_panel()
-
-
-with col3:
-    ecosystem_panel()
+    st.caption(
+        "EML SENTINEL IS READ ONLY — NO TRADING FUNCTIONS EXIST IN THIS DASHBOARD."
+    )
