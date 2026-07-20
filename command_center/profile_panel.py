@@ -12,13 +12,7 @@ except ModuleNotFoundError:
         return None
 
     def create_profile(name, sentinel_id):
-        return {
-            "name": name,
-            "sentinel_id": sentinel_id
-        }
-
-
-
+        return None
 
 
 def profile_panel():
@@ -57,64 +51,21 @@ def profile_panel():
                 "Your Name"
             )
 
-                with st.form("sentinel_profile_form"):
+            sentinel_id = st.text_input(
+                "Sentinel ID"
+            )
 
-        name = st.text_input(
-            "Your Name"
-        )
+            submitted = st.form_submit_button(
+                "Create Sentinel Profile"
+            )
 
-        sentinel_id = st.text_input(
-            "Sentinel ID"
-        )
-
-        submitted = st.form_submit_button(
-            "Create Sentinel Profile"
-        )
-
-        if submitted:
-
-            st.write("BUTTON PRESSED")
-
-            if name and sentinel_id:
-
-                st.write("CREATING PROFILE")
-
-                create_profile(
-                    name,
-                    sentinel_id
-                )
-
-                st.success(
-                    "Sentinel Profile Created"
-                )
-
-                st.rerun()
-
-            else:
-
-                st.warning(
-                    "Please complete all fields."
-                )
+            if submitted:
 
                 if name and sentinel_id:
-
-                    st.write("CREATING PROFILE")
 
                     create_profile(
                         name,
                         sentinel_id
-                    )
-
-                    st.success(
-                        "Sentinel Profile Created"
-                    )
-
-                    st.rerun()
-
-                else:
-
-                    st.warning(
-                        "Please complete all fields."
                     )
 
                     st.success(
