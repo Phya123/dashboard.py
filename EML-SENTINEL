@@ -131,3 +131,7 @@ EML-SENTINEL/
 │
 └── command_center/
     └── layout.py   ← edit this
+onboarding/
+ ├── __init__.py
+ ├── profile.py
+ └── profile_panel.py
