@@ -20,6 +20,7 @@ def load_profiles():
         return []
 
 
+
 def create_profile(
     name,
     username,
@@ -32,16 +33,22 @@ def create_profile(
         exist_ok=True
     )
 
+
     profiles = load_profiles()
 
+
     profile = {
+
         "name": name,
         "username": username,
         "interests": interests,
         "goals": goals
+
     }
 
+
     profiles.append(profile)
+
 
     with open(
         PROFILE_FILE,
@@ -53,5 +60,6 @@ def create_profile(
             f,
             indent=4
         )
+
 
     return profile
