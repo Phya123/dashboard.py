@@ -11,6 +11,7 @@ else:
 import streamlit as st
 
 from command_center.layout import command_center_layout
+
 from command_center.panels import (
     ai_panel,
     account_panel,
