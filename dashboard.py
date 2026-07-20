@@ -1,5 +1,12 @@
 import os
 
+print("FILES:", os.listdir())
+print("ONBOARDING EXISTS:", os.path.exists("onboarding"))
+
+if os.path.exists("onboarding"):
+    print("ONBOARDING CONTENTS:", os.listdir("onboarding"))
+import os
+
 print("ROOT FILES:", os.listdir())
 
 if os.path.exists("onboarding"):
