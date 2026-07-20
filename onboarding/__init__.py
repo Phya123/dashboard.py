@@ -1,9 +1,8 @@
 import streamlit as st
 
-from onboarding.profile import (
+from onboarding.setup import (
     create_profile,
-    load_profiles,
-    save_profiles
+    load_profiles
 )
 
 
