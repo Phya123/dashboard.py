@@ -1,6 +1,12 @@
 import streamlit as st
 
-from onboarding.profile import load_profiles
+import streamlit as st
+
+try:
+    from onboarding.profile import load_profiles
+except ModuleNotFoundError:
+    def load_profiles():
+        return []
 
 
 
