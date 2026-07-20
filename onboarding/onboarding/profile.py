@@ -1,68 +1,19 @@
 import json
 import os
 
-
-PROFILE_FILE = "data/users.json"
+PROFILE_FILE = "sentinel_profile.json"
 
 
 def load_profiles():
 
     if not os.path.exists(PROFILE_FILE):
-        return []
+        return None
 
-    try:
-
-        with open(PROFILE_FILE, "r") as f:
-            return json.load(f)
-
-    except Exception:
-
-        return []
+    with open(PROFILE_FILE, "r") as f:
+        return json.load(f)
 
 
+def save_profile(profile):
 
-def create_profile(
-    name,
-    username,
-    interests,
-    goals
-):
-
-    os.makedirs(
-        "data",
-        exist_ok=True
-    )
-
-
-    profiles = load_profiles()
-
-
-    profile = {
-
-        "name": name,
-
-        "username": username,
-
-        "interests": interests,
-
-        "goals": goals
-
-    }
-
-
-    profiles.append(profile)
-
-
-    with open(
-        PROFILE_FILE,
-        "w"
-    ) as f:
-
-        json.dump(
-            profiles,
-            f,
-            indent=4
-        )
-
-
-    return profile
+    with open(PROFILE_FILE, "w") as f:
+        json.dump(profile, f, indent=4)
