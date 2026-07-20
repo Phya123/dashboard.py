@@ -61,6 +61,7 @@ def ai_panel(state):
     })
 
 
+
 # =========================
 # 💰 ACCOUNT PANEL
 # =========================
@@ -71,45 +72,28 @@ def account_panel(account):
 
     st.subheader("💰 Account Intelligence")
 
+    equity = account.get("equity", "N/A")
+    cash = account.get("cash", "N/A")
+    buying_power = account.get("buying_power", "N/A")
+
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.metric(
             "Equity",
-            def account_panel(account):
-
-    equity = account.get("equity", "N/A")
-    cash = account.get("cash", "N/A")
-    buying_power = account.get("buying_power", "N/A")
-
-    st.subheader("💰 Account Intelligence")
-
-    st.metric(
-        "Equity",
-        f"${equity}"
-    )
-
-    st.metric(
-        "Cash",
-        f"${cash}"
-    )
-
-    st.metric(
-        "Buying Power",
-        f"${buying_power}"
-    )
+            f"${equity}"
         )
 
     with col2:
         st.metric(
             "Cash",
-            f"${account.cash}"
+            f"${cash}"
         )
 
     with col3:
         st.metric(
             "Buying Power",
-            f"${account.buying_power}"
+            f"${buying_power}"
         )
 
 # =========================
