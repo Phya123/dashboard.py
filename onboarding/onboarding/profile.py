@@ -40,8 +40,11 @@ def create_profile(
     profile = {
 
         "name": name,
+
         "username": username,
+
         "interests": interests,
+
         "goals": goals
 
     }
