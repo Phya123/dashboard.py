@@ -6,14 +6,17 @@ def build_sentinel_state(
 
     position_list = []
 
-    for p in positions:
-        position_list.append({
-            "symbol": p.symbol,
-            "qty": p.qty,
-            "market_value": p.market_value,
-            "unrealized_pl": p.unrealized_pl,
-            "unrealized_plpc": p.unrealized_plpc
-        })
+for p in positions:
+    position_list.append({
+        "symbol": p.symbol,
+        "shares": p.qty,
+        "price": p.current_price,
+        "avg_entry": p.avg_entry_price,
+        "pnl": p.unrealized_pl,
+        "pnl_pct": p.unrealized_plpc
+    })
+
+    
 
 
     # ==========================
