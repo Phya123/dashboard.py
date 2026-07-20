@@ -68,3 +68,19 @@ onboarding/
 ├── profile.py          ← create/load user profile
 ├── preferences.py      ← user settings
 └── goals.py            ← user objectives
+EML-SENTINEL/
+
+dashboard.py
+bot.py
+
+command_center/
+    layout.py
+    panels.py
+    profile_panel.py
+
+intelligence/
+    data_bridge.py
+
+onboarding/
+    __init__.py
+    profile.py
