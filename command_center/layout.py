@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 from command_center.panels import (
     sentinel_ai_chat,
     ai_panel,
@@ -7,11 +8,15 @@ from command_center.panels import (
     community_panel
 )
 
+
 from command_center.activity import activity_panel
+
+
+from command_center.profile_panel import profile_panel
+
 
 from ecosystem.eml_hub import eml_ecosystem_panel
 
-from onboarding.profile_panel import profile_panel
 
 
 def command_center_layout(sentinel_state):
@@ -33,6 +38,7 @@ def command_center_layout(sentinel_state):
 
     st.divider()
 
+
     sentinel_ai_chat(
         sentinel_state
     )
@@ -44,7 +50,9 @@ def command_center_layout(sentinel_state):
 
     st.divider()
 
+
     profile_panel()
+
 
 
     # =========================
@@ -53,9 +61,11 @@ def command_center_layout(sentinel_state):
 
     st.divider()
 
+
     account_panel(
         sentinel_state
     )
+
 
 
     # =========================
@@ -66,6 +76,7 @@ def command_center_layout(sentinel_state):
 
 
     col1, col2, col3 = st.columns(3)
+
 
 
     with col1:
@@ -79,14 +90,17 @@ def command_center_layout(sentinel_state):
         )
 
 
+
     with col2:
 
         activity_panel()
 
 
+
     with col3:
 
         eml_ecosystem_panel()
+
 
 
     st.divider()
