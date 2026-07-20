@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 
 
 PROFILE_FILE = "sentinel_profile.json"
@@ -22,3 +23,22 @@ def save_profile(profile):
             file,
             indent=4
         )
+
+
+def create_profile(name, sentinel_id):
+
+    profile = {
+        "name": name,
+        "sentinel_id": sentinel_id,
+        "created": datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
+        "preferences": {
+            "theme": "dark",
+            "notifications": True
+        }
+    }
+
+    save_profile(profile)
+
+    return profile
