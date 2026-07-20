@@ -1,37 +1,16 @@
 import os
 
-print("FILES:", os.listdir())
-print("ONBOARDING EXISTS:", os.path.exists("onboarding"))
+print("APP FILES:", os.listdir("/app"))
 
-if os.path.exists("onboarding"):
-    print("ONBOARDING CONTENTS:", os.listdir("onboarding"))
-import os
-
-print("ROOT FILES:", os.listdir())
-
-if os.path.exists("onboarding"):
-    print("ONBOARDING FILES:", os.listdir("onboarding"))
+if os.path.exists("/app/onboarding"):
+    print("ONBOARDING FILES:", os.listdir("/app/onboarding"))
 else:
-    print("NO ONBOARDING FOLDER FOUND")
-import os
-import json
-from datetime import datetime
+    print("ONBOARDING FOLDER MISSING")
 
-import pandas as pd
+
 import streamlit as st
-import plotly.graph_objects as go
-
-from alpaca.trading.client import TradingClient
-from alpaca.data.historical import StockHistoricalDataClient
-from alpaca.data.requests import StockBarsRequest
-from alpaca.data.timeframe import TimeFrame
-
-from intelligence.data_bridge import build_sentinel_state
-
-from command_center.activity import activity_panel
 
 from command_center.layout import command_center_layout
-
 from command_center.panels import (
     ai_panel,
     account_panel,
