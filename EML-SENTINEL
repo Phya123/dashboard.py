@@ -60,3 +60,11 @@ EML-SENTINEL/
 onboarding/
 ├── __init__.py
 └── profile.py
+EML-SENTINEL/
+
+onboarding/
+│
+├── __init__.py
+├── profile.py          ← create/load user profile
+├── preferences.py      ← user settings
+└── goals.py            ← user objectives
