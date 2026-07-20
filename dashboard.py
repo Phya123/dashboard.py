@@ -1,4 +1,12 @@
 import os
+
+print("ROOT FILES:", os.listdir())
+
+if os.path.exists("onboarding"):
+    print("ONBOARDING FILES:", os.listdir("onboarding"))
+else:
+    print("NO ONBOARDING FOLDER FOUND")
+import os
 import json
 from datetime import datetime
 
