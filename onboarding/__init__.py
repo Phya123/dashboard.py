@@ -1,6 +1,10 @@
 import streamlit as st
 
-from onboarding.profile import create_profile
+from onboarding.profile import (
+    create_profile,
+    load_profiles,
+    save_profiles
+)
 
 
 def onboarding_screen():
