@@ -3,7 +3,8 @@ import streamlit as st
 from onboarding.profile import load_profiles
 
 
-def profile_panel():
+def load_profiles():
+    return []
 
     st.subheader(
         "👤 Sentinel User Profile"
