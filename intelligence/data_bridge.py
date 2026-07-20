@@ -6,17 +6,15 @@ def build_sentinel_state(
 
     position_list = []
 
-for p in positions:
-    position_list.append({
-        "symbol": p.symbol,
-        "shares": p.qty,
-        "price": p.current_price,
-        "avg_entry": p.avg_entry_price,
-        "pnl": p.unrealized_pl,
-        "pnl_pct": p.unrealized_plpc
-    })
-
-    
+    for p in positions:
+        position_list.append({
+            "symbol": p.symbol,
+            "shares": p.qty,
+            "price": p.current_price,
+            "avg_entry": p.avg_entry_price,
+            "pnl": p.unrealized_pl,
+            "pnl_pct": p.unrealized_plpc
+        })
 
 
     # ==========================
@@ -24,16 +22,12 @@ for p in positions:
     # ==========================
 
     equity = float(account.equity)
-
     cash = float(account.cash)
 
     exposure = equity - cash
 
-
     if equity > 0:
-        exposure_percent = (
-            exposure / equity
-        ) * 100
+        exposure_percent = (exposure / equity) * 100
     else:
         exposure_percent = 0
 
@@ -54,11 +48,11 @@ for p in positions:
 
         "market_status": market_status,
 
-        "equity": account.equity,
+        "equity": float(account.equity),
 
-        "cash": account.cash,
+        "cash": float(account.cash),
 
-        "buying_power": account.buying_power,
+        "buying_power": float(account.buying_power),
 
         "positions": position_list,
 
