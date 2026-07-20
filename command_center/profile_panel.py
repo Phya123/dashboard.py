@@ -1,6 +1,6 @@
 import streamlit as st
 
-from onboarding.setup import load_profiles
+from onboarding.profile import load_profiles
 
 
 def profile_panel():
@@ -39,10 +39,7 @@ def profile_panel():
         "Interests:"
     )
 
-    for item in user.get(
-        "interests",
-        []
-    ):
+    for item in user.get("interests", []):
 
         st.write(
             f"• {item}"
@@ -53,10 +50,7 @@ def profile_panel():
         "Goals:"
     )
 
-    for goal in user.get(
-        "goals",
-        []
-    ):
+    for goal in user.get("goals", []):
 
         st.write(
             f"• {goal}"
@@ -64,7 +58,6 @@ def profile_panel():
 
 
     st.divider()
-
 
     st.caption(
         "🧠 Sentinel personalization active"
