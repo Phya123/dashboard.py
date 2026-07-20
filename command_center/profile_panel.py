@@ -47,7 +47,7 @@ def profile_panel():
     ):
 
         st.write(
-            "- " + item
+            f"- {item}"
         )
 
 
@@ -62,7 +62,7 @@ def profile_panel():
     ):
 
         st.write(
-            "- " + goal
+            f"- {goal}"
         )
 
 
