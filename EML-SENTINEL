@@ -127,3 +127,7 @@ EML-SENTINEL/
 │   ├── panels.py
 │   ├── activity.py
 │   └── terminal.py
+EML-SENTINEL/
+│
+└── command_center/
+    └── layout.py   ← edit this
