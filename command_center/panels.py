@@ -76,7 +76,28 @@ def account_panel(account):
     with col1:
         st.metric(
             "Equity",
-            f"${account.equity}"
+            def account_panel(account):
+
+    equity = account.get("equity", "N/A")
+    cash = account.get("cash", "N/A")
+    buying_power = account.get("buying_power", "N/A")
+
+    st.subheader("💰 Account Intelligence")
+
+    st.metric(
+        "Equity",
+        f"${equity}"
+    )
+
+    st.metric(
+        "Cash",
+        f"${cash}"
+    )
+
+    st.metric(
+        "Buying Power",
+        f"${buying_power}"
+    )
         )
 
     with col2:
