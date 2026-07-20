@@ -1,22 +1,24 @@
 EML-SENTINEL/
 
 ├── bot.py                         🔒 Trading Engine (isolated)
-├── dashboard.py                   🎛 Main READ ONLY Command Center
+├── dashboard.py                   🎛 READ ONLY Command Center
 
-├── ai_core/                       🤖 Sentinel Intelligence
+├── ai_core/
 │   ├── __init__.py
-│   ├── assistant.py               AI reasoning
-│   ├── prompts.py                 System prompts
-│   ├── memory.py                  Session memory
-│   ├── explain.py                 Dashboard explanations
-│   └── chat.py                    AI responses
+│   ├── assistant.py
+│   ├── knowledge.py              🆕
+│   ├── prompts.py
+│   ├── memory.py
+│   └── explain.py
 
 ├── command_center/
 │   ├── __init__.py
+│   ├── layout.py
 │   ├── panels.py
 │   ├── activity.py
 │   ├── terminal.py
-│   └── ai_panel.py                🆕 AI interface
+│   ├── ai_panel.py
+│   └── profile_panel.py          🆕
 
 ├── intelligence/
 │   ├── __init__.py
@@ -40,6 +42,11 @@ EML-SENTINEL/
 │   ├── nft.py
 │   └── brand.py
 
+├── onboarding/
+│   ├── __init__.py
+│   ├── profile.py
+│   └── setup.py
+
 ├── security/
 │   ├── permissions.py
 │   └── audit.py
@@ -50,88 +57,3 @@ EML-SENTINEL/
     ├── skills.json
     ├── opportunities.json
     └── messages.json
-EML-SENTINEL/
-
-├── ai_core/
-│   ├── __init__.py
-│   ├── assistant.py        🆕
-│   ├── prompts.py          🆕
-│   ├── explain.py          🆕
-│   └── memory.py           (later)
-EML-SENTINEL/
-│
-└── ai_core/
-    ├── __init__.py
-    ├── assistant.py
-    ├── prompts.py
-    ├── memory.py
-    └── explain.py   ← CREATE THIS
-ai_core/
- ├── assistant.py
- ├── prompts.py
- ├── memory.py
- └── explain.py   <-- missing
-EML-SENTINEL/
-│
-└── ai_core/
-    └── assistant.py
-EML-SENTINEL/
-│
-├── ai_core/
-│   ├── assistant.py
-│   ├── knowledge.py      ← NEW
-│   ├── prompts.py
-│   └── memory.py
-onboarding/
-│
-├── __init__.py
-├── setup.py
-└── profile.py
-EML-SENTINEL/
-└── ai_core/
-    ├── __init__.py
-    ├── assistant.py
-    ├── knowledge.py      ← CREATE NOW
-    ├── prompts.py
-    ├── memory.py
-    └── explain.py
-EML-SENTINEL/
-
-├── onboarding/
-│   ├── __init__.py
-│   ├── setup.py
-│   └── profile.py
-EML-SENTINEL/
-
-└── onboarding/
-    ├── __init__.py
-    ├── profile.py
-    └── setup.py   ← create now
-EML-SENTINEL/
-
-└── command_center/
-    ├── panels.py
-    ├── activity.py
-    ├── terminal.py
-    ├── ai_panel.py
-    └── profile_panel.py   ← create this
-EML-SENTINEL/
-
-├── onboarding/
-│   ├── __init__.py
-│   ├── profile.py
-│   └── setup.py
-│
-├── command_center/
-│   ├── profile_panel.py  ✅
-│   ├── panels.py
-│   ├── activity.py
-│   └── terminal.py
-EML-SENTINEL/
-│
-└── command_center/
-    └── layout.py   ← edit this
-onboarding/
- ├── __init__.py
- ├── profile.py
- └── profile_panel.py
