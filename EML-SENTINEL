@@ -101,3 +101,17 @@ EML-SENTINEL/
 │   ├── __init__.py
 │   ├── setup.py
 │   └── profile.py
+EML-SENTINEL/
+
+└── onboarding/
+    ├── __init__.py
+    ├── profile.py
+    └── setup.py   ← create now
+EML-SENTINEL/
+
+└── command_center/
+    ├── panels.py
+    ├── activity.py
+    ├── terminal.py
+    ├── ai_panel.py
+    └── profile_panel.py   ← create this
