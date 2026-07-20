@@ -1,6 +1,6 @@
 import streamlit as st
 
-from onboarding.profile import load_profiles
+from onboarding.setup import load_profiles
 
 
 def profile_panel():
