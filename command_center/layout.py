@@ -19,7 +19,7 @@ def command_center_layout(
     ecosystem_panel,
     ai_panel,
     account_panel,
-    sentinel_ai_chat(sentinel_state),
+    sentinel_ai_chat()),
     status_panel
 ):
 
