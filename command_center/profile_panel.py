@@ -1,6 +1,9 @@
 import streamlit as st
 
-import streamlit as st
+from onboarding.profile import (
+    load_profiles,
+    create_profile
+)
 
 try:
     from onboarding.profile import load_profiles
