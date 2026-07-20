@@ -1,112 +1,53 @@
-import json
-import os
-from datetime import datetime
+import streamlit as st
+
+from onboarding.profile import load_profiles
 
 
-USER_FILE = "data/users.json"
+def profile_panel():
+
+    st.subheader(
+        "👤 Sentinel User Profile"
+    )
+
+    profiles = load_profiles()
+
+    if not profiles:
+        st.info(
+            "No Sentinel profile created yet."
+        )
+        return
 
 
-def create_profile(
-    username,
-    name,
-    interests=None,
-    goals=None
-):
-
-    if interests is None:
-        interests = []
-
-    if goals is None:
-        goals = []
+    user = profiles[-1]
 
 
-    profile = {
+    st.write(
+        f"Name: {user.get('name','N/A')}"
+    )
 
-        "username": username,
-
-        "name": name,
-
-        "created": datetime.now().isoformat(),
-
-        "interests": interests,
-
-        "goals": goals,
-
-        "modules": {
-
-            "sentinel_ai": True,
-
-            "neighborlink": True,
-
-            "eml_ecosystem": True,
-
-            "market_intelligence": True
-
-        }
-
-    }
-
-
-    save_profile(profile)
-
-
-    return profile
-
-
-
-def save_profile(profile):
-
-    os.makedirs(
-        "data",
-        exist_ok=True
+    st.write(
+        f"Username: {user.get('username','N/A')}"
     )
 
 
-    users = []
+    st.write("Interests:")
 
-
-    if os.path.exists(USER_FILE):
-
-        try:
-
-            with open(
-                USER_FILE,
-                "r"
-            ) as file:
-
-                users = json.load(file)
-
-        except:
-
-            users = []
-
-
-    users.append(profile)
-
-
-    with open(
-        USER_FILE,
-        "w"
-    ) as file:
-
-        json.dump(
-            users,
-            file,
-            indent=4
+    for item in user.get("interests", []):
+        st.write(
+            f"• {item}"
         )
 
 
+    st.write("Goals:")
 
-def load_profiles():
+    for goal in user.get("goals", []):
+        st.write(
+            f"• {goal}"
+        )
 
-    if not os.path.exists(USER_FILE):
 
-        return []
+    st.divider()
 
-
-    with open(
-        USER_FILE,
-        "r"
-    ) as file:
-
-        return json.load(file)
+    st.caption(
+        "🧠 Sentinel personalization active"
+    )
