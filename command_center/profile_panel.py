@@ -57,29 +57,7 @@ def profile_panel():
     profile = sentinel_profile_summary()
 
 
-    st.subheader("🧠 Sentinel Profile")
-
-
-    st.write(
-        f"""
-User:
-{profile['user']}
-
-
-System:
-{profile['system']}
-
-
-Mode:
-{profile['mode']}
-
-
-Connected:
-Alpaca
-NeighborLink
-EML Ecosystem
-"""
-    )
+    
 
 
     # =========================
