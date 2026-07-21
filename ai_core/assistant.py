@@ -238,7 +238,132 @@ Sentinel only considers entries when conditions pass:
 Sentinel avoids weak setups to protect capital.
 
 """
+    # =========================
+    # POSITION COUNT
+    # =========================
 
+    if (
+        "how many positions" in q
+        or "positions do i have" in q
+    ):
+
+        positions = state.get("positions", [])
+
+        return f"""
+📈 SENTINEL POSITIONS
+
+Open Positions:
+
+{len(positions)}
+
+Dashboard remains READ ONLY.
+"""
+
+
+    # =========================
+    # SYMBOLS OWNED
+    # =========================
+
+    if (
+        "what symbols" in q
+        or "what symbols do i own" in q
+        or "symbols i own" in q
+    ):
+
+        positions = state.get("positions", [])
+
+        if not positions:
+            return "No open positions found."
+
+        symbols = [
+            p.get("symbol")
+            for p in positions
+        ]
+
+        return f"""
+📊 CURRENT HOLDINGS
+
+{symbols}
+"""
+
+
+    # =========================
+    # STOCK PRICE CHECK
+    # =========================
+
+    symbols = [
+        "NVDA",
+        "AAPL",
+        "TSLA",
+        "MSFT",
+        "AMD",
+        "META",
+        "AMZN"
+    ]
+
+
+    for symbol in symbols:
+
+        if symbol.lower() in q:
+
+            price = "Unavailable"
+
+            for p in state.get("positions", []):
+
+                if p.get("symbol") == symbol:
+                    price = p.get("price")
+
+
+            return f"""
+📈 SENTINEL MARKET CHECK
+
+Symbol:
+
+{symbol}
+
+
+Current Price:
+
+${price}
+
+
+Sentinel is monitoring this asset.
+"""
+
+
+    # =========================
+    # EML BRAND
+    # =========================
+
+    if (
+        "eml coin" in q
+        or "goat walkas" in q
+        or "eml" in q
+    ):
+
+        return """
+🌐 EML ECOSYSTEM
+
+
+🪙 EML Coin
+
+Digital ecosystem project.
+
+
+👟 GOAT WALKAS V2
+
+EML footwear brand.
+
+
+👕 EML Clothing
+
+Fashion + community.
+
+
+🎨 NFT Collection
+
+Digital assets.
+"""
     # =========================
     # DEFAULT
     # =========================
