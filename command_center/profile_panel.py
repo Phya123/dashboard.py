@@ -1,9 +1,18 @@
 import streamlit as st
 
-from onboarding.profile import (
-    load_profiles,
-    create_profile
-)
+try:
+    from onboarding.profile import (
+        create_profile,
+        load_profile
+    )
+
+except Exception:
+
+    def create_profile(data):
+        return data
+
+    def load_profile():
+        return None
 
 
 def profile_panel():
