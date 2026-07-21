@@ -165,13 +165,20 @@ def positions_panel(state):
         )
 
         st.write(
-            f"Shares: {p['shares']}"
+            f"Shares: {p.get('shares', 'N/A')}"
+        )
+
+        price = p.get("price")
+        pnl = p.get("pnl")
+
+        st.write(
+            f"Price: ${float(price):.2f}"
+            if price not in [None, "None"]
+            else "Price: N/A"
         )
 
         st.write(
-            f"Price: ${p['price']:.2f}"
-        )
-
-        st.write(
-            f"P/L: ${p['pnl']:.2f}"
+            f"P/L: ${float(pnl):.2f}"
+            if pnl not in [None, "None"]
+            else "P/L: N/A"
         )
