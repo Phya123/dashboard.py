@@ -240,25 +240,7 @@ ${state.get("buying_power","N/A")}
 
         return response
 
-return """
-📊 Sentinel Position Report
 
-AAPL
-Shares: ...
-
-DEO
-Shares: ...
-"""
-
-...
-🧠 Portfolio Intelligence
-
-Positions: 6
-Risk: LOW
-Exposure: XX%
-
-Best performer: DEO
-Worst performer: NVS
 
     # =========================
     # SYMBOL INTELLIGENCE
@@ -371,7 +353,83 @@ Sentinel can expand with:
 • AI summaries
 
 """
+    # =========================
+    # PORTFOLIO INTELLIGENCE
+    # =========================
 
+    if (
+        "portfolio" in q
+        or "performance" in q
+        or "how am i doing" in q
+    ):
+
+        positions = state.get("positions", [])
+
+        total_pnl = 0
+        best = None
+        worst = None
+
+        for p in positions:
+
+            try:
+                pnl = float(
+                    p.get("pnl", 0)
+                )
+
+                total_pnl += pnl
+
+                if best is None or pnl > best["pnl"]:
+                    best = {
+                        "symbol": p.get("symbol"),
+                        "pnl": pnl
+                    }
+
+                if worst is None or pnl < worst["pnl"]:
+                    worst = {
+                        "symbol": p.get("symbol"),
+                        "pnl": pnl
+                    }
+
+            except:
+                pass
+
+
+        return f"""
+🧠 PORTFOLIO INTELLIGENCE
+
+
+📊 Positions:
+
+{len(positions)}
+
+
+💰 Unrealized P/L:
+
+${total_pnl:.2f}
+
+
+🏆 Best Performer:
+
+{best["symbol"] if best else "N/A"}
+${best["pnl"] if best else 0:.2f}
+
+
+⚠️ Needs Attention:
+
+{worst["symbol"] if worst else "N/A"}
+${worst["pnl"] if worst else 0:.2f}
+
+
+Risk:
+
+{state.get("risk","UNKNOWN")}
+
+
+Exposure:
+
+{state.get("exposure_percent","N/A")}%
+
+"""
 
     # =========================
     # MARKET STATUS
