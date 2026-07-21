@@ -45,6 +45,7 @@ if os.path.exists("/app/onboarding"):
     )
 else:
     print("ONBOARDING FOLDER MISSING")
+    
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
