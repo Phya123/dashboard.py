@@ -223,9 +223,9 @@ ${state.get("buying_power","N/A")}
 
                 response += (
                     f"📈 {p.get('symbol')}\n"
-                    f"Shares: {p.get('qty')}\n"
-                    f"Price: ${p.get('current_price')}\n"
-                    f"P/L: ${p.get('unrealized_pl')}\n\n"
+                    f"Shares: {p.get('shares')}\n"
+                    f"Price: ${p.get('price')}\n"
+                    f"P/L: ${p.get('pnl')}\n\n"
                 )
 
             else:
