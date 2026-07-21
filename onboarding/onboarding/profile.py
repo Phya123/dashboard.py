@@ -1,32 +1,28 @@
 import json
 import os
-from datetime import datetime
 
 
-PROFILE_FILE = "data/users.json"
+PROFILE_FILE = "data/profile.json"
 
 
-def create_profile(name, sentinel_id):
+def load_profile():
+
+    if not os.path.exists(PROFILE_FILE):
+        return None
+
+    with open(PROFILE_FILE, "r") as f:
+        return json.load(f)
+
+
+
+def save_profile(profile):
 
     os.makedirs(
         "data",
         exist_ok=True
     )
 
-    profile = {
-        "name": name,
-        "sentinel_id": sentinel_id,
-        "created": datetime.now().strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-    }
-
-
-    with open(
-        PROFILE_FILE,
-        "w"
-    ) as f:
-
+    with open(PROFILE_FILE, "w") as f:
         json.dump(
             profile,
             f,
@@ -34,26 +30,21 @@ def create_profile(name, sentinel_id):
         )
 
 
+
+def create_profile(
+    name,
+    sentinel_id
+):
+
+    profile = {
+
+        "name": name,
+
+        "sentinel_id": sentinel_id
+
+    }
+
+
+    save_profile(profile)
+
     return profile
-
-
-
-def load_profiles():
-
-    if not os.path.exists(PROFILE_FILE):
-
-        return None
-
-
-    with open(
-        PROFILE_FILE,
-        "r"
-    ) as f:
-
-        return json.load(f)
-
-
-
-def get_active_profile():
-
-    return load_profiles()
