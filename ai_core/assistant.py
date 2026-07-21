@@ -1,5 +1,5 @@
 from scanner import get_symbol_data
-from ai_core.knowledge import get_knowledge
+
 
 def sentinel_response(question, state):
 
@@ -10,20 +10,18 @@ def sentinel_response(question, state):
 
 
     # =========================
-    # SENTINEL STATUS REPORT
+    # DAILY SENTINEL BRIEFING
     # =========================
 
     if (
-        "status" in q
-        or "system" in q
-        or "report" in q
-        or "what is happening" in q
+        "briefing" in q
+        or "daily report" in q
+        or "morning report" in q
     ):
 
-        positions = state.get("positions", [])
-
         return f"""
-🧠 SENTINEL SYSTEM REPORT
+
+🧠 SENTINEL DAILY BRIEFING
 
 
 🤖 AI CORE
@@ -36,206 +34,192 @@ ONLINE
 READ ONLY
 
 
-📊 ALPACA INTELLIGENCE
-
-CONNECTED
-
-
-💰 EQUITY
+💰 Equity
 
 ${state.get("equity","N/A")}
 
 
-💵 CASH
+💵 Cash
 
 ${state.get("cash","N/A")}
 
 
-⚡ BUYING POWER
+⚡ Buying Power
 
 ${state.get("buying_power","N/A")}
 
 
-📈 POSITIONS
+📈 Positions
 
-{len(positions)}
-
-
-🌎 NEIGHBORLINK
-
-ONLINE
+{len(state.get("positions",[]))}
 
 
-🌐 EML ECOSYSTEM
+🛡 Risk
 
-ONLINE
+{state.get("risk","UNKNOWN")}
 
 
-📊 MARKET
+📊 Market
 
 {state.get("market_status","UNKNOWN")}
 
 
-Sentinel is monitoring connected intelligence systems.
-"""
-
-
-    # =========================
-    # EXPLAIN APP
-    # =========================
-
-    if "explain" in q or "what is this" in q:
-
-        return """
-
-🧠 EML SENTINEL COMMAND CENTER
-
-
-Sentinel is an AI information operating system.
-
-
-🤖 SENTINEL AI
-
-Provides:
-
-• Account intelligence
-• Portfolio information
-• Symbol analysis
-• Market information
-• Ecosystem information
-
-
-📊 ALPACA INTELLIGENCE
-
-Provides:
-
-• Equity
-• Cash
-• Buying power
-• Positions
-• Market status
-
-
-📈 MARKET TERMINAL
-
-Displays:
-
-• Symbol information
-• Price monitoring
-• Charts
-
-
-🔍 SENTINEL SCANNER
-
-Monitors tracked markets.
-
-
-🌎 NEIGHBORLINK
-
-Community intelligence system for:
-
-• Skills
-• Opportunities
-• Connections
-
-
-🌐 EML ECOSYSTEM HUB
-
-Tracks:
-
-🪙 EML Coin
-
-🎨 NFT Collection
-
-👟 GOAT WALKAS V2
-
-👕 EML Clothing
-
-
-🔒 SECURITY
-
-Dashboard Mode:
-
-READ ONLY
-
-No trading actions happen inside this dashboard.
+Sentinel is monitoring your connected intelligence systems.
 
 """
 
 
     # =========================
-    # ACCOUNT
-    # =========================
-
-    if "equity" in q:
-
-        return f"""
-💰 Account Equity
-
-${state.get("equity","N/A")}
-"""
-
-
-    if "cash" in q:
-
-        return f"""
-💵 Cash Available
-
-${state.get("cash","N/A")}
-"""
-
-
-    if "buying power" in q:
-
-        return f"""
-⚡ Buying Power
-
-${state.get("buying_power","N/A")}
-"""
-
-
-    # =========================
-    # POSITIONS
+    # PORTFOLIO SUMMARY
     # =========================
 
     if (
-        "position" in q
-        or "holding" in q
-        or "portfolio" in q
-        or "own" in q
+        "how am i doing" in q
+        or "portfolio summary" in q
+        or "performance" in q
     ):
 
         positions = state.get("positions", [])
 
+        total_pnl = 0
+        best = None
+        worst = None
+
+
+        for p in positions:
+
+            try:
+
+                pnl = float(
+                    p.get("pnl",0)
+                )
+
+                total_pnl += pnl
+
+
+                item = {
+                    "symbol": p.get("symbol"),
+                    "pnl": pnl
+                }
+
+
+                if best is None or pnl > best["pnl"]:
+                    best = item
+
+
+                if worst is None or pnl < worst["pnl"]:
+                    worst = item
+
+
+            except:
+
+                pass
+
+
+        return f"""
+
+🧠 SENTINEL PORTFOLIO SUMMARY
+
+
+💰 Equity
+
+${state.get("equity","N/A")}
+
+
+💵 Cash
+
+${state.get("cash","N/A")}
+
+
+⚡ Buying Power
+
+${state.get("buying_power","N/A")}
+
+
+📈 Positions
+
+{len(positions)}
+
+
+📊 Unrealized P/L
+
+${total_pnl:.2f}
+
+
+🏆 Best Position
+
+{best["symbol"] if best else "N/A"}
+
+${best["pnl"] if best else 0:.2f}
+
+
+⚠️ Needs Attention
+
+{worst["symbol"] if worst else "N/A"}
+
+${worst["pnl"] if worst else 0:.2f}
+
+
+🛡 Risk
+
+{state.get("risk","UNKNOWN")}
+
+
+Exposure
+
+{state.get("exposure_percent","N/A")}%
+
+"""
+
+
+    # =========================
+    # POSITION REPORT
+    # =========================
+
+    if (
+        "positions" in q
+        or "holdings" in q
+        or "what do i own" in q
+        or "stocks do i own" in q
+    ):
+
+
+        positions = state.get(
+            "positions",
+            []
+        )
+
+
         if not positions:
+
             return "No open positions found."
 
 
         response = """
-📊 SENTINEL POSITIONS
+
+📊 SENTINEL POSITION REPORT
+
 
 """
 
 
         for p in positions:
 
-            if isinstance(p, dict):
+            response += f"""
 
-                response += (
-                    f"📈 {p.get('symbol')}\n"
-                    f"Shares: {p.get('shares')}\n"
-                    f"Price: ${p.get('price')}\n"
-                    f"P/L: ${p.get('pnl')}\n\n"
-                )
+📈 {p.get('symbol')}
 
-            else:
+Shares:
+{p.get('shares')}
 
-                response += (
-                    f"📈 {p.symbol}\n"
-                    f"Shares: {p.qty}\n"
-                    f"Price: ${p.current_price}\n"
-                    f"P/L: ${p.unrealized_pl}\n\n"
-                )
+Price:
+${p.get('price')}
+
+P/L:
+${p.get('pnl')}
+
+
+"""
 
 
         return response
@@ -243,8 +227,49 @@ ${state.get("buying_power","N/A")}
 
 
     # =========================
-    # SYMBOL INTELLIGENCE
+    # RISK EXPLANATION
     # =========================
+
+
+    if (
+        "why is my risk" in q
+        or "risk" in q
+    ):
+
+
+        return f"""
+
+🛡 SENTINEL RISK ANALYSIS
+
+
+Current Risk:
+
+{state.get("risk","UNKNOWN")}
+
+
+Exposure:
+
+{state.get("exposure_percent","N/A")}%
+
+
+Sentinel calculates risk from:
+
+• Account equity
+• Cash available
+• Market exposure
+• Current holdings
+
+
+Dashboard remains READ ONLY.
+
+"""
+
+
+
+    # =========================
+    # INDIVIDUAL STOCK CHECK
+    # =========================
+
 
     symbols = [
         "SPY",
@@ -262,63 +287,52 @@ ${state.get("buying_power","N/A")}
         "ASML",
         "TSM",
         "NVS",
-        "SPCX",
         "DEO"
     ]
 
 
     for symbol in symbols:
 
+
         if symbol.lower() in q:
 
-            price = "Unavailable"
+
+            for p in state.get("positions",[]):
+
+                if p.get("symbol") == symbol:
 
 
-            data_client = state.get(
-                "data_client"
-            )
+                    return f"""
+
+📈 SENTINEL HOLDING INTELLIGENCE
 
 
-            if not data_client:
+Symbol:
 
-                data_client = state.get(
-                    "alpaca_data_client"
-                )
+{symbol}
 
 
-            try:
+Shares:
 
-                if data_client:
-
-                    market = get_symbol_data(
-                        symbol,
-                        data_client
-                    )
+{p.get('shares')}
 
 
-                    if market:
+Current Price:
 
-                        if isinstance(market, dict):
-
-                            price = market.get(
-                                "close",
-                                "Unavailable"
-                            )
-
-                        else:
-
-                            price = market["close"]
+${p.get('price')}
 
 
-                        price = round(
-                            float(price),
-                            2
-                        )
+Unrealized P/L:
+
+${p.get('pnl')}
 
 
-            except Exception:
+Average Entry:
 
-                price = "Unavailable"
+${p.get('avg_entry')}
+
+
+"""
 
 
 
@@ -332,108 +346,44 @@ Symbol:
 {symbol}
 
 
-Current Price:
-
-${price}
+You do not currently own this symbol.
 
 
-CONNECTED:
+Sentinel can monitor:
 
-✅ Market Terminal
-
-✅ Scanner
-
-✅ Position Tracking
-
-
-Sentinel can expand with:
-
-• Company information
-• News intelligence
-• AI summaries
+• Price
+• Market data
+• Scanner signals
 
 """
+
+
+
     # =========================
-    # PORTFOLIO INTELLIGENCE
+    # ACCOUNT QUESTIONS
     # =========================
 
-    if (
-        "portfolio" in q
-        or "performance" in q
-        or "how am i doing" in q
-    ):
 
-        positions = state.get("positions", [])
+    if "equity" in q:
 
-        total_pnl = 0
-        best = None
-        worst = None
-
-        for p in positions:
-
-            try:
-                pnl = float(
-                    p.get("pnl", 0)
-                )
-
-                total_pnl += pnl
-
-                if best is None or pnl > best["pnl"]:
-                    best = {
-                        "symbol": p.get("symbol"),
-                        "pnl": pnl
-                    }
-
-                if worst is None or pnl < worst["pnl"]:
-                    worst = {
-                        "symbol": p.get("symbol"),
-                        "pnl": pnl
-                    }
-
-            except:
-                pass
+        return f"💰 Equity: ${state.get('equity')}"
 
 
-        return f"""
-🧠 PORTFOLIO INTELLIGENCE
+    if "cash" in q:
+
+        return f"💵 Cash: ${state.get('cash')}"
 
 
-📊 Positions:
+    if "buying power" in q:
 
-{len(positions)}
-
-
-💰 Unrealized P/L:
-
-${total_pnl:.2f}
+        return f"⚡ Buying Power: ${state.get('buying_power')}"
 
 
-🏆 Best Performer:
-
-{best["symbol"] if best else "N/A"}
-${best["pnl"] if best else 0:.2f}
-
-
-⚠️ Needs Attention:
-
-{worst["symbol"] if worst else "N/A"}
-${worst["pnl"] if worst else 0:.2f}
-
-
-Risk:
-
-{state.get("risk","UNKNOWN")}
-
-
-Exposure:
-
-{state.get("exposure_percent","N/A")}%
-
-"""
 
     # =========================
     # MARKET STATUS
     # =========================
+
 
     if "market" in q:
 
@@ -447,61 +397,63 @@ Exposure:
 """
 
 
+
     # =========================
     # EML ECOSYSTEM
     # =========================
 
+
     if (
-        "coin" in q
-        or "eml" in q
+        "eml" in q
+        or "coin" in q
         or "goat" in q
     ):
 
+
         return """
 
-🌐 EML ECOSYSTEM INTELLIGENCE
+🌐 EML ECOSYSTEM
 
 
-🪙 EML COIN
+🪙 EML Coin
 
-Digital ecosystem project tracking.
+Digital ecosystem project.
 
 
 👟 GOAT WALKAS V2
 
 EML footwear project.
 
-Early ecosystem participants may receive special rewards and merchandise opportunities.
+
+🎨 NFT Collection
+
+Digital assets.
 
 
-🎨 NFT COLLECTION
+👕 EML Brand
 
-Digital assets connected to the ecosystem.
-
-
-👕 EML BRAND
-
-Shoes + clothing marketplace development.
+Shoes + clothing marketplace.
 
 
 """
+
 
 
     # =========================
     # HELP
     # =========================
 
+
     return """
 
-🤖 SENTINEL AI
+🤖 Ask Sentinel:
 
 
-Try asking:
+• Give me a briefing
 
+• How am I doing?
 
-• Explain this app
-
-• Give me a system report
+• What positions do I own?
 
 • What is my equity?
 
@@ -509,20 +461,17 @@ Try asking:
 
 • How much buying power?
 
-• How many positions do I have?
+• Why is my risk low?
 
-• What symbols do I own?
+• Tell me about AAPL
 
-• How much is NVDA?
-
-• How much is AAPL?
-
-• Tell me about Tesla
+• Tell me about NVDA
 
 • What is market status?
 
 • Explain EML Coin
 
 • Explain GOAT WALKAS V2
+
 
 """
