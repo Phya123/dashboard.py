@@ -1,65 +1,36 @@
 import os
 import sys
 
-print("ROOT:", os.listdir("/app"))
+print("========== SENTINEL DEBUG ==========")
 
-print("PYTHON PATH:")
+print("ROOT FILES:")
+print(os.listdir("/app"))
+
+print("\nCURRENT PATH:")
+print(os.getcwd())
+
+print("\nPYTHON PATH:")
 print(sys.path)
 
-if os.path.exists("/app/onboarding"):
-    print(
-        "ONBOARDING:",
-        os.listdir("/app/onboarding")
-    )
-else:
-    print("NO ONBOARDING FOLDER")
-import os
-import sys
-from datetime import datetime
-
-import pandas as pd
-import streamlit as st
-
-
-print("ROOT FILES:", os.listdir("/app"))
 
 if os.path.exists("/app/onboarding"):
+
+    print("\nONBOARDING EXISTS")
+
     print(
-        "ONBOARDING FILES:",
+        "ONBOARDING FILES:"
+    )
+
+    print(
         os.listdir("/app/onboarding")
     )
+
 else:
-    print("❌ onboarding folder missing")
+
+    print("\n❌ ONBOARDING FOLDER MISSING")
 
 
-print("CURRENT PATH:", os.getcwd())
-print("PYTHON PATH:", sys.path)
-
-print("APP FILES:", os.listdir("/app"))
-
-if os.path.exists("/app/onboarding"):
-    print(
-        "ONBOARDING FILES:",
-        os.listdir("/app/onboarding")
-    )
-else:
-    print("NO ONBOARDING FOLDER")
-import os
-from datetime import datetime
-
-import pandas as pd
-import streamlit as st
-import os
-
-print("APP FILES:", os.listdir("/app"))
-
-if os.path.exists("/app/onboarding"):
-    print(
-        "ONBOARDING FILES:",
-        os.listdir("/app/onboarding")
-    )
-else:
-    print("ONBOARDING FOLDER MISSING")
+print("====================================")
     
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
