@@ -1,4 +1,19 @@
 import os
+import sys
+
+print("CURRENT PATH:", os.getcwd())
+print("PYTHON PATH:", sys.path)
+
+print("APP FILES:", os.listdir("/app"))
+
+if os.path.exists("/app/onboarding"):
+    print(
+        "ONBOARDING FILES:",
+        os.listdir("/app/onboarding")
+    )
+else:
+    print("NO ONBOARDING FOLDER")
+import os
 from datetime import datetime
 
 import pandas as pd
