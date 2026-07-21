@@ -67,15 +67,7 @@ def command_center_layout(
     )
 
 
-    # =========================
-    # 📊 POSITIONS
-    # =========================
-
-    st.divider()
-
-    positions_panel(
-        sentinel_state
-    )
+    
 
 
     # =========================
