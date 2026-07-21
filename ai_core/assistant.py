@@ -240,17 +240,15 @@ ${state.get("buying_power","N/A")}
 
         return response
 
+return """
 📊 Sentinel Position Report
 
 AAPL
-Shares: 0.131
-Price: $326.09
-P/L: +$0.93
+Shares: ...
 
 DEO
-Shares: 0.361
-Price: $84.84
-P/L: +$1.37
+Shares: ...
+"""
 
 ...
 🧠 Portfolio Intelligence
