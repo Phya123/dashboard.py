@@ -6,8 +6,9 @@ import streamlit as st
 
 try:
     from onboarding.profile import (
-        load_profiles,
-        save_profile
+    load_profiles,
+    save_profile,
+    sentinel_profile_summary
     )
 
 except Exception:
