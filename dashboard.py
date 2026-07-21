@@ -1,5 +1,21 @@
 import os
 import sys
+from datetime import datetime
+
+import pandas as pd
+import streamlit as st
+
+
+print("ROOT FILES:", os.listdir("/app"))
+
+if os.path.exists("/app/onboarding"):
+    print(
+        "ONBOARDING FILES:",
+        os.listdir("/app/onboarding")
+    )
+else:
+    print("❌ onboarding folder missing")
+
 
 print("CURRENT PATH:", os.getcwd())
 print("PYTHON PATH:", sys.path)
