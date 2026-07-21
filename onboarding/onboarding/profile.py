@@ -1,9 +1,14 @@
 import os
 import json
+from datetime import datetime
 
 
 PROFILE_FILE = "data/users.json"
 
+
+# =========================
+# LOAD PROFILES
+# =========================
 
 def load_profiles():
 
@@ -24,6 +29,10 @@ def load_profiles():
         return []
 
 
+
+# =========================
+# SAVE PROFILE
+# =========================
 
 def save_profile(profile):
 
@@ -48,3 +57,87 @@ def save_profile(profile):
         )
 
     return profile
+
+
+
+# =========================
+# GET ACTIVE PROFILE
+# =========================
+
+def get_active_profile():
+
+    profiles = load_profiles()
+
+    if profiles:
+
+        return profiles[0]
+
+    return None
+
+
+
+# =========================
+# SENTINEL PROFILE SUMMARY
+# =========================
+
+def sentinel_profile_summary():
+
+    profile = get_active_profile()
+
+
+    if not profile:
+
+        return {
+
+            "user": "Not Created",
+
+            "system":
+            "EML Sentinel Command Center",
+
+            "mode":
+            "READ ONLY",
+
+            "connected":
+            [
+                "Alpaca",
+                "NeighborLink",
+                "EML Ecosystem"
+            ]
+
+        }
+
+
+    return {
+
+        "user":
+        profile.get(
+            "name",
+            "Unknown"
+        ),
+
+        "sentinel_id":
+        profile.get(
+            "sentinel_id",
+            "N/A"
+        ),
+
+        "system":
+        "EML Sentinel Command Center",
+
+        "mode":
+        "READ ONLY",
+
+        "connected":
+        [
+            "Alpaca",
+            "NeighborLink",
+            "EML Ecosystem"
+        ],
+
+        "created":
+        profile.get(
+            "created",
+            "Unknown"
+        )
+
+    }
