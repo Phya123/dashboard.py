@@ -76,38 +76,54 @@ if (
 
     positions = state.get("positions", [])
 
-    return f"""
+    # =========================
+    # DAILY SENTINEL BRIEFING
+    # =========================
 
-🧠 SENTINEL TRADE ANALYSIS
+    if (
+        "briefing" in q
+        or "daily report" in q
+        or "morning report" in q
+    ):
 
-Today's market did not produce a qualified setup.
+        return f"""
+🧠 SENTINEL DAILY BRIEFING
 
-Sentinel only opens a new position when ALL conditions pass:
 
-✅ Fast MA > Slow MA
+🤖 AI CORE
 
-✅ Price above MA200
+ONLINE
 
-✅ ATR volatility filter passes
 
-✅ Cooldown expired
+🔒 DASHBOARD
 
-✅ No existing position
+READ ONLY
 
-✅ Market is OPEN
 
-Current Market:
-{state.get("market_status","UNKNOWN")}
+💰 Equity
 
-Current Positions:
-{len(positions)}
+${state.get("equity","N/A")}
 
-Risk Level:
+
+💵 Cash
+
+${state.get("cash","N/A")}
+
+
+⚡ Buying Power
+
+${state.get("buying_power","N/A")}
+
+
+📈 Positions
+
+{len(state.get("positions",[]))}
+
+
+🛡 Risk
+
 {state.get("risk","UNKNOWN")}
 
-This protects capital by avoiding weak or low-probability trades.
-
-"""
 
 📊 Market
 
@@ -117,8 +133,6 @@ This protects capital by avoiding weak or low-probability trades.
 Sentinel is monitoring your connected intelligence systems.
 
 """
-
-
     # =========================
     # PORTFOLIO SUMMARY
     # =========================
