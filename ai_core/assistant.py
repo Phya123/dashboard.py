@@ -240,7 +240,27 @@ ${state.get("buying_power","N/A")}
 
         return response
 
+📊 Sentinel Position Report
 
+AAPL
+Shares: 0.131
+Price: $326.09
+P/L: +$0.93
+
+DEO
+Shares: 0.361
+Price: $84.84
+P/L: +$1.37
+
+...
+🧠 Portfolio Intelligence
+
+Positions: 6
+Risk: LOW
+Exposure: XX%
+
+Best performer: DEO
+Worst performer: NVS
 
     # =========================
     # SYMBOL INTELLIGENCE
