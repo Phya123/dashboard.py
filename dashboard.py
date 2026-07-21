@@ -1,49 +1,18 @@
+import os
+import sys
+from datetime import datetime
+
+import pandas as pd
 import streamlit as st
-
-try:
-    from onboarding.profile import (
-        load_profiles,
-        save_profile
-    )
-
-except Exception:
-
-    def load_profiles():
-        return []
-
-    def save_profile(profile):
-        return profile
-
-print("========== SENTINEL DEBUG ==========")
-
-print("ROOT FILES:")
-print(os.listdir("/app"))
-
-print("\nCURRENT PATH:")
-print(os.getcwd())
-
-print("\nPYTHON PATH:")
-print(sys.path)
-
+print("ROOT FILES:", os.listdir("/app"))
 
 if os.path.exists("/app/onboarding"):
-
-    print("\nONBOARDING EXISTS")
-
     print(
-        "ONBOARDING FILES:"
-    )
-
-    print(
+        "ONBOARDING FILES:",
         os.listdir("/app/onboarding")
     )
-
 else:
-
-    print("\n❌ ONBOARDING FOLDER MISSING")
-
-
-print("====================================")
+    print("❌ onboarding folder missing")
     
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
