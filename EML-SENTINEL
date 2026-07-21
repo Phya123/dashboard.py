@@ -84,3 +84,11 @@ intelligence/
 onboarding/
     __init__.py
     profile.py
+EML-SENTINEL/
+
+├── onboarding/
+│   ├── __init__.py
+│   └── profile.py
+
+└── data/
+    └── users.json
