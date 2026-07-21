@@ -59,32 +59,7 @@ def profile_panel():
     profile = sentinel_profile_summary()
 
 
-    st.info(
-        f"""
-🧠 Sentinel Profile
-
-
-User:
-{profile.get('user','Unknown')}
-
-
-System:
-{profile.get('system','EML Sentinel Command Center')}
-
-
-Mode:
-{profile.get('mode','READ ONLY')}
-
-
-Connected:
-
-✅ Alpaca
-
-✅ NeighborLink
-
-✅ EML Ecosystem
-"""
-    )
+    
 
 
     profiles = load_profiles()
