@@ -92,3 +92,7 @@ EML-SENTINEL/
 
 └── data/
     └── users.json
+EML-SENTINEL
+ └── onboarding
+      ├── __init__.py
+      └── profile.py
