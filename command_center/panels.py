@@ -6,13 +6,41 @@ def sentinel_ai_chat(state):
 
     st.subheader("🤖 Sentinel AI Assistant")
 
+    st.caption(
+        "Ask Sentinel about your portfolio, markets, or EML ecosystem."
+    )
+
+    suggestions = [
+        "How much cash?",
+        "How much buying power?",
+        "How many positions do I have?",
+        "What symbols do I own?",
+        "How much is NVDA?",
+        "How much is AAPL?",
+        "Tell me about Tesla",
+        "What is market status?",
+        "Explain EML Coin",
+        "Explain GOAT WALKAS V2"
+    ]
+
     question = st.text_input(
         "💬 Ask Sentinel"
     )
 
-    if question:
+    st.write("Try asking:")
 
-        from ai_core.assistant import sentinel_response
+    cols = st.columns(2)
+
+    for i, item in enumerate(suggestions):
+
+        with cols[i % 2]:
+
+            if st.button(item):
+
+                question = item
+
+
+    if question:
 
         response = sentinel_response(
             question,
