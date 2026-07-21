@@ -2,7 +2,7 @@ import json
 import os
 
 
-PROFILE_FILE = "data/profile.json"
+PROFILE_FILE = "data/users.json"
 
 
 def load_profile():
@@ -11,7 +11,9 @@ def load_profile():
         return None
 
     with open(PROFILE_FILE, "r") as f:
-        return json.load(f)
+        data = json.load(f)
+
+    return data
 
 
 
@@ -37,13 +39,9 @@ def create_profile(
 ):
 
     profile = {
-
         "name": name,
-
         "sentinel_id": sentinel_id
-
     }
-
 
     save_profile(profile)
 
