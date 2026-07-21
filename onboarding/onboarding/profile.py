@@ -1,19 +1,27 @@
-import json
 import os
+import json
 
 
 PROFILE_FILE = "data/users.json"
 
 
-def load_profile():
+def load_profiles():
 
     if not os.path.exists(PROFILE_FILE):
-        return None
+        return []
 
-    with open(PROFILE_FILE, "r") as f:
-        data = json.load(f)
+    try:
 
-    return data
+        with open(
+            PROFILE_FILE,
+            "r"
+        ) as f:
+
+            return json.load(f)
+
+    except Exception:
+
+        return []
 
 
 
@@ -24,25 +32,19 @@ def save_profile(profile):
         exist_ok=True
     )
 
-    with open(PROFILE_FILE, "w") as f:
+    profiles = load_profiles()
+
+    profiles.append(profile)
+
+    with open(
+        PROFILE_FILE,
+        "w"
+    ) as f:
+
         json.dump(
-            profile,
+            profiles,
             f,
             indent=4
         )
-
-
-
-def create_profile(
-    name,
-    sentinel_id
-):
-
-    profile = {
-        "name": name,
-        "sentinel_id": sentinel_id
-    }
-
-    save_profile(profile)
 
     return profile
