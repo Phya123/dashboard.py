@@ -184,7 +184,60 @@ ${p.get('pnl')}
 {state.get("market_status","UNKNOWN")}
 
 """
+    # =========================
+    # WHY NO TRADES
+    # =========================
 
+    if (
+        "why didn't you buy" in q
+        or "why didnt you buy" in q
+        or "why no trades" in q
+        or "why no buy" in q
+    ):
+
+        positions = state.get("positions", [])
+
+        return f"""
+🧠 SENTINEL TRADE ANALYSIS
+
+
+Today's market did not produce a qualified setup.
+
+
+Sentinel only considers entries when conditions pass:
+
+
+✅ Fast MA > Slow MA
+
+✅ Price above MA200
+
+✅ ATR volatility filter passes
+
+✅ Cooldown expired
+
+✅ No existing position
+
+✅ Market is OPEN
+
+
+📊 Market Status:
+
+{state.get("market_status","UNKNOWN")}
+
+
+📈 Current Positions:
+
+{len(positions)}
+
+
+🛡 Risk:
+
+{state.get("risk","UNKNOWN")}
+
+
+Sentinel avoids weak setups to protect capital.
+
+"""
 
     # =========================
     # DEFAULT
