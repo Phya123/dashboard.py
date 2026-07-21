@@ -1,9 +1,18 @@
-import os
-import sys
-from datetime import datetime
-
-import pandas as pd
 import streamlit as st
+
+try:
+    from onboarding.profile import (
+        load_profiles,
+        save_profile
+    )
+
+except Exception:
+
+    def load_profiles():
+        return []
+
+    def save_profile(profile):
+        return profile
 
 print("========== SENTINEL DEBUG ==========")
 
