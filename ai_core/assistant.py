@@ -9,43 +9,56 @@ def sentinel_response(question, state):
     q = question.lower()
 
 
-      # =========================
-# DAILY SENTINEL BRIEFING
-# =========================
+    if (
+        "briefing" in q
+        or "daily report" in q
+        or "morning report" in q
+    ):
 
-if (
-    "briefing" in q
-    or "daily report" in q
-    or "morning report" in q
-):
-
-    return f"""
+        return f"""
 
 🧠 SENTINEL DAILY BRIEFING
 
+
 🤖 AI CORE
+
 ONLINE
 
+
 🔒 DASHBOARD
+
 READ ONLY
 
+
 💰 Equity
+
 ${state.get("equity","N/A")}
 
+
 💵 Cash
+
 ${state.get("cash","N/A")}
 
+
 ⚡ Buying Power
+
 ${state.get("buying_power","N/A")}
 
+
 📈 Positions
+
 {len(state.get("positions",[]))}
 
+
 🛡 Risk
+
 {state.get("risk","UNKNOWN")}
 
+
 📊 Market
+
 {state.get("market_status","UNKNOWN")}
+
 
 Sentinel is monitoring your connected intelligence systems.
 
