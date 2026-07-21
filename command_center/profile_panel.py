@@ -1,5 +1,8 @@
 import streamlit as st
 
+# =========================
+# ONBOARDING IMPORT FALLBACK
+# =========================
 
 try:
     from onboarding.profile import (
@@ -14,9 +17,13 @@ except Exception:
 
 
     def save_profile(profile):
-        return profile
+        return True
 
 
+
+# =========================
+# 👤 SENTINEL PROFILE PANEL
+# =========================
 
 def profile_panel():
 
@@ -28,65 +35,78 @@ def profile_panel():
     profiles = load_profiles()
 
 
+    # =========================
+    # EXISTING PROFILE
+    # =========================
+
     if profiles:
 
         profile = profiles[0]
 
-        st.write(
-            f"Name: {profile.get('name', 'Unknown')}"
-        )
+        st.success("Sentinel profile active")
 
         st.write(
-            f"Sentinel ID: {profile.get('id', 'EML-001')}"
+            f"Name: {profile.get('name','Unknown')}"
+        )
+
+        st.write(
+            f"Sentinel ID: {profile.get('id','N/A')}"
+        )
+
+        return
+
+
+
+    # =========================
+    # CREATE PROFILE
+    # =========================
+
+    st.info(
+        "No Sentinel profile created yet."
+    )
+
+
+    with st.form(
+        "sentinel_profile_form"
+    ):
+
+        name = st.text_input(
+            "Your Name"
+        )
+
+        sentinel_id = st.text_input(
+            "Sentinel ID"
         )
 
 
-    else:
-
-        st.info(
-            "No Sentinel profile created yet."
+        submitted = st.form_submit_button(
+            "Create Sentinel Profile"
         )
 
 
-        with st.form(
-            "sentinel_profile_form"
-        ):
+        if submitted:
 
-            name = st.text_input(
-                "Your Name"
-            )
+            if name and sentinel_id:
 
-
-            sentinel_id = st.text_input(
-                "Sentinel ID",
-                value="EML-001"
-            )
-
-
-            submitted = st.form_submit_button(
-                "Create Sentinel Profile"
-            )
-
-
-            if submitted:
-
-                new_profile = {
-
+                profile = {
                     "name": name,
-
                     "id": sentinel_id
-
                 }
 
 
-                save_profile(
-                    new_profile
-                )
+                save_profile(profile)
 
 
                 st.success(
-                    "Sentinel Profile Created"
+                    "✅ Sentinel Profile Created"
                 )
 
 
                 st.rerun()
+
+
+            else:
+
+                st.warning(
+                    "Please complete both fields."
+                )
