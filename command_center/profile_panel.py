@@ -2,6 +2,20 @@ import streamlit as st
 
 try:
     from onboarding.profile import (
+        load_profiles,
+        save_profile
+    )
+
+except Exception:
+
+    def load_profiles():
+        return []
+
+    def save_profile(profile):
+        return profile
+
+try:
+    from onboarding.profile import (
         create_profile,
         load_profile
     )
