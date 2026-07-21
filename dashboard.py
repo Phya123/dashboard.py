@@ -3,7 +3,17 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
+import os
 
+print("APP FILES:", os.listdir("/app"))
+
+if os.path.exists("/app/onboarding"):
+    print(
+        "ONBOARDING FILES:",
+        os.listdir("/app/onboarding")
+    )
+else:
+    print("ONBOARDING FOLDER MISSING")
 from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
