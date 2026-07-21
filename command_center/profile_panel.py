@@ -6,9 +6,9 @@ import streamlit as st
 
 try:
     from onboarding.profile import (
-    load_profiles,
-    save_profile,
-    sentinel_profile_summary
+        load_profiles,
+        save_profile,
+        sentinel_profile_summary
     )
 
 except Exception:
@@ -19,6 +19,20 @@ except Exception:
 
     def save_profile(profile):
         return True
+
+
+    def sentinel_profile_summary():
+
+        return {
+            "user": "Not Created",
+            "system": "EML Sentinel Command Center",
+            "mode": "READ ONLY",
+            "connected": [
+                "Alpaca",
+                "NeighborLink",
+                "EML Ecosystem"
+            ]
+        }
 
 
 
@@ -37,21 +51,55 @@ def profile_panel():
 
 
     # =========================
+    # SENTINEL INTELLIGENCE CARD
+    # =========================
+
+    profile = sentinel_profile_summary()
+
+
+    st.subheader("🧠 Sentinel Profile")
+
+
+    st.write(
+        f"""
+User:
+{profile['user']}
+
+
+System:
+{profile['system']}
+
+
+Mode:
+{profile['mode']}
+
+
+Connected:
+Alpaca
+NeighborLink
+EML Ecosystem
+"""
+    )
+
+
+    # =========================
     # EXISTING PROFILE
     # =========================
 
     if profiles:
 
-        profile = profiles[0]
+        profile_data = profiles[0]
 
-        st.success("Sentinel profile active")
-
-        st.write(
-            f"Name: {profile.get('name','Unknown')}"
+        st.success(
+            "✅ Sentinel profile active"
         )
 
         st.write(
-            f"Sentinel ID: {profile.get('id','N/A')}"
+            f"Name: {profile_data.get('name','Unknown')}"
+        )
+
+        st.write(
+            f"Sentinel ID: {profile_data.get('sentinel_id','N/A')}"
         )
 
         return
@@ -75,6 +123,7 @@ def profile_panel():
             "Your Name"
         )
 
+
         sentinel_id = st.text_input(
             "Sentinel ID"
         )
@@ -90,8 +139,11 @@ def profile_panel():
             if name and sentinel_id:
 
                 profile = {
+
                     "name": name,
-                    "id": sentinel_id
+
+                    "sentinel_id": sentinel_id
+
                 }
 
 
