@@ -1,10 +1,12 @@
 import streamlit as st
 
+
 # =========================
-# ONBOARDING IMPORT FALLBACK
+# PROFILE IMPORT
 # =========================
 
 try:
+
     from onboarding.profile import (
         load_profiles,
         save_profile,
@@ -12,6 +14,7 @@ try:
     )
 
 except Exception:
+
 
     def load_profiles():
         return []
@@ -44,40 +47,68 @@ def profile_panel():
 
     st.divider()
 
-    st.subheader("👤 Sentinel User Profile")
-
-
-    profiles = load_profiles()
+    st.subheader(
+        "👤 Sentinel User Profile"
+    )
 
 
     # =========================
-    # SENTINEL INTELLIGENCE CARD
+    # SENTINEL IDENTITY
     # =========================
 
     profile = sentinel_profile_summary()
 
 
-    
+    st.info(
+        f"""
+🧠 Sentinel Profile
+
+
+User:
+{profile.get('user','Unknown')}
+
+
+System:
+{profile.get('system','EML Sentinel Command Center')}
+
+
+Mode:
+{profile.get('mode','READ ONLY')}
+
+
+Connected:
+
+✅ Alpaca
+
+✅ NeighborLink
+
+✅ EML Ecosystem
+"""
+    )
+
+
+    profiles = load_profiles()
+
 
 
     # =========================
-    # EXISTING PROFILE
+    # EXISTING USER
     # =========================
 
     if profiles:
 
-        profile_data = profiles[0]
+        user = profiles[0]
 
         st.success(
             "✅ Sentinel profile active"
         )
 
         st.write(
-            f"Name: {profile_data.get('name','Unknown')}"
+            f"Name: {user.get('name','Unknown')}"
         )
 
         st.write(
-            f"Sentinel ID: {profile_data.get('sentinel_id','N/A')}"
+            f"Sentinel ID: {user.get('sentinel_id','N/A')}"
         )
 
         return
@@ -88,7 +119,7 @@ def profile_panel():
     # CREATE PROFILE
     # =========================
 
-    st.info(
+    st.warning(
         "No Sentinel profile created yet."
     )
 
@@ -107,37 +138,33 @@ def profile_panel():
         )
 
 
-        submitted = st.form_submit_button(
+        create = st.form_submit_button(
             "Create Sentinel Profile"
         )
 
 
-        if submitted:
+        if create:
 
             if name and sentinel_id:
 
-                profile = {
 
-                    "name": name,
-
-                    "sentinel_id": sentinel_id
-
-                }
-
-
-                save_profile(profile)
+                save_profile(
+                    {
+                        "name": name,
+                        "sentinel_id": sentinel_id
+                    }
+                )
 
 
                 st.success(
                     "✅ Sentinel Profile Created"
                 )
 
-
                 st.rerun()
 
 
             else:
 
-                st.warning(
-                    "Please complete both fields."
+                st.error(
+                    "Enter your name and Sentinel ID."
                 )
