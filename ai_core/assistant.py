@@ -9,55 +9,92 @@ def sentinel_response(question, state):
     q = question.lower()
 
 
-    # =========================
-    # DAILY SENTINEL BRIEFING
-    # =========================
+      # =========================
+# DAILY SENTINEL BRIEFING
+# =========================
 
-    if (
-        "briefing" in q
-        or "daily report" in q
-        or "morning report" in q
-    ):
+if (
+    "briefing" in q
+    or "daily report" in q
+    or "morning report" in q
+):
 
-        return f"""
+    return f"""
 
 🧠 SENTINEL DAILY BRIEFING
 
-
 🤖 AI CORE
-
 ONLINE
 
-
 🔒 DASHBOARD
-
 READ ONLY
 
-
 💰 Equity
-
 ${state.get("equity","N/A")}
 
-
 💵 Cash
-
 ${state.get("cash","N/A")}
 
-
 ⚡ Buying Power
-
 ${state.get("buying_power","N/A")}
 
-
 📈 Positions
-
 {len(state.get("positions",[]))}
 
-
 🛡 Risk
-
 {state.get("risk","UNKNOWN")}
 
+📊 Market
+{state.get("market_status","UNKNOWN")}
+
+Sentinel is monitoring your connected intelligence systems.
+
+"""
+# =========================
+# WHY DIDN'T YOU BUY?
+# =========================
+
+if (
+    "why didn't you buy" in q
+    or "why didnt you buy" in q
+    or "why no trades" in q
+    or "why no buy" in q
+):
+
+    positions = state.get("positions", [])
+
+    return f"""
+
+🧠 SENTINEL TRADE ANALYSIS
+
+Today's market did not produce a qualified setup.
+
+Sentinel only opens a new position when ALL conditions pass:
+
+✅ Fast MA > Slow MA
+
+✅ Price above MA200
+
+✅ ATR volatility filter passes
+
+✅ Cooldown expired
+
+✅ No existing position
+
+✅ Market is OPEN
+
+Current Market:
+{state.get("market_status","UNKNOWN")}
+
+Current Positions:
+{len(positions)}
+
+Risk Level:
+{state.get("risk","UNKNOWN")}
+
+This protects capital by avoiding weak or low-probability trades.
+
+"""
 
 📊 Market
 
