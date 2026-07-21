@@ -96,3 +96,10 @@ EML-SENTINEL
  └── onboarding
       ├── __init__.py
       └── profile.py
+EML-SENTINEL
+│
+├── onboarding
+│   ├── __init__.py
+│   └── profile.py   ← put the profile code here
+│
+└── dashboard.py
