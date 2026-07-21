@@ -142,3 +142,36 @@ def status_panel():
     st.info(
         "Dashboard Mode: READ ONLY"
     )
+# =========================
+# 📊 SENTINEL POSITIONS
+# =========================
+
+def positions_panel(state):
+
+    st.divider()
+
+    st.subheader("📊 SENTINEL POSITIONS")
+
+    positions = state.get("positions", [])
+
+    if not positions:
+        st.info("No open positions.")
+        return
+
+    for p in positions:
+
+        st.write(
+            f"📈 {p['symbol']}"
+        )
+
+        st.write(
+            f"Shares: {p['shares']}"
+        )
+
+        st.write(
+            f"Price: ${p['price']:.2f}"
+        )
+
+        st.write(
+            f"P/L: ${p['pnl']:.2f}"
+        )
